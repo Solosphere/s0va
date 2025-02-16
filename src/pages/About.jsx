@@ -51,9 +51,9 @@ const [loading, setLoading] = useState(true);
         <section className="artistic-philosophy">
         <h2>THE PHILOSOPHY</h2>
         <p>
-        Within SOLUS CORE, I aim to shed light on the transformative journey towards personal wholeness, capturing the beauty of introspection and embracing the profound depth of the human experience. Drawing inspiration from philosophical luminaries such as Fyodor Dostoevsky, Friedrich Nietzsche, Albert Camus, Arthur Schopenhauer, and Miyamoto Musashi, each creation unravels the complexities of the human experience. This exploration highlights individualism and transformative stories, connecting philosophical ideas with personal and cultural experiences.
+        Within SOLUS CORE, I aim to shed light on the transformative journey towards personal wholeness, capturing the beauty of introspection and embracing the profound depth of the human experience. Drawing inspiration from philosophical luminaries such as Fyodor Dostoevsky, Albert Camus, Arthur Schopenhauer, and Miyamoto Musashi, each creation unravels the complexities of the human experience. This exploration highlights individualism and transformative stories, connecting philosophical ideas with personal and cultural experiences.
         </p>
-        <p>Spanning immersive websites to evocative multimedia paintings and drawings, my creations merge fine arts, graphic design, and technology. SOLUS CORE aims to connect with you on a profound level, sparking introspection and inviting you to delve into the depth into its meaning. Each piece serves as a portal into existential themes—absurdism, nihilism, and existentialism—inviting you to contemplate the depth of the human experience and infuse its meaning with your unique interpretation and engagement.    </p> 
+        <p>Spanning immersive websites to evocative multimedia paintings and drawings, my creations merge fine arts, graphic design, and technology. Each piece serves as a portal into existential themes—absurdism, nihilism, and existentialism—inviting you to contemplate the depth of the human experience and infuse its meaning with your unique interpretation and engagement.    </p> 
         
         
         <section className="skills-container">
@@ -167,7 +167,7 @@ const [loading, setLoading] = useState(true);
             Your browser does not support the video tag.
           </video>
       <div className='chrome-text'>
-      <p>A pyschological neoo noir thriller unfolds in "Heart in Chrome," a graphic novel currently in the throes of creation exploring the nexus of art, technology, identity, and power.
+      <p>A pyschological neo noir thriller unfolds in "Heart in Chrome," a graphic novel currently in the throes of creation exploring the nexus of art, technology, identity, and power.
       <br /><br /> 
       * You can now check out some concept designs for Heart in Chrome in the Archive section!</p>
       </div>

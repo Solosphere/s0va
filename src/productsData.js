@@ -1175,7 +1175,7 @@ const products = [
 
       {
         id: 99,
-        name: 'Nauseous heart',
+        name: 'Nauseous Feelings',
         date: 2018,
         collection: '',
         price: 250000,
@@ -1262,6 +1262,17 @@ const products = [
         collection: '',
         price: 250000,
         image: ['/images/HCT-14.JPG', '/images/HCT-4.JPG', '/images/HCT-7.JPG', '/images/HCT-14.JPG', '/images/HCT-6.JPG'],
+        media: 'Digital',
+        dimensions: '',
+        description: `Heart in Chrome is a neo noir narrative set in the sprawling dystopia of Neo Columbia, where corporate greed and advanced technology have blurred the lines between humanity and machine. At its core is Luke Kane, a former artistic prodigy turned Nexrunner, who finds himself at the center of a conspiracy to reshape the human soul through the Transcendence Protocol. In a world teetering on the edge of control and chaos, ancient technologies, unspoken horrors, and complex alliances bring both beauty and destruction into the balance. For now you can explore character and world-building designs that allude to a story where hope, betrayal, and the relentless march of progress collide.`,
+      },
+      {
+        id: 107,
+        name: 'Heart in Chrome: Stills Part IV',
+        date: 2025,
+        collection: '',
+        price: 250000,
+        image: ['/images/HCT-18.JPG'],
         media: 'Digital',
         dimensions: '',
         description: `Heart in Chrome is a neo noir narrative set in the sprawling dystopia of Neo Columbia, where corporate greed and advanced technology have blurred the lines between humanity and machine. At its core is Luke Kane, a former artistic prodigy turned Nexrunner, who finds himself at the center of a conspiracy to reshape the human soul through the Transcendence Protocol. In a world teetering on the edge of control and chaos, ancient technologies, unspoken horrors, and complex alliances bring both beauty and destruction into the balance. For now you can explore character and world-building designs that allude to a story where hope, betrayal, and the relentless march of progress collide.`,
