@@ -41,7 +41,8 @@ const GalleryList = () => {
 
   const sortOptions = [
     { label: 'Name', value: 'name' },
-    { label: 'Date', value: 'date' },
+    { label: 'Oldest', value: 'oldest' },
+    { label: 'Recent', value: 'recent'}
   ];
 
   const filterProducts = (product) => {
@@ -58,8 +59,10 @@ const GalleryList = () => {
   const sortProducts = (a, b) => {
     if (sortBy === 'name') {
       return a.name.localeCompare(b.name);
-    } else if (sortBy === 'date') {
+    } else if (sortBy === 'oldest') {
       return a.date - b.date;
+    } else if(sortBy === 'recent'){
+      return b.date - a.date;
     }
   };
 
