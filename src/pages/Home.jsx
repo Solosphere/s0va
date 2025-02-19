@@ -8,8 +8,6 @@ const [currentImageIndex, setCurrentImageIndex ] = useState(0);
 const images = ['HCT-17.webp','kirin.webp', 'secondwind.webp', 'SAP.webp', 'metvoyager.webp', 'angel.webp'];
 const location = useLocation();
 
-console.log("Location:", location)
-
 const handleNextImage = () => {
   setCurrentImageIndex((prevIndex)=> (prevIndex + 1) % images.length);
 }

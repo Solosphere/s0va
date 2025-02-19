@@ -48,7 +48,6 @@ const GalleryItemDetails = () => {
 
   const handleGoBack = () => {
     navigate(`/archive?page=${page}`);
-    console.log("pageNumber from galleryitem:", page); 
   };
 
   const openModal = () => {

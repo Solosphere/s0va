@@ -13,8 +13,6 @@ import { faChevronRight, faChevronLeft, faEye, faEyeSlash } from '@fortawesome/f
 const itemsPerPage = 16;
 const maxButtonsToShow = 4;
 
-console.log("Product", products.length);
-
 const GalleryList = () => {
 
   const navigate = useNavigate();
@@ -112,9 +110,7 @@ const GalleryList = () => {
     const searchParams = new URLSearchParams(window.location.search);
     const pageParam = parseInt(searchParams.get('page'), 10) || 1;
     // Set the state based on query parameters
-    setCurrentPage(pageParam);
-    console.log("pageParam from gallery list", pageParam);
-    
+    setCurrentPage(pageParam);    
   }, []);
   
    useEffect(() => {
