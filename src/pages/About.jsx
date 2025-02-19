@@ -39,7 +39,7 @@ const [loading, setLoading] = useState(true);
       <section className="about-row-1">
         <section className="introduction">
         <h2>THE CREATIVE</h2>
-        <img src="/images/cropheadshot.jpg" loading="lazy" alt="selfportrait"/>
+        <img src="/images/cropheadshot.webp" loading="lazy" alt="selfportrait"/>
         <p>Hey, I'm Daniel Nelson, the creator behind SOLUS CORE. My journey began at Parsons School of Art & Design, where I honed skills in art, graphic design, and creative technology. Seeking further growth, I became experienced in full-stack software engineering at The Marcy Lab School's Software Engineering Fellowship. SOLUS CORE, born from this diverse background, is a platform I've crafted to showcase my multifaceted portfolio, delving into the intricacies of the human condition. As an artist, graphic designer, and software engineer, I leverage my varied expertise to offer insights and create pathways for navigating the complexities of morality, existence, and the pursuit of personal wholeness.
         </p>
         </section>
@@ -115,14 +115,14 @@ const [loading, setLoading] = useState(true);
         <div className='image-with-description-container'>
         <div className="image-with-description-v1">
         
-        <img src="/images/secondwind.jpg" loading="lazy" alt="desc"/>
+        <img src="/images/secondwind.webp" loading="lazy" alt="desc"/>
         <p>
         Second Wind, a full stack online community-based platform that provide resources, support, and employment for those impacted by the criminal justice system.   </p>
         </div>
         <div className="image-with-description-v1">
         
         <Link to="https://interestfinder.careerspring.org/?page_id=2" target="_blank" className="image-with-description-v1">
-  <img src="/images/careerspring.jpg" loading="lazy" alt="desc" />
+  <img src="/images/careerspring.webp" loading="lazy" alt="desc" />
 </Link>
 <p className="image-text-2">As a Developer Contractor, I’ve been instrumental in developing software like CareerSpring’s Career Interest Profiler by leveraging JavaScript, HTML & CSS. This custom career assessment tool seamlessly integrated into WordPress serves as a beacon for individuals exploring their professional paths.
   <br></br>
@@ -130,13 +130,13 @@ const [loading, setLoading] = useState(true);
    *Click on to try out the tool for yourself.</p>
         </div>
         <div className="image-with-description-v1">
-        <img src="/images/SAP.JPG" loading="lazy" alt="desc"/>
+        <img src="/images/SAP.webp" loading="lazy" alt="desc"/>
         <p className="image-text-3">SAP (FORTHESOUL), represents a convergence of 3D modeling with AutoCAD, incorporating components such as a PIR motion sensor, DFPlayer, SD card, jumper wires, and Arduino Uno. Within the intricate model, the sculpture delivers a spoken narrative drawn from a fusion of written words by Jean-Paul Sartre, Albert Camus, and my own alterations through text-to-speech software.
         </p>
         </div>
         <div className="image-with-description-v1">
         <Link to="https://danielnelson37.github.io/METVoyager/" target="_blank" className="image-with-description-v1">
-        <img src="/images/metvoyager.jpg" loading="lazy" alt="desc" className="metvid" />
+        <img src="/images/metvoyager.webp" loading="lazy" alt="desc" className="metvid" />
         </Link>
         <p className="image-text-4">METVoyager is a web platform I developed that leverages the MET API to deliver artwork recommendations based on search functionality or by selecting specific categories to generate art that matches. The platform also allows users to save and revisit favorite artworks in their own personal gallery. 
         <br></br>
