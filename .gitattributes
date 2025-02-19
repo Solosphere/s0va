@@ -4,3 +4,4 @@
 .JPG filter=lfs diff=lfs merge=lfs -text
 public/images/HCT-16.JPG filter=lfs diff=lfs merge=lfs -text
 public/videos/export.mp4 filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text
