@@ -6,7 +6,7 @@ import { faInstagram, faGithub, faMedium, faLinkedin} from '@fortawesome/free-br
 
 
 const AboutPage = () => {
-const tattooImages = ["tattoopray.jpg", "tat-2.jpg", "tat-3.jpg", "customsnake.JPG", "tat-5.jpg"]
+const tattooImages = ["tattoopray.webp", "tat-2.webp", "tat-3.webp", "customsnake.webp"]
 const [loading, setLoading] = useState(true);
 
     useEffect(() => {
