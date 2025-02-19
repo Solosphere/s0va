@@ -1277,6 +1277,28 @@ const products = [
         dimensions: '',
         description: `Heart in Chrome is a neo noir narrative set in the sprawling dystopia of Neo Columbia, where corporate greed and advanced technology have blurred the lines between humanity and machine. At its core is Luke Kane, a former artistic prodigy turned Nexrunner, who finds himself at the center of a conspiracy to reshape the human soul through the Transcendence Protocol. In a world teetering on the edge of control and chaos, ancient technologies, unspoken horrors, and complex alliances bring both beauty and destruction into the balance. For now you can explore character and world-building designs that allude to a story where hope, betrayal, and the relentless march of progress collide.`,
       },
+      {
+        id: 108,
+        name: 'Heart in Chrome: Teaser Trailer II',
+        date: 2025,
+        collection: '',
+        price: 250000,
+        image: ['/videos/HCT-22.mp4'],
+        media: 'Digital',
+        dimensions: '',
+        description: `Heart in Chrome is a neo noir narrative set in the sprawling dystopia of Neo Columbia, where corporate greed and advanced technology have blurred the lines between humanity and machine. At its core is Luke Kane, a former artistic prodigy turned Nexrunner, who finds himself at the center of a conspiracy to reshape the human soul through the Transcendence Protocol. In a world teetering on the edge of control and chaos, ancient technologies, unspoken horrors, and complex alliances bring both beauty and destruction into the balance. For now you can explore character and world-building designs that allude to a story where hope, betrayal, and the relentless march of progress collide.`,
+      },
+      {
+        id: 109,
+        name: 'Heart in Chrome: Teaser Trailer I',
+        date: 2025,
+        collection: '',
+        price: 250000,
+        image: ['/videos/HCT-23.mp4'],
+        media: 'Digital',
+        dimensions: '',
+        description: `Heart in Chrome is a neo noir narrative set in the sprawling dystopia of Neo Columbia, where corporate greed and advanced technology have blurred the lines between humanity and machine. At its core is Luke Kane, a former artistic prodigy turned Nexrunner, who finds himself at the center of a conspiracy to reshape the human soul through the Transcendence Protocol. In a world teetering on the edge of control and chaos, ancient technologies, unspoken horrors, and complex alliances bring both beauty and destruction into the balance. For now you can explore character and world-building designs that allude to a story where hope, betrayal, and the relentless march of progress collide.`,
+      },
   
   ];
 
