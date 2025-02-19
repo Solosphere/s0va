@@ -120,7 +120,7 @@ const GalleryItemDetails = () => {
                           Your browser does not support the video tag.
                         </video>
                       ) : (
-                        <img src={image} alt={`${product.name} - Thumbnail ${index}`} />
+                        <img src={image} loading="lazy" alt={`${product.name} - Thumbnail ${index}`} />
                       )}
                     </div>
                   ))}

@@ -5,7 +5,7 @@ import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons
 
 export default function HomePage() {
 const [currentImageIndex, setCurrentImageIndex ] = useState(0);
-const images = ['HCT-17.JPG','kirin.jpg', 'secondwind.jpg', 'SAP.JPG', 'metvoyager.jpg', 'angel.JPG', 'nightlife2.jpg'];
+const images = ['HCT-17.webp','kirin.webp', 'secondwind.webp', 'SAP.webp', 'metvoyager.webp', 'angel.webp'];
 const location = useLocation();
 
 console.log("Location:", location)
