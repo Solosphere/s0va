@@ -42,7 +42,7 @@ return (
   </div>
   <div className="content">
     <h1 className="landingpage-title">SOLUS CORE</h1>
-    <p className="tagline">The Cache</p>
+    <h2 className="tagline">The Cache</h2>
   </div>
   </div>
 </div>
@@ -67,15 +67,11 @@ return (
             <section className="rect-2"></section>
             </section>
     <h2>THE VISION</h2>
-    <p>Welcome to SOLUS CORE. I'm Daniel Nelson, and I've developed this space to store my personal works, ranging from websites to paintings. Each piece delves into existential themes—absurdism, nihilism, and existentialism—inviting you to explore the intricate interplay of existential inquiry.   
+    <p>Welcome to SOLUS CORE. I'm Daniel Nelson, and I've developed this space to store my personal works, ranging from software to paintings. Each piece delves into existential themes—absurdism, nihilism, and existentialism—inviting you to explore the intricate interplay of existential inquiry.   
  </p>
     <div className="home-button-row">
-    <button className="home-about-button"> 
-    <Link to="/about" className="home-about-link">Learn More</Link> 
-    </button>
-    <button className="explore-gallery-button"> 
-      <Link to='/archive?page=1' className="explore-gallery-link">Explore Archive</Link>
-    </button>
+      <Link to="/about" className="home-about-link"><button className="home-about-button">Learn More</button></Link> 
+      <Link to='/archive?page=1' className="explore-gallery-link"><button className="explore-gallery-button">Explore Archive</button></Link>
     </div>
     </div>
   </div>

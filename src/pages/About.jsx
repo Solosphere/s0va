@@ -8,11 +8,15 @@ import { faInstagram, faGithub, faMedium, faLinkedin} from '@fortawesome/free-br
 const AboutPage = () => {
 const tattooImages = ["tattoopray.webp", "tat-2.webp", "tat-3.webp", "customsnake.webp"]
 const [loading, setLoading] = useState(true);
+const [typedText, setTypedText] = useState('');
+// const binaryString = "01111001 01101111 01110101 00100000 01100011 01100001 01101110 01110100 00100000 01101011 01101001 01101100 01101100 00100000 01101101 01100101 00100000 01001001 01101101 00100000 01111010 01100101 01110010 01101111 01110011 00100000 01100001 01101110 01100100 00100000 01101111 01101110 01100101 01110011 00001010 ";
+const [isSliding, setIsSliding] = useState(false);
+
+
+
 
     useEffect(() => {
-        
         window.scrollTo(0, 0);
-
         // Simulate a delay for loading
     const delay = setTimeout(() => {
       setLoading(false);
@@ -23,16 +27,26 @@ const [loading, setLoading] = useState(true);
       }, []); 
 
 
-  return (
-
+      useEffect(() => {
+        const text = "$ echo '01001000 01100101 01110010 01100101 00101100 00100000 01001001 00100000 01100001 01101101 00100000 01101001 01101110 01100110 01101001 01101110 01101001 01110100 01100101 00101110 00100000 01011001 01101111 01110101 00100000 01100011 01100001 01101110 00100111 01110100 00100000 01101011 01101001 01101100 01101100 00100000 01101101 01100101 00100000 01001001 00100111 01101101 00100000 01111010 01100101 01110010 01101111 01110011 00100000 01100001 01101110 01100100 00100000 01101111 01101110 01100101 01110011 00101110 00001010'"; 
+        let index = 0;
     
+        const interval = setInterval(() => {
+          setTypedText((prev) => prev + text[index]);
+          index++;      
+    }, 50); // Typing speed
+    
+        return () => clearInterval(interval);
+      }, []);
+
+  return (
     <div className="about-container">
       
       <header className="about-header">
         <h1>ABOUT</h1>
         <section className="about-caption">
         {/* <p>A curated digital sanctuary merging art and technology, illuminating the path to wholeness and growth</p> */}
-        <p>CURATED DIGITAL SANCTUARY: ART + TECHNOLOGY | PATH TO WHOLENESS & GROWTH</p>
+        <p>{typedText}</p>
         </section>
       </header>
 
@@ -40,7 +54,7 @@ const [loading, setLoading] = useState(true);
         <section className="introduction">
         <h2>THE CREATIVE</h2>
         <img src="/images/cropheadshot.webp" loading="lazy" alt="selfportrait"/>
-        <p>Hey, I'm Daniel Nelson, the creator behind SOLUS CORE. My journey began at Parsons School of Art & Design, where I honed skills in art, graphic design, and creative technology. Seeking further growth, I became experienced in full-stack software engineering at The Marcy Lab School's Software Engineering Fellowship. SOLUS CORE, born from this diverse background, is a platform I've crafted to showcase my multifaceted portfolio, delving into the intricacies of the human condition. As an artist, graphic designer, and software engineer, I leverage my varied expertise to offer insights and create pathways for navigating the complexities of morality, existence, and the pursuit of personal wholeness.
+        <p>Hey, I'm Daniel Nelson, the creator behind SOLUS CORE. My journey began at Parsons School of Art & Design, where I honed skills in art, graphic design, and creative technology. Seeking further growth, I became experienced in full-stack software engineering at The Marcy Lab School's Software Engineering Fellowship. SOLUS CORE, born from this diverse background, is a platform I've crafted to showcase my multifaceted portfolio, delving into the intricacies of the human condition. As an artist, graphic designer, and software engineer, I leverage my varied expertise to offer insights and create pathways for navigating the complexities of morality, existence, and humanity.
         </p>
         </section>
         <section className="philosophy-inspiration-container">
@@ -50,10 +64,8 @@ const [loading, setLoading] = useState(true);
             </section>
         <section className="artistic-philosophy">
         <h2>THE PHILOSOPHY</h2>
-        <p>
-        Within SOLUS CORE, I aim to shed light on the transformative journey towards personal wholeness, capturing the beauty of introspection and embracing the profound depth of the human experience. Drawing inspiration from philosophical luminaries such as Fyodor Dostoevsky, Albert Camus, Arthur Schopenhauer, and Miyamoto Musashi, each creation unravels the complexities of the human experience. This exploration highlights individualism and transformative stories, connecting philosophical ideas with personal and cultural experiences.
-        </p>
-        <p>Spanning immersive websites to evocative multimedia paintings and drawings, my creations merge fine arts, graphic design, and technology. Each piece serves as a portal into existential themes—absurdism, nihilism, and existentialism—inviting you to contemplate the depth of the human experience and infuse its meaning with your unique interpretation and engagement.    </p> 
+        <p>SOLUS CORE is my way of leaving a piece of myself within the machine—a space where my work exists on its own, independent of an intended audience (unless rooted in code). Inspired by thinkers like Dostoevsky, Camus, Schopenhauer, and Musashi, my creations explore individualism, transformation, and the human condition. Through code, multimedia paintings, and graphic design, I merge fine art with technology, weaving existential themes—absurdism, nihilism, and existentialism—into experiences open to being encountered, absorbed, and interpreted freely.
+        </p> 
         
         
         <section className="skills-container">
@@ -63,6 +75,8 @@ const [loading, setLoading] = useState(true);
   </div>
   <div className="skills-list">
     <div className="skill-category">
+      <p>Cloud Computing</p>
+      <p>Platform Engineering</p>
       <p>Product Management</p>
       <p>UI/UX Design</p>
       <p>Agile Development</p>
@@ -167,9 +181,9 @@ const [loading, setLoading] = useState(true);
             Your browser does not support the video tag.
           </video>
       <div className='chrome-text'>
-      <p>A pyschological neo noir thriller unfolds in "Heart in Chrome," a graphic novel currently in the throes of creation exploring the nexus of art, technology, identity, and power.
+      <p>A psychological neo-noir thriller unfolds in <i>Heart in Chrome</i>, a graphic novel currently in the throes of creation, exploring the nexus of art, technology, identity, and power.
       <br /><br /> 
-      * You can now check out some concept designs for Heart in Chrome in the Archive section!</p>
+      * You can now check out some concept designs for <i>Heart in Chrome</i> in the Archive section!</p>
       </div>
     </div>
     

@@ -24,7 +24,7 @@ const GalleryList = () => {
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const [sortBy, setSortBy] = useState('name'); // Default sorting by name
+  const [sortBy, setSortBy] = useState('recent'); // Default sorting by name
   const [showSort, setShowSort] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true); // Loading state
@@ -38,9 +38,9 @@ const GalleryList = () => {
   };
 
   const sortOptions = [
-    { label: 'Name', value: 'name' },
+    { label: 'Recent', value: 'recent' },
     { label: 'Oldest', value: 'oldest' },
-    { label: 'Recent', value: 'recent'}
+    { label: 'Name', value: 'name' }, 
   ];
 
   const filterProducts = (product) => {
