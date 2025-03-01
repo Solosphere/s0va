@@ -4646,13 +4646,13 @@ select {
   }
   
   .back-button {
-    max-width: 25%;
+    max-width: 50%;
     padding: 2%;
     margin: 2%;
     color: white;
     border-radius: 10px;
     background-color: #F05941;
-    font-size: 2.5vh;
+    font-size: 2vh;
     z-index: 2;
     transition: background-color 0.3s ease;
   }
@@ -5279,10 +5279,6 @@ select {
     left: 49%;
     opacity: 0;
     padding: 5% 5%;
-    /* background: rgba(255, 255, 255, 0.019);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px); */
     background-color:#F05941;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
@@ -5784,13 +5780,13 @@ select {
   }
 
   .back-button {
-    max-width: 25%;
+    max-width: 50%;
     padding: 2%;
     margin: 2%;
     color: white;
     border-radius: 10px;
     background-color: #F05941;
-    font-size: 2vh;
+    font-size: 1.5vh;
     z-index: 2;
     transition: background-color 0.3s ease;
   }
@@ -6942,13 +6938,13 @@ select {
   }
   
   .back-button {
-    max-width: 35%;
+    max-width: 50%;
     padding: 2%;
     margin: 2%;
     color: white;
     border-radius: 10px;
     background-color: #F05941;
-    font-size: 2vh;
+    font-size: 1.75vh;
     z-index: 2;
     transition: background-color 0.3s ease;
   }
