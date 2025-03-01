@@ -1484,6 +1484,10 @@ select {
     font-size: 46px !important;
   }
 
+  h4 {
+    font-size: 25px !important;
+  }
+
   p{
     font-size: 30px !important;
   }
@@ -2032,6 +2036,10 @@ select {
   max-width: 25%;
 }
 
+.pagination button{
+  font-size: 30px;
+}
+
 /* GalleryItemDetail.css*/
 .gallery-details {
   position: relative;
@@ -2168,8 +2176,16 @@ select {
   margin-top: 0%;
 }
 
+.footer h2{
+  font-size: 40px !important;
+}
+
 .footer a {
   font-size: 25px;
+}
+
+.copyright-information p{
+  font-size: 20px !important;
 }
 }
 
@@ -2177,6 +2193,9 @@ select {
  @media only screen and (min-width: 1400px) and (max-width: 2000px){
   h2 {
     font-size: 36px !important;
+  }
+  h4 {
+    font-size: 25px !important;
   }
 
   p{
@@ -2612,6 +2631,10 @@ select {
   max-width: 25%;
 }
 
+.pagination button{
+  font-size: 25px;
+}
+
 /* GalleryItemDetail.css*/
 .gallery-details {
   position: relative;
@@ -2716,7 +2739,6 @@ select {
   justify-content: center;
 }
 
-
 .thumbnail {
   max-width: 100px; 
   max-height: 100px; 
@@ -2742,6 +2764,10 @@ select {
 
 .thumbnail:hover {
   border-color: #F05941; 
+}
+
+.copyright-information p{
+  font-size: 18px !important;
 }
 } 
 
