@@ -2215,6 +2215,7 @@ select {
   font-size: 20px !important;
 }
 }
+
 /* xl desktop design */
  @media only screen and (min-width: 1400px) and (max-width: 2000px){
   h1 {
@@ -3481,7 +3482,6 @@ select {
 
 .sort-section{
   max-width: 24%;
-  
 }
 
   .filter-button {
@@ -3496,6 +3496,7 @@ select {
   }
   
   .filters {
+    position: inherit;
     margin-right: 2%;
     padding-top: 5px;
     padding-left: 10px;
@@ -5277,8 +5278,8 @@ select {
   
   .introduction p {
     position: absolute;
-    width: 65%;
-    left: 49%;
+    width: 85%;
+    left: 48%;
     opacity: 0;
     padding: 5% 5%;
     background-color:#F05941;
@@ -6423,8 +6424,8 @@ select {
   .introduction p {
     position: absolute;
     top: 45%;
-    width: 70%;
-    left: 49%;
+    width: 85%;
+    left: 48%;
     opacity: 0;
     padding: 5% 5%;
     background-color:#F05941;
