@@ -33,6 +33,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import GalleryPage from './pages/Gallery';
 import AboutPage from './pages/About';
+import TermsAndConditions from './pages/TermsAndConditions';
 import SiteHeadingAndNav from './components/SiteHeadingAndNav';
 import Footer from './components/Footer';
 import NotFoundPage from './pages/NotFound';
@@ -66,6 +67,7 @@ export default function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/archive" element={<GalleryPage />} />
             <Route path="/archive/:id" element={<GalleryItemDetail />} />
+            <Route path="/terms" element={<TermsAndConditions />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         )}

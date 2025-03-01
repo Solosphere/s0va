@@ -41,6 +41,7 @@ const Footer = () => {
                     <ul>
                         <li><NavLink to='/about'>About</NavLink></li>
                         <li><NavLink to='/archive'>Archive</NavLink></li>
+                        <li><NavLink to ='/terms'>Terms & Conditions</NavLink></li>
                         
                     {/* Add more links as needed */}
                     </ul>
