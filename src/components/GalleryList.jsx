@@ -1,4 +1,3 @@
-//Intital code
 import React, { useState, useEffect } from 'react';
 import GalleryCard from './GalleryCard';
 import SearchBar from './SearchBar';

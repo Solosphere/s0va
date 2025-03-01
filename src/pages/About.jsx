@@ -9,7 +9,6 @@ const AboutPage = () => {
 const tattooImages = ["tattoopray.webp", "tat-2.webp", "tat-3.webp", "customsnake.webp"]
 const [loading, setLoading] = useState(true);
 const [typedText, setTypedText] = useState('');
-// const binaryString = "01111001 01101111 01110101 00100000 01100011 01100001 01101110 01110100 00100000 01101011 01101001 01101100 01101100 00100000 01101101 01100101 00100000 01001001 01101101 00100000 01111010 01100101 01110010 01101111 01110011 00100000 01100001 01101110 01100100 00100000 01101111 01101110 01100101 01110011 00001010 ";
 const [isSliding, setIsSliding] = useState(false);
 
 
@@ -45,7 +44,6 @@ const [isSliding, setIsSliding] = useState(false);
       <header className="about-header">
         <h1>ABOUT</h1>
         <section className="about-caption">
-        {/* <p>A curated digital sanctuary merging art and technology, illuminating the path to wholeness and growth</p> */}
         <p>{typedText}</p>
         </section>
       </header>
@@ -119,7 +117,7 @@ const [isSliding, setIsSliding] = useState(false);
         <section className="rect-container">
             <section className="rect-1"></section>
             <section className="rect-2"></section>
-            </section>
+        </section>
         <h2>Beyond the Canvas</h2>
         <p>
         My journey extends beyond traditional means of art and design, driven by a passion for impactful software projects like Second Wind and CareerSpring's Interest Finder feature. I believe that technology has the power to address real-world challenges and provide tangible solutions.
