@@ -42,7 +42,9 @@ return (
   </div>
   <div className="content">
     <h1 className="landingpage-title">SOLUS CORE</h1>
-    <h2 className="tagline">The Cache</h2>
+    <Link to='/archive?page=1' className="no-underline">
+      <h2 className="tagline">The Cache</h2>
+    </Link>
   </div>
   </div>
 </div>

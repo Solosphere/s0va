@@ -221,11 +221,9 @@ const [isSliding, setIsSliding] = useState(false);
             </section>
         <h2>Contact Information</h2>
         <p>
-          Connect with me on social media, explore my portfolio, or reach out via email. I'd love to hear your thoughts and insights.
+          Connect with me on social media and explore my portfolio. Always open to hear your thoughts and insights.
         </p>
-        <p>
-         <a href="mailto:your.email@example.com">lukannelson@gmail.com</a>
-        </p>
+        
         <div className="social-media-row">
                 <div className="social-media-links">
                     <a href="https://www.instagram.com/dan.da.solo/" target="_blank" rel="noopener noreferrer">
