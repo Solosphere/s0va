@@ -3,6 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons'; 
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+
 export default function HomePage() {
 const [currentImageIndex, setCurrentImageIndex ] = useState(0);
 const images = ['HCT-17.webp','kirin.webp', 'secondwind.webp', 'SAP.webp', 'metvoyager.webp', 'angel.webp'];
@@ -30,13 +32,23 @@ useEffect (() => {
   return () => clearInterval(interval);
 }, []);
 
+// Get protected image URL
+const getProtectedImageUrl = (filename) => {
+  return `${API_BASE_URL}/media/image/${filename}`;
+};
+
+// Get protected video URL
+const getProtectedVideoUrl = (filename) => {
+  return `${API_BASE_URL}/media/video/${filename}`;
+};
+
 return (
   <div className="home-page">
   <div className='home-row'>
   <div className='home-container'>
   <div className="video-container">
     <video className="landingpage-image" autoPlay muted width="100%" height="100%" loop playsInline controls={false}>
-      <source src='/videos/intro.mp4' type="video/mp4" />
+      <source src={getProtectedVideoUrl('intro.mp4')} type="video/mp4" />
       Your browser does not support the video tag.
     </video>
   </div>
@@ -55,7 +67,7 @@ return (
     </div>
     <div className="mini-gallery">
       <div className="mini-gallery-img">
-      <img src = {`/images/${images[currentImageIndex]}`} alt= {`Artwork ${currentImageIndex + 1}`} />
+      <img src={getProtectedImageUrl(images[currentImageIndex])} alt={`Artwork ${currentImageIndex + 1}`} />
       </div>
       <div className="featured-art-icon-row">
       <FontAwesomeIcon icon={faChevronLeft} onClick={handlePrevImage} className="prev" />

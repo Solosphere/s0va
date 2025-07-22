@@ -2,21 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft, faTimes } from '@fortawesome/free-solid-svg-icons'; 
-import products from '../productsData';
+import { useProducts } from '../context/ProductsProvider';
+import { ImageService } from '../utils/imageService.js';
 
 const GalleryItemDetails = () => {
   const { id } = useParams();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const page = searchParams.get('page');
+  const { getProductById, loading, error } = useProducts();
 
   const navigate = useNavigate();
   
-  const product = products.find((p) => p.id === parseInt(id, 10));
+  const product = getProductById(parseInt(id, 10));
 
   useEffect(() => {
     window.scrollTo(0, 0);
   })
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   if (!product) {
     return <p>Product not found.</p>;
@@ -36,14 +46,7 @@ const GalleryItemDetails = () => {
   };
 
   const handleThumbnailClick = (index) => {
-    if (product.image[index].includes('/videos/')) {
-      // If the clicked thumbnail is a video, set the index to the first video in the array
-      const videoIndex = product.image.findIndex((item) => item.includes('/videos/'));
-      setCurrentImageIndex(videoIndex);
-    } else {
-      // If it's an image, set the index to the clicked image index
-      setCurrentImageIndex(index);
-    }
+    setCurrentImageIndex(index);
   };
 
   const handleGoBack = () => {
@@ -58,9 +61,8 @@ const GalleryItemDetails = () => {
     setIsModalOpen(false);
   };
 
-  if (!product) {
-    return <p>Product not found.</p>;
-  }
+  const currentImageUrl = product.image[currentImageIndex];
+  const isVideo = currentImageUrl.includes('.mp4');
 
   return (
     <div className="gallery-details">
@@ -86,23 +88,23 @@ const GalleryItemDetails = () => {
           </div>
           <div className='view'>
             <div className="image-section">
-              {product.image[currentImageIndex].includes('.mp4') ? (
+              {isVideo ? (
                 <video
                   className="gallery-video"
                   autoPlay
                   width="500"
                   playsInline
                   controls
-                  src={product.image[currentImageIndex]}
+                  src={currentImageUrl}
                 >
                   Your browser does not support the video tag.
                 </video>
               ) : (
                 <img
-                  src={product.image[currentImageIndex]}
+                  src={currentImageUrl}
                   alt={product.name}
                   onClick={openModal}
-                  style={{ cursor: 'pointer' }} // Add this for clickable images
+                  style={{ cursor: 'pointer' }}
                 />
               )}
               {product.image.length > 1 && (
@@ -113,13 +115,17 @@ const GalleryItemDetails = () => {
                       className={`thumbnail ${index === currentImageIndex ? 'selected' : ''}`}
                       onClick={() => handleThumbnailClick(index)}
                     >
-                      {image.includes('/videos/') ? (
+                      {image.includes('.mp4') ? (
                         <video playsInline controls={false}>
                           <source src={image} type="video/mp4" />
                           Your browser does not support the video tag.
                         </video>
                       ) : (
-                        <img src={image} loading="lazy" alt={`${product.name} - Thumbnail ${index}`} />
+                        <img 
+                          src={image} 
+                          loading="lazy" 
+                          alt={`${product.name} - Thumbnail ${index}`}
+                        />
                       )}
                     </div>
                   ))}
@@ -141,19 +147,19 @@ const GalleryItemDetails = () => {
         <div className="modal">
           <div className="modal-content">
             <FontAwesomeIcon icon={faTimes} onClick={closeModal} className="modal-close" />
-            {product.image[currentImageIndex].includes('.mp4') ? (
+            {isVideo ? (
               <video
                 className="modal-video"
                 autoPlay
                 playsInline
                 controls
-                src={product.image[currentImageIndex]}
+                src={currentImageUrl}
               >
                 Your browser does not support the video tag.
               </video>
             ) : (
               <img
-                src={product.image[currentImageIndex]}
+                src={currentImageUrl}
                 alt={product.name}
                 className="modal-image"
               />

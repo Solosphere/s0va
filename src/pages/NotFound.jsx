@@ -2,6 +2,13 @@ import React, {useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Loading from '../components/Loading';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+
+// Get protected video URL
+const getProtectedVideoUrl = (filename) => {
+  return `${API_BASE_URL}/media/video/${filename}`;
+};
+
 export default function NotFoundPage() {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -22,7 +29,7 @@ export default function NotFoundPage() {
     <div className="not-found-container">
       <div className='not-found-img'>
           <video className="not-found-image" autoPlay muted width="auto" loop playsInline controls={false}>
-            <source src='/videos/error.mp4' type="video/mp4" />
+            <source src={getProtectedVideoUrl('error.mp4')} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
     </div>
