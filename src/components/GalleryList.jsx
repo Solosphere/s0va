@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import GalleryFilterSection from './GalleryFilterSection';
 import SortSection from './SortSection';
 import Loading from './Loading';
-import products from '../productsData';
+import { useProducts } from '../context/ProductsProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; 
 
@@ -13,7 +13,7 @@ const itemsPerPage = 16;
 const maxButtonsToShow = 4;
 
 const GalleryList = () => {
-
+  const { products, loading: productsLoading, error } = useProducts();
   const navigate = useNavigate();
   
 
@@ -121,8 +121,23 @@ const GalleryList = () => {
      setTimeout(() => {
        setLoading(false); // Set loading to false once the operation is complete
        
-     }, 2000); // Adjust the timeout as needed
+     }, 1000); // Reduced timeout since we're now loading from API
    }, [currentPage, filters, sortBy, searchTerm, showViolentContent]);
+
+  // Show loading if products are still loading
+  if (productsLoading) {
+    return <Loading />;
+  }
+
+  // Show error if products failed to load
+  if (error) {
+    return (
+      <div className="error-container">
+        <p>Error: {error}</p>
+        <button onClick={() => window.location.reload()}>Try Again</button>
+      </div>
+    );
+  }
 
   const totalPages = Math.ceil(applyFiltersAndSort().length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;

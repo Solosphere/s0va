@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+
+// Get protected video URL
+const getProtectedVideoUrl = (filename) => {
+  return `${API_BASE_URL}/media/video/${filename}`;
+};
 
 const GalleryCard = ({ product, currentPage, showViolentContent }) => {
   const location = useLocation();
@@ -21,19 +27,21 @@ const GalleryCard = ({ product, currentPage, showViolentContent }) => {
 
   const handleHover = () => {
     setIsHovered(true);
-     
   };
 
   const handleMouseLeave = () => {
     setIsHovered(false);
   };
 
+  const currentImageUrl = product.image[currentImageIndex];
+  const isVideo = currentImageUrl.includes('.mp4');
+
   return (
     <div className="gallery-card">
       <Link to={`${product.id}?page=${currentPage}`} className="link-no-underline">
         {showViolentContent || !product.hasViolence ? (
           <>
-            {hasVideo ? (
+            {isVideo ? (
               <video
                 className="gallery-video"
                 autoPlay
@@ -44,19 +52,24 @@ const GalleryCard = ({ product, currentPage, showViolentContent }) => {
                 onMouseLeave={handleMouseLeave}
                 playsInline
                 controls={false}
+                src={currentImageUrl}
               >
-                <source src={product.image[0]} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             ) : (
-              <img src={product.image[currentImageIndex]} loading="lazy" alt={product.name} className="gallery-image" />
+              <img 
+                src={currentImageUrl} 
+                loading="lazy" 
+                alt={product.name} 
+                className="gallery-image"
+              />
             )}
           </>
         ) : (
           <div className="restricted-content-container">
             <div>
               <video className="warning-image" autoPlay muted width="200px" loop playsInline controls={false}>
-                <source src='/videos/toxic.mp4' type="video/mp4" />
+                <source src={getProtectedVideoUrl('toxic.mp4')} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
