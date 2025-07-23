@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import dotenv from 'dotenv';
+import fs from 'fs';
 import { processImage } from './utils/imageProcessor.js';
 import { processVideo, cleanupOldProcessedVideos } from './utils/videoProcessor.js';
 import { validateRequest } from './middleware/security.js';
@@ -27,10 +28,10 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
-// Rate limiting - optimized for Render's free tier memory limits
+// Rate limiting - very aggressive for Render's free tier memory limits
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs (reduced for memory)
+  max: 30, // limit each IP to 30 requests per windowMs (very reduced for memory)
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
@@ -114,26 +115,43 @@ app.get('/api/media/image/:filename', async (req, res) => {
 
     const originalPath = path.join(__dirname, '../public/images', filename);
     
-    // Process the image
-    const processedImageBuffer = await processImage(originalPath, {
-      width: width ? parseInt(width) : undefined,
-      height: height ? parseInt(height) : undefined,
-      quality: quality ? parseInt(quality) : 80,
-      watermark: watermark !== 'false'
-    });
+    // Check if original file exists
+    if (!fs.existsSync(originalPath)) {
+      return res.status(404).json({ error: 'Image not found' });
+    }
+    
+    try {
+      // Process the image
+      const processedImageBuffer = await processImage(originalPath, {
+        width: width ? parseInt(width) : undefined,
+        height: height ? parseInt(height) : undefined,
+        quality: quality ? parseInt(quality) : 80,
+        watermark: watermark !== 'false'
+      });
 
-    // Set cache headers
-    res.set({
-      'Cache-Control': 'public, max-age=3600', // 1 hour cache
-      'Content-Type': 'image/webp',
-      'X-Content-Type-Options': 'nosniff',
-      'X-Frame-Options': 'DENY'
-    });
+      // Set cache headers
+      res.set({
+        'Cache-Control': 'public, max-age=3600', // 1 hour cache
+        'Content-Type': 'image/webp',
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY'
+      });
 
-    res.send(processedImageBuffer);
+      res.send(processedImageBuffer);
+    } catch (processingError) {
+      console.error('Image processing failed, serving original:', processingError);
+      // Fallback to serving original file
+      res.set({
+        'Cache-Control': 'public, max-age=3600',
+        'Content-Type': 'image/webp',
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY'
+      });
+      res.sendFile(originalPath);
+    }
   } catch (error) {
-    console.error('Image processing error:', error);
-    res.status(500).json({ error: 'Failed to process image' });
+    console.error('Image endpoint error:', error);
+    res.status(500).json({ error: 'Failed to serve image' });
   }
 });
 
@@ -195,8 +213,20 @@ app.listen(PORT, () => {
   // Clean up old processed videos on startup
   cleanupOldProcessedVideos();
   
-  // Set up periodic cleanup every 30 minutes
+  // Set up periodic cleanup every 15 minutes (more frequent)
   setInterval(() => {
     cleanupOldProcessedVideos();
-  }, 30 * 60 * 1000); // 30 minutes
+    
+    // Log memory usage
+    const memUsage = process.memoryUsage();
+    console.log(`Memory usage: ${Math.round(memUsage.heapUsed / 1024 / 1024)}MB / ${Math.round(memUsage.heapTotal / 1024 / 1024)}MB`);
+    
+    // Force garbage collection if memory usage is high
+    if (memUsage.heapUsed > 400 * 1024 * 1024) { // 400MB
+      console.log('High memory usage detected, forcing garbage collection');
+      if (global.gc) {
+        global.gc();
+      }
+    }
+  }, 15 * 60 * 1000); // 15 minutes
 }); 
