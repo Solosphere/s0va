@@ -71,14 +71,16 @@ async function processVideoWithFFmpeg(inputPath, outputPath, options) {
   return new Promise((resolve, reject) => {
     const { quality, watermark, width, height } = options;
 
-    // Build FFmpeg command
+    // Build FFmpeg command - optimized for memory efficiency
     let ffmpegArgs = [
       '-i', inputPath,
       '-c:v', 'libx264',
-      '-preset', 'medium',
-      '-crf', Math.max(18, 51 - (quality * 0.33)), // Convert quality to CRF
+      '-preset', 'ultrafast', // Faster encoding, less memory
+      '-crf', Math.max(23, 51 - (quality * 0.33)), // Slightly higher CRF for smaller files
       '-c:a', 'aac',
-      '-b:a', '128k'
+      '-b:a', '96k', // Reduced audio bitrate
+      '-threads', '2', // Limit threads to reduce memory usage
+      '-max_muxing_queue_size', '1024' // Reduce buffer size
     ];
 
     // Add resize if dimensions provided
@@ -175,8 +177,8 @@ export async function createVideoThumbnail(videoPath, outputPath, time = '00:00:
   });
 }
 
-// Clean up old processed videos
-export function cleanupOldProcessedVideos(maxAge = 24 * 60 * 60 * 1000) { // 24 hours
+// Clean up old processed videos - more aggressive cleanup for memory management
+export function cleanupOldProcessedVideos(maxAge = 2 * 60 * 60 * 1000) { // 2 hours instead of 24
   try {
     const files = fs.readdirSync(processedVideosDir);
     const now = Date.now();

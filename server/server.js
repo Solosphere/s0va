@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import dotenv from 'dotenv';
 import { processImage } from './utils/imageProcessor.js';
-import { processVideo } from './utils/videoProcessor.js';
+import { processVideo, cleanupOldProcessedVideos } from './utils/videoProcessor.js';
 import { validateRequest } from './middleware/security.js';
 import products from './data/products.js';
 
@@ -19,15 +19,18 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Trust proxy for rate limiting behind Render's load balancer
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
-// Rate limiting
+// Rate limiting - optimized for Render's free tier memory limits
 const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute (reduced from 15 minutes)
-  max: 1000, // limit each IP to 1000 requests per windowMs (increased from 100)
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs (reduced for memory)
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
@@ -188,4 +191,12 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  
+  // Clean up old processed videos on startup
+  cleanupOldProcessedVideos();
+  
+  // Set up periodic cleanup every 30 minutes
+  setInterval(() => {
+    cleanupOldProcessedVideos();
+  }, 30 * 60 * 1000); // 30 minutes
 }); 
