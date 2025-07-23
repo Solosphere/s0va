@@ -156,9 +156,17 @@ app.get('/api/media/image/:filename', async (req, res) => {
       }
     } else {
       // Serve original file (no processing = no memory usage)
+      const ext = path.extname(originalPath).toLowerCase();
+      let contentType = 'image/jpeg';
+      if (ext === '.png') contentType = 'image/png';
+      else if (ext === '.webp') contentType = 'image/webp';
+      else if (ext === '.gif') contentType = 'image/gif';
+      else if (ext === '.svg') contentType = 'image/svg+xml';
+      else if (ext === '.bmp') contentType = 'image/bmp';
+      else if (ext === '.ico') contentType = 'image/x-icon';
       res.set({
         'Cache-Control': 'public, max-age=3600',
-        'Content-Type': 'image/webp',
+        'Content-Type': contentType,
         'X-Content-Type-Options': 'nosniff',
         'X-Frame-Options': 'DENY'
       });
