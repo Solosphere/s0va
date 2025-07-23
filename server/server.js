@@ -124,6 +124,11 @@ app.get('/api/media/image/:filename', async (req, res) => {
     }
     
     // Only process if explicitly requested (for memory efficiency)
+    // Detect iOS/mobile user agents
+    const ua = req.headers['user-agent'] || '';
+    const isIOS = /iPhone|iPad|iPod|iOS|Mobile.*Safari/.test(ua);
+    let outputFormat = isIOS ? 'jpeg' : 'webp';
+    let outputContentType = isIOS ? 'image/jpeg' : 'image/webp';
     if (process === 'true' && (width || height || quality)) {
       try {
         // Process the image
@@ -131,13 +136,14 @@ app.get('/api/media/image/:filename', async (req, res) => {
           width: width ? parseInt(width) : undefined,
           height: height ? parseInt(height) : undefined,
           quality: quality ? parseInt(quality) : 80,
-          watermark: watermark !== 'false'
+          watermark: watermark !== 'false',
+          format: outputFormat
         });
 
         // Set cache headers
         res.set({
           'Cache-Control': 'public, max-age=3600', // 1 hour cache
-          'Content-Type': 'image/webp',
+          'Content-Type': outputContentType,
           'X-Content-Type-Options': 'nosniff',
           'X-Frame-Options': 'DENY'
         });
@@ -146,9 +152,17 @@ app.get('/api/media/image/:filename', async (req, res) => {
       } catch (processingError) {
         console.error('Image processing failed, serving original:', processingError);
         // Fallback to serving original file
+        const ext = path.extname(originalPath).toLowerCase();
+        let contentType = 'image/jpeg';
+        if (ext === '.png') contentType = 'image/png';
+        else if (ext === '.webp') contentType = 'image/webp';
+        else if (ext === '.gif') contentType = 'image/gif';
+        else if (ext === '.svg') contentType = 'image/svg+xml';
+        else if (ext === '.bmp') contentType = 'image/bmp';
+        else if (ext === '.ico') contentType = 'image/x-icon';
         res.set({
           'Cache-Control': 'public, max-age=3600',
-          'Content-Type': 'image/webp',
+          'Content-Type': contentType,
           'X-Content-Type-Options': 'nosniff',
           'X-Frame-Options': 'DENY'
         });
@@ -164,6 +178,24 @@ app.get('/api/media/image/:filename', async (req, res) => {
       else if (ext === '.svg') contentType = 'image/svg+xml';
       else if (ext === '.bmp') contentType = 'image/bmp';
       else if (ext === '.ico') contentType = 'image/x-icon';
+      // If iOS, convert to JPEG on the fly
+      if (isIOS && ext === '.webp') {
+        try {
+          const processedImageBuffer = await processImage(originalPath, {
+            format: 'jpeg',
+            quality: 80
+          });
+          res.set({
+            'Cache-Control': 'public, max-age=3600',
+            'Content-Type': 'image/jpeg',
+            'X-Content-Type-Options': 'nosniff',
+            'X-Frame-Options': 'DENY'
+          });
+          return res.send(processedImageBuffer);
+        } catch (err) {
+          // fallback to original
+        }
+      }
       res.set({
         'Cache-Control': 'public, max-age=3600',
         'Content-Type': contentType,

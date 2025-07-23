@@ -52,10 +52,17 @@ export async function processImage(imagePath, options = {}) {
     // Note: Watermark functionality removed for cleaner portfolio presentation
     // Protection is now handled through rate limiting, referer validation, and bot detection
 
-    // Convert to WebP with minimal effort for memory efficiency
-    const processedBuffer = await image
-      .webp({ quality, effort: 0 }) // No effort = fastest, least memory
-      .toBuffer();
+    // Convert to WebP or JPEG with minimal effort for memory efficiency
+    let processedBuffer;
+    if (format === 'jpeg' || format === 'jpg') {
+      processedBuffer = await image
+        .jpeg({ quality })
+        .toBuffer();
+    } else {
+      processedBuffer = await image
+        .webp({ quality, effort: 0 }) // No effort = fastest, least memory
+        .toBuffer();
+    }
 
     // Cache the result (with size limit)
     if (imageCache.size >= MAX_CACHE_SIZE) {
