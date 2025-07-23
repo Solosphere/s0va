@@ -4,9 +4,9 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import fs from 'fs';
 
-// Simple in-memory cache for processed images (limited size)
-const imageCache = new Map();
-const MAX_CACHE_SIZE = 50; // Limit cache to 50 images
+// Very limited in-memory cache for processed images
+export const imageCache = new Map();
+const MAX_CACHE_SIZE = 10; // Only cache 10 images max
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -34,10 +34,11 @@ export async function processImage(imagePath, options = {}) {
       return imageCache.get(cacheKey);
     }
 
-    // Limit concurrent processing to reduce memory usage
+    // Very aggressive memory limits for large image collections
     let image = sharp(imagePath, {
-      limitInputPixels: 268402689, // Limit to ~268MP to prevent memory issues
-      failOnError: false
+      limitInputPixels: 67108864, // Limit to ~67MP (much lower)
+      failOnError: false,
+      sequentialRead: true // Read sequentially to reduce memory
     });
 
     // Resize if dimensions provided
@@ -51,9 +52,9 @@ export async function processImage(imagePath, options = {}) {
     // Note: Watermark functionality removed for cleaner portfolio presentation
     // Protection is now handled through rate limiting, referer validation, and bot detection
 
-    // Convert to WebP with specified quality
+    // Convert to WebP with minimal effort for memory efficiency
     const processedBuffer = await image
-      .webp({ quality, effort: 2 }) // Lower effort for faster processing
+      .webp({ quality, effort: 0 }) // No effort = fastest, least memory
       .toBuffer();
 
     // Cache the result (with size limit)
