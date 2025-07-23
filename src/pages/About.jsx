@@ -4,7 +4,7 @@ import Loading from '../components/Loading';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faGithub, faMedium, faLinkedin} from '@fortawesome/free-brands-svg-icons';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Get protected image URL
 const getProtectedImageUrl = (filename) => {
