@@ -12,6 +12,18 @@ const GalleryCard = ({ product, currentPage, showViolentContent }) => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const page = searchParams.get('page');
+  
+  // Add safety checks for product data
+  if (!product || !product.image || !Array.isArray(product.image) || product.image.length === 0) {
+    return (
+      <div className="gallery-card">
+        <div className="error-card">
+          <p>Product data unavailable</p>
+        </div>
+      </div>
+    );
+  }
+  
   const hasVideo = product.image.some((item) => item.includes('.mp4'));
   const [isHovered, setIsHovered] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);

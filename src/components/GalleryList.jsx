@@ -64,6 +64,11 @@ const GalleryList = () => {
   };
 
   const applyFiltersAndSort = () => {
+    // Handle case where products is not an array or is empty
+    if (!products || !Array.isArray(products) || products.length === 0) {
+      return [];
+    }
+    
     const filteredProducts = products.filter(filterProducts).filter(searchFilter);
     const sortedProducts = filteredProducts.sort(sortProducts);
     return sortedProducts;
@@ -200,6 +205,11 @@ const GalleryList = () => {
 
       {loading ? (
         <Loading /> // Render the loading component while loading is true
+      ) : currentItems.length === 0 ? (
+        <div className="no-products-message">
+          <p>No products available at the moment.</p>
+          <p>Please check back later or try refreshing the page.</p>
+        </div>
       ) : (
         <>
           <div className="gallery-list">
