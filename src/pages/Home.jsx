@@ -40,14 +40,7 @@ useEffect (() => {
 
 // Get protected image URL from products data
 const getProtectedImageUrl = (filename) => {
-  if (!products || products.length === 0) {
-    return `/api/media/image/${filename}`;
-  }
-  
-  const product = products.find(p => p.image && p.image.some(img => img.includes(filename)));
-  if (product) {
-    return product.image.find(img => img.includes(filename));
-  }
+  // Always return the full API URL, regardless of products data
   return `/api/media/image/${filename}`;
 };
 

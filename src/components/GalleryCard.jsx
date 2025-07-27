@@ -47,6 +47,17 @@ const GalleryCard = ({ product, currentPage, showViolentContent }) => {
 
   const currentImageUrl = product.image[currentImageIndex];
   const isVideo = currentImageUrl.includes('.mp4');
+  
+  // Convert filename to full API URL
+  const getFullImageUrl = (filename) => {
+    if (filename.includes('.mp4')) {
+      return `/api/media/video/${filename}`;
+    } else {
+      return `/api/media/image/${filename}`;
+    }
+  };
+  
+  const fullImageUrl = getFullImageUrl(currentImageUrl);
 
   return (
     <div className="gallery-card">
@@ -64,13 +75,13 @@ const GalleryCard = ({ product, currentPage, showViolentContent }) => {
                 onMouseLeave={handleMouseLeave}
                 playsInline
                 controls={false}
-                src={currentImageUrl}
+                src={fullImageUrl}
               >
                 Your browser does not support the video tag.
               </video>
             ) : (
               <img 
-                src={currentImageUrl} 
+                src={fullImageUrl} 
                 loading="lazy" 
                 alt={product.name} 
                 className="gallery-image"
