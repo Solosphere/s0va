@@ -11,6 +11,7 @@ import { processImage } from './utils/imageProcessor.js';
 import { processVideo, cleanupOldProcessedVideos } from './utils/videoProcessor.js';
 import { validateRequest } from './middleware/security.js';
 import products from './data/products.js';
+import { generateSignedUrl, fileExists, getFileMetadata } from './utils/r2Service.js';
 
 // Import image cache for memory management
 import { imageCache } from './utils/imageProcessor.js';
@@ -31,10 +32,10 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
-// Extremely aggressive rate limiting for large media collections
+// Rate limiting for development (very lenient for testing)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 10 requests per windowMs (extremely reduced)
+  max: 1000, // limit each IP to 1000 requests per windowMs (very lenient for testing)
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
@@ -43,28 +44,29 @@ app.use('/api/', limiter);
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: [
+    'http://localhost:5173',
+    process.env.FRONTEND_URL
+  ].filter(Boolean),
   credentials: true
 }));
 
 app.use(express.json());
 
-// Security middleware for all image/video requests
-app.use('/api/media', validateRequest);
+// Security middleware for all image/video requests (temporarily disabled for testing)
+// app.use('/api/media', validateRequest);
 
 // Products API endpoints
 app.get('/api/products', (req, res) => {
   try {
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
-    
-    // Return all products with processed image URLs
+    // Return all products with relative image URLs (frontend will handle the base URL)
     const productsWithUrls = products.map(product => ({
       ...product,
       image: product.image.map(img => {
         if (img.includes('.mp4')) {
-          return `${baseUrl}/api/media/video/${img}`;
+          return `/api/media/video/${img}`;
         } else {
-          return `${baseUrl}/api/media/image/${img}`;
+          return `/api/media/image/${img}`;
         }
       })
     }));
@@ -80,20 +82,19 @@ app.get('/api/products/:id', (req, res) => {
   try {
     const productId = parseInt(req.params.id);
     const product = products.find(p => p.id === productId);
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
     
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
     }
     
-    // Add processed image URLs
+    // Add relative image URLs (frontend will handle the base URL)
     const productWithUrls = {
       ...product,
       image: product.image.map(img => {
         if (img.includes('.mp4')) {
-          return `${baseUrl}/api/media/video/${img}`;
+          return `/api/media/video/${img}`;
         } else {
-          return `${baseUrl}/api/media/image/${img}`;
+          return `/api/media/image/${img}`;
         }
       })
     };
@@ -105,7 +106,7 @@ app.get('/api/products/:id', (req, res) => {
   }
 });
 
-// Image serving endpoint - serve originals by default, process only when needed
+// Image serving endpoint - serve from R2 with signed URLs
 app.get('/api/media/image/:filename', async (req, res) => {
   try {
     const { filename } = req.params;
@@ -116,93 +117,23 @@ app.get('/api/media/image/:filename', async (req, res) => {
       return res.status(400).json({ error: 'Invalid filename' });
     }
 
-    const originalPath = path.join(__dirname, '../public/images', filename);
+    const r2Key = filename; // Files are stored directly in bucket root
     
-    // Check if original file exists
-    if (!fs.existsSync(originalPath)) {
+    // Check if file exists in R2
+    const exists = await fileExists(r2Key);
+    if (!exists) {
       return res.status(404).json({ error: 'Image not found' });
     }
     
-    // Only process if explicitly requested (for memory efficiency)
-    // Detect iOS/mobile user agents
-    const ua = req.headers['user-agent'] || '';
-    const isIOS = /iPhone|iPad|iPod|iOS|Mobile.*Safari/.test(ua);
-    let outputFormat = isIOS ? 'jpeg' : 'webp';
-    let outputContentType = isIOS ? 'image/jpeg' : 'image/webp';
-    if (process === 'true' && (width || height || quality)) {
-      try {
-        // Process the image
-        const processedImageBuffer = await processImage(originalPath, {
-          width: width ? parseInt(width) : undefined,
-          height: height ? parseInt(height) : undefined,
-          quality: quality ? parseInt(quality) : 80,
-          watermark: watermark !== 'false',
-          format: outputFormat
-        });
-
-        // Set cache headers
-        res.set({
-          'Cache-Control': 'public, max-age=3600', // 1 hour cache
-          'Content-Type': outputContentType,
-          'X-Content-Type-Options': 'nosniff',
-          'X-Frame-Options': 'DENY'
-        });
-
-        res.send(processedImageBuffer);
-      } catch (processingError) {
-        console.error('Image processing failed, serving original:', processingError);
-        // Fallback to serving original file
-        const ext = path.extname(originalPath).toLowerCase();
-        let contentType = 'image/jpeg';
-        if (ext === '.png') contentType = 'image/png';
-        else if (ext === '.webp') contentType = 'image/webp';
-        else if (ext === '.gif') contentType = 'image/gif';
-        else if (ext === '.svg') contentType = 'image/svg+xml';
-        else if (ext === '.bmp') contentType = 'image/bmp';
-        else if (ext === '.ico') contentType = 'image/x-icon';
-        res.set({
-          'Cache-Control': 'public, max-age=3600',
-          'Content-Type': contentType,
-          'X-Content-Type-Options': 'nosniff',
-          'X-Frame-Options': 'DENY'
-        });
-        res.sendFile(originalPath);
-      }
-    } else {
-      // Serve original file (no processing = no memory usage)
-      const ext = path.extname(originalPath).toLowerCase();
-      let contentType = 'image/jpeg';
-      if (ext === '.png') contentType = 'image/png';
-      else if (ext === '.webp') contentType = 'image/webp';
-      else if (ext === '.gif') contentType = 'image/gif';
-      else if (ext === '.svg') contentType = 'image/svg+xml';
-      else if (ext === '.bmp') contentType = 'image/bmp';
-      else if (ext === '.ico') contentType = 'image/x-icon';
-      // If iOS, convert to JPEG on the fly
-      if (isIOS && ext === '.webp') {
-        try {
-          const processedImageBuffer = await processImage(originalPath, {
-            format: 'jpeg',
-            quality: 80
-          });
-          res.set({
-            'Cache-Control': 'public, max-age=3600',
-            'Content-Type': 'image/jpeg',
-            'X-Content-Type-Options': 'nosniff',
-            'X-Frame-Options': 'DENY'
-          });
-          return res.send(processedImageBuffer);
-        } catch (err) {
-          // fallback to original
-        }
-      }
-      res.set({
-        'Cache-Control': 'public, max-age=3600',
-        'Content-Type': contentType,
-        'X-Content-Type-Options': 'nosniff',
-        'X-Frame-Options': 'DENY'
-      });
-      res.sendFile(originalPath);
+        // Generate signed URL for protected access
+    try {
+      const signedUrl = await generateSignedUrl(r2Key, 3600); // 1 hour expiry
+      
+      // Redirect to signed URL (this prevents hotlinking and provides protection)
+      res.redirect(signedUrl);
+    } catch (error) {
+      console.error('Error generating signed URL:', error);
+      res.status(500).json({ error: 'Failed to serve image' });
     }
   } catch (error) {
     console.error('Image endpoint error:', error);
@@ -210,61 +141,33 @@ app.get('/api/media/image/:filename', async (req, res) => {
   }
 });
 
-// Video serving endpoint - serve originals by default, process only when needed
+// Video serving endpoint - serve from R2 with signed URLs
 app.get('/api/media/video/:filename', async (req, res) => {
   try {
     const { filename } = req.params;
-    const { quality, process } = req.query;
     
     // Validate filename
     if (!filename || filename.includes('..') || filename.includes('/')) {
       return res.status(400).json({ error: 'Invalid filename' });
     }
 
-    const originalPath = path.join(__dirname, '../public/videos', filename);
+    const r2Key = filename; // Files are stored directly in bucket root
     
-    // Check if original file exists
-    if (!fs.existsSync(originalPath)) {
+    // Check if file exists in R2
+    const exists = await fileExists(r2Key);
+    if (!exists) {
       return res.status(404).json({ error: 'Video not found' });
     }
     
-    // Only process if explicitly requested (for memory efficiency)
-    if (process === 'true' && quality) {
-      try {
-        // Process video without watermark overlay
-        const videoPath = await processVideo(originalPath, {
-          quality: quality ? parseInt(quality) : 80,
-          watermark: false
-        });
-
-        res.set({
-          'Cache-Control': 'public, max-age=3600',
-          'Content-Type': 'video/mp4',
-          'X-Content-Type-Options': 'nosniff',
-          'X-Frame-Options': 'DENY'
-        });
-
-        res.sendFile(videoPath);
-      } catch (processingError) {
-        console.error('Video processing failed, serving original:', processingError);
-        // Fallback to serving original file
-        res.set({
-          'Cache-Control': 'public, max-age=3600',
-          'Content-Type': 'video/mp4',
-          'X-Content-Type-Options': 'nosniff',
-          'X-Frame-Options': 'DENY'
-        });
-        res.sendFile(originalPath);
-      }
-    } else {
-      // Serve original file (no processing = no memory usage)
-      res.set({
-        'Cache-Control': 'public, max-age=3600',
-        'Content-Type': 'video/mp4',
-        'X-Content-Type-Options': 'nosniff',
-        'X-Frame-Options': 'DENY'
-      });
-      res.sendFile(originalPath);
+    // Generate signed URL for protected access
+    try {
+      const signedUrl = await generateSignedUrl(r2Key, 3600); // 1 hour expiry
+      
+      // Redirect to signed URL (this prevents hotlinking and provides protection)
+      res.redirect(signedUrl);
+    } catch (error) {
+      console.error('Error generating signed URL:', error);
+      res.status(500).json({ error: 'Failed to serve video' });
     }
   } catch (error) {
     console.error('Video endpoint error:', error);

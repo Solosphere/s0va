@@ -2,20 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons'; 
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+import { useProducts } from '../context/ProductsProvider';
 
 export default function HomePage() {
+const { products } = useProducts();
 const [currentImageIndex, setCurrentImageIndex ] = useState(0);
-const images = ['HCT-17.webp','kirin.webp', 'secondwind.webp', 'SAP.webp', 'metvoyager.webp', 'angel.webp'];
 const location = useLocation();
 
+// Get the intro video URL from products data
+const introVideo = products.find(p => p.image.some(img => img.includes('intro.mp4')));
+const introVideoUrl = introVideo ? introVideo.image.find(img => img.includes('intro.mp4')) : '/api/media/video/intro.mp4';
+
+// Get featured images from products data
+const featuredImages = ['HCT-17.webp','kirin.webp', 'secondwind.webp', 'SAP.webp', 'metvoyager.webp', 'angel.webp'];
+
 const handleNextImage = () => {
-  setCurrentImageIndex((prevIndex)=> (prevIndex + 1) % images.length);
+  setCurrentImageIndex((prevIndex)=> (prevIndex + 1) % featuredImages.length);
 }
 
 const handlePrevImage = () => {
-  setCurrentImageIndex((prevIndex) =>(prevIndex - 1 + images.length) % images.length);
+  setCurrentImageIndex((prevIndex) =>(prevIndex - 1 + featuredImages.length) % featuredImages.length);
 }
 
 useEffect (() => {
@@ -32,14 +38,13 @@ useEffect (() => {
   return () => clearInterval(interval);
 }, []);
 
-// Get protected image URL
+// Get protected image URL from products data
 const getProtectedImageUrl = (filename) => {
-  return `${API_BASE_URL}/media/image/${filename}`;
-};
-
-// Get protected video URL
-const getProtectedVideoUrl = (filename) => {
-  return `${API_BASE_URL}/media/video/${filename}`;
+  const product = products.find(p => p.image.some(img => img.includes(filename)));
+  if (product) {
+    return product.image.find(img => img.includes(filename));
+  }
+  return `/api/media/image/${filename}`;
 };
 
 return (
@@ -48,7 +53,7 @@ return (
   <div className='home-container'>
   <div className="video-container">
     <video className="landingpage-image" autoPlay muted width="100%" height="100%" loop playsInline controls={false}>
-      <source src={getProtectedVideoUrl('intro.mp4')} type="video/mp4" />
+      <source src={introVideoUrl} type="video/mp4" />
       Your browser does not support the video tag.
     </video>
   </div>
@@ -67,7 +72,7 @@ return (
     </div>
     <div className="mini-gallery">
       <div className="mini-gallery-img">
-      <img src={getProtectedImageUrl(images[currentImageIndex])} alt={`Artwork ${currentImageIndex + 1}`} />
+      <img src={getProtectedImageUrl(featuredImages[currentImageIndex])} alt={`Artwork ${currentImageIndex + 1}`} />
       </div>
       <div className="featured-art-icon-row">
       <FontAwesomeIcon icon={faChevronLeft} onClick={handlePrevImage} className="prev" />

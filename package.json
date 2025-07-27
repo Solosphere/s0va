@@ -16,6 +16,8 @@
         "deploy": "vite build && gh-pages -d dist"
     },
     "dependencies": {
+        "@aws-sdk/client-s3": "^3.0.0",
+        "@aws-sdk/s3-request-presigner": "^3.0.0",
         "@fortawesome/fontawesome-svg-core": "^6.5.1",
         "@fortawesome/free-brands-svg-icons": "^6.5.1",
         "@fortawesome/free-solid-svg-icons": "^6.5.1",

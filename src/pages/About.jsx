@@ -3,20 +3,28 @@ import { Link } from 'react-router-dom';
 import Loading from '../components/Loading';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faGithub, faMedium, faLinkedin} from '@fortawesome/free-brands-svg-icons';
+import { useProducts } from '../context/ProductsProvider';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
-
-// Get protected image URL
-const getProtectedImageUrl = (filename) => {
-  return `${API_BASE_URL}/media/image/${filename}`;
+// Get protected image URL from products data
+const getProtectedImageUrl = (filename, products) => {
+  const product = products.find(p => p.image.some(img => img.includes(filename)));
+  if (product) {
+    return product.image.find(img => img.includes(filename));
+  }
+  return `/api/media/image/${filename}`;
 };
 
-// Get protected video URL
-const getProtectedVideoUrl = (filename) => {
-  return `${API_BASE_URL}/media/video/${filename}`;
+// Get protected video URL from products data
+const getProtectedVideoUrl = (filename, products) => {
+  const product = products.find(p => p.image.some(img => img.includes(filename)));
+  if (product) {
+    return product.image.find(img => img.includes(filename));
+  }
+  return `/api/media/video/${filename}`;
 };
 
 const AboutPage = () => {
+  const { products } = useProducts();
 const tattooImages = ["tattoopray.webp", "tat-2.webp", "tat-3.webp", "customsnake.webp"]
 const [loading, setLoading] = useState(true);
 const [typedText, setTypedText] = useState('');
@@ -62,7 +70,7 @@ const [isSliding, setIsSliding] = useState(false);
       <section className="about-row-1">
         <section className="introduction">
         <h2>THE CREATIVE</h2>
-        <img src={getProtectedImageUrl("cropheadshot.webp")} loading="lazy" alt="selfportrait"/>
+        <img src={getProtectedImageUrl("cropheadshot.webp", products)} loading="lazy" alt="selfportrait"/>
         <p>Hey, I'm Daniel Nelson, the creator behind SOLUS CORE. My journey began at Parsons School of Art & Design, where I honed skills in art, graphic design, and creative technology. Seeking further growth, I became experienced in full-stack software engineering at The Marcy Lab School's Software Engineering Fellowship. SOLUS CORE, born from this diverse background, is a platform I've crafted to showcase my multifaceted portfolio, delving into the intricacies of the human condition. As an artist, graphic designer, and software engineer, I leverage my varied expertise to offer insights and create pathways for navigating the complexities of morality, existence, and humanity.
         </p>
         </section>
@@ -138,14 +146,14 @@ const [isSliding, setIsSliding] = useState(false);
         <div className='image-with-description-container'>
         <div className="image-with-description-v1">
         
-        <img src={getProtectedImageUrl("secondwind.webp")} loading="lazy" alt="desc"/>
+        <img src={getProtectedImageUrl("secondwind.webp", products)} loading="lazy" alt="desc"/>
         <p>
         Second Wind, a full stack online community-based platform that provide resources, support, and employment for those impacted by the criminal justice system.   </p>
         </div>
         <div className="image-with-description-v1">
         
         <Link to="https://interestfinder.careerspring.org/?page_id=2" target="_blank" className="image-with-description-v1">
-  <img src={getProtectedImageUrl("careerspring.webp")} loading="lazy" alt="desc" />
+          <img src={getProtectedImageUrl("careerspring.webp", products)} loading="lazy" alt="desc" />
 </Link>
 <p className="image-text-2">As a Developer Contractor, I’ve been instrumental in developing software like CareerSpring’s Career Interest Profiler by leveraging JavaScript, HTML & CSS. This custom career assessment tool seamlessly integrated into WordPress serves as a beacon for individuals exploring their professional paths.
   <br></br>
@@ -153,13 +161,13 @@ const [isSliding, setIsSliding] = useState(false);
    *Click on to try out the tool for yourself.</p>
         </div>
         <div className="image-with-description-v1">
-        <img src={getProtectedImageUrl("SAP.webp")} loading="lazy" alt="desc"/>
+        <img src={getProtectedImageUrl("SAP.webp", products)} loading="lazy" alt="desc"/>
         <p className="image-text-3">SAP (FORTHESOUL), represents a convergence of 3D modeling with AutoCAD, incorporating components such as a PIR motion sensor, DFPlayer, SD card, jumper wires, and Arduino Uno. Within the intricate model, the sculpture delivers a spoken narrative drawn from a fusion of written words by Jean-Paul Sartre, Albert Camus, and my own alterations through text-to-speech software.
         </p>
         </div>
         <div className="image-with-description-v1">
         <Link to="https://danielnelson37.github.io/METVoyager/" target="_blank" className="image-with-description-v1">
-        <img src={getProtectedImageUrl("metvoyager.webp")} loading="lazy" alt="desc" className="metvid" />
+        <img src={getProtectedImageUrl("metvoyager.webp", products)} loading="lazy" alt="desc" className="metvid" />
         </Link>
         <p className="image-text-4">METVoyager is a web platform I developed that leverages the MET API to deliver artwork recommendations based on search functionality or by selecting specific categories to generate art that matches. The platform also allows users to save and revisit favorite artworks in their own personal gallery. 
         <br></br>
@@ -186,7 +194,7 @@ const [isSliding, setIsSliding] = useState(false);
         <div className="upcoming-projects-column-2">
         <div className="image-with-description" id="chrome-container" >
       <video autoPlay muted width="auto" loop playsInline controls={false}>
-            <source src={getProtectedVideoUrl('HCteaser.mp4')} type="video/mp4" />
+            <source src={getProtectedVideoUrl('HCteaser.mp4', products)} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
       <div className='chrome-text'>
@@ -204,11 +212,11 @@ const [isSliding, setIsSliding] = useState(false);
     </div>
     <div className="tattoo-mini-gallery">
       <div className='image-column-1'>
-      <img src={getProtectedImageUrl(tattooImages[0])} alt={"tat-0"} />
+                  <img src={getProtectedImageUrl(tattooImages[0], products)} alt={"tat-0"} />
       </div>
       <div className='image-column-2'>
       {/* <img src = {`/images/${tattooImages[4]}`} alt= {"tat-4"} /> */}
-      <img src={getProtectedImageUrl(tattooImages[3])} alt={"tat-3"} />
+                  <img src={getProtectedImageUrl(tattooImages[3], products)} alt={"tat-3"} />
       </div>  
     </div>
     </div>
@@ -219,7 +227,7 @@ const [isSliding, setIsSliding] = useState(false);
       <section className="contact-container">
         <div className='contact-img'>
           <video className="contact-image" autoPlay muted width="auto" loop playsInline controls={false}>
-            <source src={getProtectedVideoUrl('skull.mp4')} type="video/mp4" />
+            <source src={getProtectedVideoUrl('skull.mp4', products)} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
       </div>

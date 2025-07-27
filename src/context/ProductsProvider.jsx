@@ -15,7 +15,7 @@ export const ProductsProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Use relative API path for single deployment
+  // Use relative path for both development and production (proxy handles dev routing)
   const API_BASE_URL = '/api';
 
   useEffect(() => {
