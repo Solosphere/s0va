@@ -29,11 +29,20 @@ export const ProductsProvider = ({ children }) => {
         }
         
         const data = await response.json();
-        setProducts(data);
-        setError(null);
+        
+        // Ensure data is an array before setting it
+        if (Array.isArray(data)) {
+          setProducts(data);
+          setError(null);
+        } else {
+          console.error('Invalid products data:', data);
+          setError('Invalid data format received from server.');
+          setProducts([]);
+        }
       } catch (err) {
         console.error('Error fetching products:', err);
         setError('Failed to load products. Please try again later.');
+        setProducts([]); // Set empty array to prevent errors
       } finally {
         setLoading(false);
       }

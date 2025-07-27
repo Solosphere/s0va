@@ -7,7 +7,11 @@ import { useProducts } from '../context/ProductsProvider';
 
 // Get protected image URL from products data
 const getProtectedImageUrl = (filename, products) => {
-  const product = products.find(p => p.image.some(img => img.includes(filename)));
+  if (!products || products.length === 0) {
+    return `/api/media/image/${filename}`;
+  }
+  
+  const product = products.find(p => p.image && p.image.some(img => img.includes(filename)));
   if (product) {
     return product.image.find(img => img.includes(filename));
   }
@@ -16,7 +20,11 @@ const getProtectedImageUrl = (filename, products) => {
 
 // Get protected video URL from products data
 const getProtectedVideoUrl = (filename, products) => {
-  const product = products.find(p => p.image.some(img => img.includes(filename)));
+  if (!products || products.length === 0) {
+    return `/api/media/video/${filename}`;
+  }
+  
+  const product = products.find(p => p.image && p.image.some(img => img.includes(filename)));
   if (product) {
     return product.image.find(img => img.includes(filename));
   }

@@ -10,7 +10,7 @@ const [currentImageIndex, setCurrentImageIndex ] = useState(0);
 const location = useLocation();
 
 // Get the intro video URL from products data
-const introVideo = products.find(p => p.image.some(img => img.includes('intro.mp4')));
+const introVideo = products && products.length > 0 ? products.find(p => p.image && p.image.some(img => img.includes('intro.mp4'))) : null;
 const introVideoUrl = introVideo ? introVideo.image.find(img => img.includes('intro.mp4')) : '/api/media/video/intro.mp4';
 
 // Get featured images from products data
@@ -40,7 +40,11 @@ useEffect (() => {
 
 // Get protected image URL from products data
 const getProtectedImageUrl = (filename) => {
-  const product = products.find(p => p.image.some(img => img.includes(filename)));
+  if (!products || products.length === 0) {
+    return `/api/media/image/${filename}`;
+  }
+  
+  const product = products.find(p => p.image && p.image.some(img => img.includes(filename)));
   if (product) {
     return product.image.find(img => img.includes(filename));
   }
