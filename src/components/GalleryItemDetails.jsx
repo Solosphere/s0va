@@ -63,6 +63,17 @@ const GalleryItemDetails = () => {
 
   const currentImageUrl = product.image[currentImageIndex];
   const isVideo = currentImageUrl.includes('.mp4');
+  
+  // Convert filename to full API URL
+  const getFullImageUrl = (filename) => {
+    if (filename.includes('.mp4')) {
+      return `/api/media/video/${filename}`;
+    } else {
+      return `/api/media/image/${filename}`;
+    }
+  };
+  
+  const fullImageUrl = getFullImageUrl(currentImageUrl);
 
   return (
     <div className="gallery-details">
@@ -95,13 +106,13 @@ const GalleryItemDetails = () => {
                   width="500"
                   playsInline
                   controls
-                  src={currentImageUrl}
+                  src={fullImageUrl}
                 >
                   Your browser does not support the video tag.
                 </video>
               ) : (
                 <img
-                  src={currentImageUrl}
+                  src={fullImageUrl}
                   alt={product.name}
                   onClick={openModal}
                   style={{ cursor: 'pointer' }}
@@ -117,12 +128,12 @@ const GalleryItemDetails = () => {
                     >
                       {image.includes('.mp4') ? (
                         <video playsInline controls={false}>
-                          <source src={image} type="video/mp4" />
+                          <source src={getFullImageUrl(image)} type="video/mp4" />
                           Your browser does not support the video tag.
                         </video>
                       ) : (
                         <img 
-                          src={image} 
+                          src={getFullImageUrl(image)} 
                           loading="lazy" 
                           alt={`${product.name} - Thumbnail ${index}`}
                         />
@@ -153,13 +164,13 @@ const GalleryItemDetails = () => {
                 autoPlay
                 playsInline
                 controls
-                src={currentImageUrl}
+                src={fullImageUrl}
               >
                 Your browser does not support the video tag.
               </video>
             ) : (
               <img
-                src={currentImageUrl}
+                src={fullImageUrl}
                 alt={product.name}
                 className="modal-image"
               />
