@@ -78,7 +78,7 @@ const GalleryList = () => {
     setCurrentPage(pageNumber); 
     const newParams = new URLSearchParams(window.location.search);
     newParams.set('page', pageNumber);
-    navigate(`/archive?${newParams.toString()}`);
+    navigate(`/cache?${newParams.toString()}`);
 
   };
 
@@ -86,7 +86,7 @@ const GalleryList = () => {
     setCurrentPage(1);
     const newParams = new URLSearchParams(window.location.search);
     newParams.set('page', '1');
-    navigate(`/archive?${newParams.toString()}`);
+    navigate(`/cache?${newParams.toString()}`);
     
   };
 
@@ -95,7 +95,7 @@ const GalleryList = () => {
     // Update URL parameters based on the new sort
   const newParams = new URLSearchParams(window.location.search);
   newParams.set('page', '1');
-  navigate(`/archive?${newParams.toString()}`);
+  navigate(`/cache?${newParams.toString()}`);
   };
 
   const handleSearchChange = (newSearchTerm) => {
@@ -104,7 +104,7 @@ const GalleryList = () => {
     // Update URL parameter based on the new search term
   const newParams = new URLSearchParams(window.location.search);
   newParams.set('page', '1');
-  navigate(`/archive?${newParams.toString()}`);
+  navigate(`/cache?${newParams.toString()}`);
   }
   
   
@@ -191,7 +191,7 @@ const GalleryList = () => {
     <div className="gallery-list-container">
       <div className="filter-search-row">
         <div className="gallery-search">
-        <h1 className="gallery-title">ARCHIVE</h1>
+        <h1 className="gallery-title">cache</h1>
         <SearchBar searchTerm={searchTerm} setSearchTerm={handleSearchChange} className="gallery-search-bar" />
         </div>
         <div className="filter-and-sort-row">

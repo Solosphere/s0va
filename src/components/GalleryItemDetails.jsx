@@ -50,7 +50,7 @@ const GalleryItemDetails = () => {
   };
 
   const handleGoBack = () => {
-    navigate(`/archive?page=${page}`);
+    navigate(`/cache?page=${page}`);
   };
 
   const openModal = () => {
@@ -79,7 +79,7 @@ const GalleryItemDetails = () => {
     <div className="gallery-details">
       <div className="gallery-nav">
         <button className="back-button" onClick={handleGoBack}>
-          Back to Archive
+          Back to cache
         </button>
       </div>
       <div className="details-container">

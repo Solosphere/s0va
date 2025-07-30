@@ -34,13 +34,13 @@ const Footer = () => {
         <footer className="footer">
             <div className="footer-row">
                 <div className="logo-information">
-                    <h2><NavLink to='/'>SOLUS CORE</NavLink></h2>
+                    <h2><NavLink to='/'>MT8</NavLink></h2>
                 </div>
 
                 <div className="navigation-links">
                     <ul>
                         <li><NavLink to='/about'>About</NavLink></li>
-                        <li><NavLink to='/archive'>Archive</NavLink></li>
+                        <li><NavLink to='/cache'>cache</NavLink></li>
                         <li><NavLink to='/terms' onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Terms & Conditions</NavLink></li>
                         
                     {/* Add more links as needed */}
@@ -72,7 +72,7 @@ const Footer = () => {
 
             <div className="footer-row">
                 <div className="copyright-information">
-                    <p>&copy; {currentYear} SOLUS CORE</p>
+                    <p>&copy; {currentYear} MT8</p>
                 </div>
             </div>
 

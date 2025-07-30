@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Test - Changeling Neo</title>
+    <style>
+        @font-face {
+            font-family: 'Changeling Neo';
+            src: url('path-to-your-font/Changeling-Neo.woff2') format('woff2'),
+                 url('path-to-your-font/Changeling-Neo.woff') format('woff'),
+                 url('path-to-your-font/Changeling-Neo.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .test-heading {
+            font-family: 'Changeling Neo', 'Arial', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .fallback {
+            font-family: 'Arial', sans-serif;
+            font-size: 2rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="test-heading">MT8 - Changeling Neo Font Test</h1>
+    <p class="fallback">If you see this in Arial, the Changeling Neo font is not loaded.</p>
+    <p>This is regular Arial text for comparison.</p>
+    
+    <h2 class="test-heading">Secondary Heading</h2>
+    <p>More test content to see the font in action.</p>
+</body>
+</html> 

@@ -141,7 +141,7 @@ async function processVideoWithFFmpeg(inputPath, outputPath, options) {
 
 function createWatermarkFilter() {
   // Create a simple text watermark using FFmpeg drawtext filter
-  return `drawtext=text='SOLUS CORE':fontcolor=white@0.3:fontsize=24:x=(w-text_w)/2:y=(h-text_h)/2:box=1:boxcolor=black@0.1:boxborderw=5`;
+  return `drawtext=text='MT8':fontcolor=white@0.3:fontsize=24:x=(w-text_w)/2:y=(h-text_h)/2:box=1:boxcolor=black@0.1:boxborderw=5`;
 }
 
 function createWatermarkRemovalFilter() {
