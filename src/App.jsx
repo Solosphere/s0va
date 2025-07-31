@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import NotFoundPage from './pages/NotFound';
 import Loading from './components/Loading';
 import GalleryItemDetail from './components/GalleryItemDetails';
+import { initializeKeyboardShortcuts } from './utils/keyboardShortcuts';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -24,6 +25,35 @@ export default function App() {
     // Cleanup the timeout to avoid potential memory leaks
     return () => clearTimeout(delay);
   }, [location.pathname]);
+
+  useEffect(() => {
+    // Initialize keyboard shortcuts
+    const cleanup = initializeKeyboardShortcuts();
+    
+    // Load saved settings on app start
+    const savedSettings = localStorage.getItem('userSettings');
+    if (savedSettings) {
+      const settings = JSON.parse(savedSettings);
+      
+      if (settings.isDarkMode) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+      
+      if (settings.highContrast) {
+        document.documentElement.setAttribute('data-contrast', 'high');
+      }
+      
+      if (settings.reducedMotion) {
+        document.documentElement.setAttribute('data-motion', 'reduced');
+      }
+      
+      if (settings.largeText) {
+        document.documentElement.setAttribute('data-text', 'large');
+      }
+    }
+    
+    return cleanup;
+  }, []);
 
   return (
     <>

@@ -20,41 +20,71 @@ const getProtectedVideoUrl = (filename, products) => {
 
 const AboutPage = () => {
   const { products } = useProducts();
-const tattooImages = ["tattoopray.webp", "tat-2.webp", "tat-3.webp", "customsnake.webp"]
-const [loading, setLoading] = useState(true);
-const [typedText, setTypedText] = useState('');
-const [isSliding, setIsSliding] = useState(false);
+  const tattooImages = ["tattoopray.webp", "tat-2.webp", "tat-3.webp", "customsnake.webp"]
+  const [loading, setLoading] = useState(true);
+  const [typedText, setTypedText] = useState('');
+  const [isSliding, setIsSliding] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
+  // Check for dark mode setting
+  useEffect(() => {
+    const checkDarkMode = () => {
+      const savedSettings = localStorage.getItem('userSettings');
+      if (savedSettings) {
+        const settings = JSON.parse(savedSettings);
+        setIsDarkMode(settings.isDarkMode || false);
+      }
+    };
 
+    checkDarkMode();
 
+    // Listen for settings changes
+    const handleSettingsChanged = () => {
+      checkDarkMode();
+    };
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-        // Simulate a delay for loading
+    window.addEventListener('settingsChanged', handleSettingsChanged);
+    return () => {
+      window.removeEventListener('settingsChanged', handleSettingsChanged);
+    };
+  }, []);
+
+  // Get the appropriate image based on dark mode
+  const getProfileImage = () => {
+    return isDarkMode ? "invertedheadshot.jpeg" : "thershold.webp";
+  };
+
+  // Get the appropriate video based on dark mode
+  const getContactVideo = () => {
+    return isDarkMode ? "skull.mp4" : "bsh.mp4";
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    // Simulate a delay for loading
     const delay = setTimeout(() => {
       setLoading(false);
     }, 2000);
 
     // Cleanup the timeout to avoid potential memory leaks
     return () => clearTimeout(delay);
-      }, []); 
+  }, []); 
 
+  useEffect(() => {
+    const text = " root@signal.node ~ % $ echo '01001000 01100101 01110010 01100101 00101100 00100000 01001001 00100000 01100001 01101101 00100000 01101001 01101110 01100110 01101001 01101110 01101001 01110100 01100101 00101110 00100000 01011001 01101111 01110101 00100000 01100011 01100001 01101110 00100111 01110100 00100000 01101011 01101001 01101100 01101100 00100000 01101101 01100101 00100000 01001001 00100111 01101101 00100000 01111010 01100101 01110010 01101111 01110011 00100000 01100001 01101110 01100100 00100000 01101111 01101110 01100101 01110011 00101110 00001010'"; 
+    let index = 0;
 
-      useEffect(() => {
-        const text = "$ echo '01001000 01100101 01110010 01100101 00101100 00100000 01001001 00100000 01100001 01101101 00100000 01101001 01101110 01100110 01101001 01101110 01101001 01110100 01100101 00101110 00100000 01011001 01101111 01110101 00100000 01100011 01100001 01101110 00100111 01110100 00100000 01101011 01101001 01101100 01101100 00100000 01101101 01100101 00100000 01001001 00100111 01101101 00100000 01111010 01100101 01110010 01101111 01110011 00100000 01100001 01101110 01100100 00100000 01101111 01101110 01100101 01110011 00101110 00001010'"; 
-        let index = 0;
-    
-        const interval = setInterval(() => {
-          if (index < text.length-1) {
-            setTypedText((prev) => prev + text[index]);
-            index++;
-          } else {
-            clearInterval(interval);
-          }
-        }, 50); // Typing speed
-    
-        return () => clearInterval(interval);
-      }, []);
+    const interval = setInterval(() => {
+      if (index < text.length-1) {
+        setTypedText((prev) => prev + text[index]);
+        index++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 50); // Typing speed
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="about-container">
@@ -68,8 +98,8 @@ const [isSliding, setIsSliding] = useState(false);
 
       <section className="about-row-1">
         <section className="introduction">
+        <img src={getProtectedImageUrl(getProfileImage(), products)} loading="lazy" alt="selfportrait"/>
         <h2>THE CREATIVE</h2>
-        <img src={getProtectedImageUrl("thershold.webp", products)} loading="lazy" alt="selfportrait"/>
         <p>I'm Daniel Nelson, the creator behind MT8. As an artist, graphic designer, and software engineer, MT8 is my way of leaving a piece of myself within the machine—a space where my work exists on its own, independent of an intended audience (unless rooted in code). Inspired by thinkers like Dostoevsky, Camus, Schopenhauer, and Musashi, my creations explore individualism, transformation, and the human condition. Through code, multimedia paintings, and graphic design, I merge fine art with technology, weaving existential themes—absurdism, nihilism, and existentialism—into experiences open to being encountered, absorbed, and interpreted freely.
         </p>
         </section>
@@ -164,8 +194,8 @@ const [isSliding, setIsSliding] = useState(false);
           </div>
           
           <div className='contact-img'>
-            <video className="contact-image" autoPlay muted width="auto" loop playsInline controls={false}>
-              <source src={getProtectedVideoUrl('bsh.mp4', products)} type="video/mp4" />
+            <video key={getContactVideo()} className="contact-image" autoPlay muted width="auto" loop playsInline controls={false}>
+              <source src={getProtectedVideoUrl(getContactVideo(), products)} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>

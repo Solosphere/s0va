@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons'; 
 import { useState, useEffect, useRef } from 'react';
+import Settings from './Settings';
 
 export default function SiteHeadingAndNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -46,6 +47,7 @@ export default function SiteHeadingAndNav() {
             <li><NavLink to='/' onClick={closeMenu}>Home</NavLink></li>
             <li><NavLink to='/about' onClick={closeMenu}>About</NavLink></li>
             <li><NavLink to='/cache' onClick={closeMenu}>cache</NavLink></li>
+            <li><Settings /></li>
           </ul>
         </div>
       </nav>
