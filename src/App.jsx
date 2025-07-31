@@ -35,8 +35,10 @@ export default function App() {
     if (savedSettings) {
       const settings = JSON.parse(savedSettings);
       
-      if (settings.isDarkMode) {
+      if (settings.isDarkMode !== undefined ? settings.isDarkMode : true) {
         document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
       }
       
       if (settings.highContrast) {
@@ -50,6 +52,9 @@ export default function App() {
       if (settings.largeText) {
         document.documentElement.setAttribute('data-text', 'large');
       }
+    } else {
+      // Set dark mode as default when no settings are saved
+      document.documentElement.setAttribute('data-theme', 'dark');
     }
     
     return cleanup;

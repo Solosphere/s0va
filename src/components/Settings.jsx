@@ -4,7 +4,7 @@ import { faCog, faSun, faMoon, faEye, faEyeSlash, faVolumeUp, faVolumeMute } fro
 
 export default function Settings() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [highContrast, setHighContrast] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [largeText, setLargeText] = useState(false);
@@ -15,7 +15,7 @@ export default function Settings() {
     const savedSettings = localStorage.getItem('userSettings');
     if (savedSettings) {
       const settings = JSON.parse(savedSettings);
-      setIsDarkMode(settings.isDarkMode || false);
+      setIsDarkMode(settings.isDarkMode !== undefined ? settings.isDarkMode : true);
       setHighContrast(settings.highContrast || false);
       setReducedMotion(settings.reducedMotion || false);
       setLargeText(settings.largeText || false);
@@ -27,7 +27,7 @@ export default function Settings() {
   useEffect(() => {
     const handleSettingsChanged = (event) => {
       const settings = event.detail;
-      setIsDarkMode(settings.isDarkMode || false);
+      setIsDarkMode(settings.isDarkMode !== undefined ? settings.isDarkMode : true);
       setHighContrast(settings.highContrast || false);
       setReducedMotion(settings.reducedMotion || false);
       setLargeText(settings.largeText || false);
@@ -86,6 +86,9 @@ export default function Settings() {
     } else {
       document.documentElement.removeAttribute('data-text');
     }
+
+    // Dispatch settings changed event to notify other components
+    window.dispatchEvent(new CustomEvent('settingsChanged', { detail: settings }));
   }, [isDarkMode, highContrast, reducedMotion, largeText, soundEnabled]);
 
   const toggleSettings = () => {
