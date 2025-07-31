@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import NotFoundPage from './pages/NotFound';
 import Loading from './components/Loading';
 import GalleryItemDetail from './components/GalleryItemDetails';
+import SavedArtworks from './pages/SavedArtworks';
 import { initializeKeyboardShortcuts } from './utils/keyboardShortcuts';
 
 export default function App() {
@@ -72,6 +73,7 @@ export default function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/cache" element={<GalleryPage />} />
             <Route path="/cache/:id" element={<GalleryItemDetail />} />
+            <Route path="/saved" element={<SavedArtworks />} />
             <Route path="/terms" element={<TermsAndConditions />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

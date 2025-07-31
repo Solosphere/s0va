@@ -47,6 +47,7 @@ export default function SiteHeadingAndNav() {
             <li><NavLink to='/' onClick={closeMenu}>Home</NavLink></li>
             <li><NavLink to='/about' onClick={closeMenu}>About</NavLink></li>
             <li><NavLink to='/cache' onClick={closeMenu}>cache</NavLink></li>
+            <li><NavLink to='/saved' onClick={closeMenu}>Saved</NavLink></li>
             <li><Settings /></li>
           </ul>
         </div>
