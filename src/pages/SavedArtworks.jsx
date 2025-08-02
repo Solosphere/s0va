@@ -182,10 +182,6 @@ const SavedArtworks = () => {
   return (
     <div className="saved-artworks-container">
       <div className="saved-artworks-header">
-        <Link to="/cache" className="back-link">
-          <FontAwesomeIcon icon={faArrowLeft} />
-          Back to Gallery
-        </Link>
         <h1>Saved Artworks</h1>
         <div className="saved-artworks-stats">
           <span>{filteredArtworks.length} artwork{filteredArtworks.length !== 1 ? 's' : ''} saved</span>
