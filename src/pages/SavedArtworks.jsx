@@ -92,7 +92,7 @@ const SavedArtworks = () => {
           <h2>No saved artworks yet</h2>
           <p>Start exploring the gallery and save your favorite pieces!</p>
           <Link to="/cache" className="browse-button">
-            Browse Gallery
+            Browse Cache
           </Link>
         </div>
       ) : (
