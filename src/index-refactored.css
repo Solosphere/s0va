@@ -2959,15 +2959,18 @@ select option {
   overflow: hidden;
 }
 
-.artwork-image-container img {
+.artwork-image-container img,
+.artwork-image-container video {
   width: 100%;
   max-width: 100%;
   border-radius: 8px;
   transition: var(--transition-normal);
   display: block;
+  object-fit: cover;
 }
 
-.saved-artwork-card:hover .artwork-image-container img {
+.saved-artwork-card:hover .artwork-image-container img,
+.saved-artwork-card:hover .artwork-image-container video {
   transform: scale(1.05);
 }
 

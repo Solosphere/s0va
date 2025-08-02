@@ -15,10 +15,13 @@ import GalleryFilterSection from '../components/GalleryFilterSection';
 import SortSection from '../components/SortSection';
 import Loading from '../components/Loading';
 
-// Get protected image URL from products data
-const getProtectedImageUrl = (filename, products) => {
-  // Always return the full API URL, regardless of products data
-  return `/api/media/image/${filename}`;
+// Get protected image/video URL from products data
+const getProtectedMediaUrl = (filename) => {
+  if (filename.includes('.mp4')) {
+    return `/api/media/video/${filename}`;
+  } else {
+    return `/api/media/image/${filename}`;
+  }
 };
 
 const SavedArtworks = () => {
@@ -38,6 +41,9 @@ const SavedArtworks = () => {
   const [showSort, setShowSort] = useState(false);
   const [showViolentContent, setShowViolentContent] = useState(false);
   const [loadingDueToViewerDiscretion, setLoadingDueToViewerDiscretion] = useState(false);
+
+  // Video hover state
+  const [hoveredVideoId, setHoveredVideoId] = useState(null);
 
   const sortOptions = [
     { label: 'Recent', value: 'recent' },
@@ -113,7 +119,7 @@ const SavedArtworks = () => {
       setFilteredArtworks([]);
       return;
     }
-    
+
     const filtered = savedArtworks.filter(filterArtworks).filter(searchFilter);
     const sorted = filtered.sort(sortArtworks);
     setFilteredArtworks(sorted);
@@ -132,30 +138,39 @@ const SavedArtworks = () => {
   };
 
   const handleViewerDiscretionToggle = () => {
-    setShowViolentContent((prev) => !prev);
     setLoadingDueToViewerDiscretion(true);
+    setShowViolentContent(!showViolentContent);
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    return new Date(dateString).toLocaleDateString();
   };
 
-  if (isLoading) {
-    return (
-      <div className="saved-artworks-container">
-        <div className="loading-message">Loading saved artworks...</div>
-      </div>
-    );
-  }
+  // Check if artwork has video
+  const hasVideo = (artwork) => {
+    return artwork.image && Array.isArray(artwork.image) && 
+           artwork.image.some(item => item.includes('.mp4'));
+  };
+
+  // Get the first media item (image or video)
+  const getFirstMediaItem = (artwork) => {
+    if (!artwork.image || !Array.isArray(artwork.image) || artwork.image.length === 0) {
+      return null;
+    }
+    return artwork.image[0];
+  };
+
+  // Handle video hover
+  const handleVideoHover = (artworkId, isHovered) => {
+    setHoveredVideoId(isHovered ? artworkId : null);
+  };
 
   // Show loading if loading due to viewer discretion toggle
   if (loadingDueToViewerDiscretion) {
+    return <Loading />;
+  }
+
+  if (isLoading) {
     return <Loading />;
   }
 
@@ -227,13 +242,31 @@ const SavedArtworks = () => {
           ) : (
             <div className="saved-artworks-grid">
               {filteredArtworks.map((artwork) => (
-                <div key={artwork.id} className="saved-artwork-card">
-                  <div className="artwork-image-container">
-                    <img
-                      src={getProtectedImageUrl(artwork.image[0], products)}
-                      alt={artwork.name}
-                      loading="lazy"
-                    />
+                                  <div key={artwork.id} className="saved-artwork-card">
+                    <div className="artwork-image-container">
+                      {hasVideo(artwork) ? (
+                        <video
+                          src={getProtectedMediaUrl(getFirstMediaItem(artwork))}
+                          alt={artwork.name}
+                          onMouseEnter={() => handleVideoHover(artwork.id, true)}
+                          onMouseLeave={() => handleVideoHover(artwork.id, false)}
+                          autoPlay
+                          loop
+                          muted={hoveredVideoId !== artwork.id}
+                          playsInline
+                          controls={false}
+                          className="artwork-image"
+                        >
+                          Your browser does not support the video tag.
+                        </video>
+                      ) : (
+                        <img
+                          src={getProtectedMediaUrl(getFirstMediaItem(artwork))}
+                          alt={artwork.name}
+                          loading="lazy"
+                          className="artwork-image"
+                        />
+                      )}
                     <div className="artwork-overlay">
                       <button
                         className="remove-button"
