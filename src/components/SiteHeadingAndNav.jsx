@@ -38,7 +38,7 @@ export default function SiteHeadingAndNav() {
   return (
     <header className="nav-header">
       <nav>
-        <NavLink to='/' id="logo" onClick={closeMenu}>MT8 </NavLink> 
+        <NavLink to='/' id="logo" onClick={closeMenu}>S<span className="special-char">⍉</span>VA </NavLink> 
         <div className="right">
           <button className="dropdown-btn" onClick={toggleMenu} ref={buttonRef}>
             <FontAwesomeIcon icon={faBars} size="lg" />

@@ -16,6 +16,19 @@ const introVideoUrl = introVideo ? introVideo.image.find(img => img.includes('in
 // Get featured images from products data
 const featuredImages = ['HCT-17.webp','kirin.webp', 'secondwind.webp', 'SAP.webp', 'metvoyager.webp', 'angel.webp'];
 
+// Function to find product by image filename
+const findProductByImage = (imageFilename) => {
+  // Special case for HCT-17.webp - link to cache/103
+  if (imageFilename === 'HCT-17.webp') {
+    return { id: 103 };
+  }
+  
+  return products.find(product => 
+    product.image && 
+    product.image.some(img => img.includes(imageFilename))
+  );
+};
+
 const handleNextImage = () => {
   setCurrentImageIndex((prevIndex)=> (prevIndex + 1) % featuredImages.length);
 }
@@ -55,7 +68,7 @@ return (
           </video>
         </div>
         <div className="content">
-          <h1 className="landingpage-title">MT8</h1>
+          <h1 className="landingpage-title">S<span className="special-char">⍉</span>VA</h1>
           <Link to="/cache?page=1" className="no-underline">
             <h2 className="tagline">&gt; The Cache</h2>
           </Link>
@@ -69,7 +82,26 @@ return (
         </div>
         <div className="mini-gallery">
           <div className="mini-gallery-img">
-            <img src={getProtectedImageUrl(featuredImages[currentImageIndex])} alt={`Artwork ${currentImageIndex + 1}`} />
+            {(() => {
+              const currentProduct = findProductByImage(featuredImages[currentImageIndex]);
+              if (currentProduct) {
+                return (
+                  <Link to={`/cache/${currentProduct.id}`} className="featured-image-link">
+                    <img 
+                      src={getProtectedImageUrl(featuredImages[currentImageIndex])} 
+                      alt={`Artwork ${currentImageIndex + 1}`} 
+                    />
+                  </Link>
+                );
+              } else {
+                return (
+                  <img 
+                    src={getProtectedImageUrl(featuredImages[currentImageIndex])} 
+                    alt={`Artwork ${currentImageIndex + 1}`} 
+                  />
+                );
+              }
+            })()}
           </div>
           <div className="featured-art-icon-row">
             <FontAwesomeIcon icon={faChevronLeft} onClick={handlePrevImage} className="prev" />
@@ -83,7 +115,7 @@ return (
           <section className="rect-2"></section>
         </section>
         <h2>THE VISION</h2>
-        <p>Welcome to MT8. I'm Daniel Nelson, and I've developed this space to store my personal works, ranging from software to paintings. Each piece delves into existential themes—absurdism, nihilism, and existentialism—inviting you to explore the intricate interplay of existential inquiry.   
+        <p>Welcome to S⍉VA. I'm Daniel Nelson, and I've developed this space to store my personal works, ranging from software to paintings. Each piece delves into existential themes—absurdism, nihilism, and existentialism—inviting you to explore the intricate interplay of existential inquiry.   
         </p>
         <div className="home-button-row">
           <Link to="/about" className="home-about-link"><button className="home-about-button">Learn More</button></Link> 

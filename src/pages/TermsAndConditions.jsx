@@ -10,7 +10,7 @@ const TermsAndConditions = () => {
       <h1 className="text-4xl font-bold mb-4">Terms and Conditions</h1>
       <p className="text-gray-600 mb-4">Last Updated: 02/28/2025</p>
       
-      <p>Welcome to MT8. By accessing or using this website, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, please do not use this website.</p>
+      <p>Welcome to S⍉VA. By accessing or using this website, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, please do not use this website.</p>
       <section className="rect-container">
             <section className="rect-1"></section>
             <section className="rect-2"></section>

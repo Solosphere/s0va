@@ -11,6 +11,7 @@ import Loading from './components/Loading';
 import GalleryItemDetail from './components/GalleryItemDetails';
 import SavedArtworks from './pages/SavedArtworks';
 import { initializeKeyboardShortcuts } from './utils/keyboardShortcuts';
+import { NavigationProvider } from './context/NavigationContext';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -62,7 +63,7 @@ export default function App() {
   }, []);
 
   return (
-    <>
+    <NavigationProvider>
       <SiteHeadingAndNav />
       <main>
         {loading ? (
@@ -80,6 +81,6 @@ export default function App() {
         )}
       </main>
       <Footer />
-    </>
+    </NavigationProvider>
   );
 }

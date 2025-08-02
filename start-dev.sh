@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# MT8 Development Startup Script
+# S⍉VA Development Startup Script
 # This script starts both the frontend and backend servers
 
-echo "🚀 Starting MT8 Development Environment..."
+echo "🚀 Starting S⍉VA Development Environment..."
 
 # Check if Node.js is installed
 if ! command -v node &> /dev/null; then

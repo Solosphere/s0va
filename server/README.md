@@ -1,12 +1,12 @@
-# MT8 - Server-Side Image Processing
+# S⍉VA - Server-Side Image Processing
 
-This backend server provides secure, server-side image and video processing for the MT8 art portfolio. It includes watermarking, resizing, format conversion, and access controls to protect your artwork.
+This backend server provides secure, server-side image and video processing for the S⍉VA art portfolio. It includes watermarking, resizing, format conversion, and access controls to protect your artwork.
 
 ## Features
 
 - **Image Processing**: Resize, compress, and convert images to WebP format
 - **Video Processing**: Optimize videos with FFmpeg
-- **Watermarking**: Add "MT8" watermarks to images and videos
+- **Watermarking**: Add "S⍉VA" watermarks to images and videos
 - **Security**: Rate limiting, referer validation, bot detection
 - **Caching**: Efficient caching of processed media
 - **Responsive Images**: Generate multiple sizes for different devices
@@ -115,7 +115,7 @@ GET /api/media/video/artwork.mp4?quality=80
 ## Image Processing Options
 
 ### Watermarking
-- Semi-transparent "MT8" text
+- Semi-transparent "S⍉VA" text
 - 45-degree rotation
 - Configurable opacity and size
 - Stroke outline for visibility
@@ -238,4 +238,4 @@ Set `NODE_ENV=development` for detailed logging.
 
 ## License
 
-This server is part of the MT8 project. All rights reserved. 
+This server is part of the S⍉VA project. All rights reserved. 

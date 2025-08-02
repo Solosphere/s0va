@@ -25,6 +25,7 @@ const AboutPage = () => {
   const [typedText, setTypedText] = useState('');
   const [isSliding, setIsSliding] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   // Check for dark mode setting
   useEffect(() => {
@@ -46,6 +47,18 @@ const AboutPage = () => {
     window.addEventListener('settingsChanged', handleSettingsChanged);
     return () => {
       window.removeEventListener('settingsChanged', handleSettingsChanged);
+    };
+  }, []);
+
+  // Track window width for responsive text
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -71,20 +84,55 @@ const AboutPage = () => {
   }, []); 
 
   useEffect(() => {
-    const text = " root@signal.node ~ % $ echo '01001000 01100101 01110010 01100101 00101100 00100000 01001001 00100000 01100001 01101101 00100000 01101001 01101110 01100110 01101001 01101110 01101001 01110100 01100101 00101110 00100000 01011001 01101111 01110101 00100000 01100011 01100001 01101110 00100111 01110100 00100000 01101011 01101001 01101100 01101100 00100000 01101101 01100101 00100000 01001001 00100111 01101101 00100000 01111010 01100101 01110010 01101111 01110011 00100000 01100001 01101110 01100100 00100000 01101111 01101110 01100101 01110011 00101110 00001010'"; 
-    let index = 0;
+    // Get current time for Last login
+    const now = new Date();
+    const lastLogin = now.toLocaleString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+    
+    // Simple approach - just set the text directly
+    let baseText = `Last login: ${lastLogin}\nroot@signal.node ~ % $ echo '01001000 01100101 01110010 01100101 00101100 00100000 01001001 00100000 01100001 01101101 00100000 01101001 01101110 01100110 01101001 01101110 01101001 01110100 01100101 00101110 00100000 01011001 01101111 01110101 00100000 01100011 01100001 01101110 00100111 01110100 00100000 01101011 01101001 01101100 01101100 00100000 01101101 01100101 00100000 01001001 00100111 01101101 00100000 01111010 01100101 01110010 01101111 01110011 00100000 01100001 01101110 01100100 00100000 01101111 01101110 01100101 01110011 00101110'\n`;
+    
+    // Additional text for viewports wider than 1200px
+    if (windowWidth >= 1200) {
+      baseText += `\nroot@signal.node ~ % $ cat /proc/artistic/philosophy
+  Loading artistic philosophy...
+  Digital art transcends traditional boundaries.
+  Each pixel is a choice, every color a statement.
+  In the matrix of creativity, I am both architect and artist.
+  Philosophy loaded successfully.
 
-    const interval = setInterval(() => {
-      if (index < text.length-1) {
-        setTypedText((prev) => prev + text[index]);
-        index++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 50); // Typing speed
+root@signal.node ~ % $ ./execute_vision.sh
+  Initializing creative process...
+  Connecting to inspiration database...
+  Loading design patterns...
+  Synthesizing visual elements...
+  Vision execution complete.
 
-    return () => clearInterval(interval);
-  }, []);
+root@signal.node ~ % $ systemctl status creativity
+● creativity.service - Infinite Creative Process
+   Loaded: loaded (/etc/systemd/system/creativity.service; enabled)
+   Active: active (running) since forever
+   Status: "Creating without limits"
+   Process: 1337 (artistic_expression)
+   Memory: ∞
+   CGroup: /system.slice/creativity.service
+           └─1337 /usr/bin/artistic_expression --infinite --boundless
+
+root@signal.node ~ % $ echo 'Welcome to the digital canvas.'
+  Welcome to the digital canvas.
+`;
+    }
+    
+    // Just set the text directly - no animation
+    setTypedText(baseText);
+  }, [windowWidth]);
 
   return (
     <div className="about-container">
@@ -100,7 +148,7 @@ const AboutPage = () => {
         <section className="introduction">
         <img src={getProtectedImageUrl(getProfileImage(), products)} loading="lazy" alt="selfportrait"/>
         <h2>THE CREATIVE</h2>
-        <p>I'm Daniel Nelson, the creator behind MT8. As an artist, graphic designer, and software engineer, MT8 is my way of leaving a piece of myself within the machine—a space where my work exists on its own, independent of an intended audience (unless rooted in code). Inspired by thinkers like Dostoevsky, Camus, Schopenhauer, and Musashi, my creations explore individualism, transformation, and the human condition. Through code, multimedia paintings, and graphic design, I merge fine art with technology, weaving existential themes—absurdism, nihilism, and existentialism—into experiences open to being encountered, absorbed, and interpreted freely.
+        <p>I'm Daniel Nelson, the creator behind S⍉VA. As an artist, graphic designer, and software engineer, S⍉VA is my way of leaving a piece of myself within the machine—a space where my work exists on its own, independent of an intended audience (unless rooted in code). Inspired by thinkers like Dostoevsky, Camus, Schopenhauer, and Musashi, my creations explore individualism, transformation, and the human condition. Through code, multimedia paintings, and graphic design, I merge fine art with technology, weaving existential themes—absurdism, nihilism, and existentialism—into experiences open to being encountered, absorbed, and interpreted freely.
         </p>
         </section>
         <section className="philosophy-inspiration-container">
@@ -111,7 +159,7 @@ const AboutPage = () => {
             </section>
               <h2>Beyond the Canvas</h2>
               <p>My journey extends beyond traditional means of art and design, driven by a passion for impactful software projects like Second Wind and CareerSpring's Interest Finder feature.
-                Each line of code and project is designed to empower individuals, helping them face their paths with courage and resilience. This vision, in harmony with the themes of MT8, seeks to make technology a transformative force, illuminating our collective journey and offering direction in challenging times. </p>
+                Each line of code and project is designed to empower individuals, helping them face their paths with courage and resilience. This vision, in harmony with the themes of S⍉VA, seeks to make technology a transformative force, illuminating our collective journey and offering direction in challenging times. </p>
                 </section>
                 {/* Project Carousel */}
                 <ProjectCarousel products={products} getProtectedImageUrl={getProtectedImageUrl} />
@@ -172,9 +220,6 @@ const AboutPage = () => {
               <section className="rect-2"></section>
           </section>
           <h2>Contact Information</h2>
-          <p>
-            Connect with me on social media and explore my portfolio. Always open to hear your thoughts and insights.
-          </p>
           
           <div className="social-media-row">
             <div className="social-media-links">

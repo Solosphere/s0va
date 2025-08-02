@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft, faTimes } from '@fortawesome/free-solid-svg-icons'; 
 import { useProducts } from '../context/ProductsProvider';
 import { ImageService } from '../utils/imageService.js';
+import DynamicBackButton from './DynamicBackButton';
 
 const GalleryItemDetails = () => {
   const { id } = useParams();
@@ -50,7 +51,8 @@ const GalleryItemDetails = () => {
   };
 
   const handleGoBack = () => {
-    navigate(`/cache?page=${page}`);
+    // Use the dynamic back navigation instead of hardcoded cache page
+    navigate(-1);
   };
 
   const openModal = () => {
@@ -78,9 +80,7 @@ const GalleryItemDetails = () => {
   return (
     <div className="gallery-details">
       <div className="gallery-nav">
-        <button className="back-button" onClick={handleGoBack}>
-          Back to cache
-        </button>
+        <DynamicBackButton className="back-button" />
       </div>
       <div className="details-container">
         <div className="details-section">
