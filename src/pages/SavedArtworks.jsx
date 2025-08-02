@@ -24,6 +24,11 @@ const getProtectedMediaUrl = (filename) => {
   }
 };
 
+// Get protected video URL for warning video
+const getProtectedVideoUrl = (filename) => {
+  return `/api/media/video/${filename}`;
+};
+
 const SavedArtworks = () => {
   const [savedArtworks, setSavedArtworks] = useState([]);
   const [filteredArtworks, setFilteredArtworks] = useState([]);
@@ -240,33 +245,47 @@ const SavedArtworks = () => {
               <p>Try adjusting your filters or search terms.</p>
             </div>
           ) : (
-            <div className="saved-artworks-grid">
+                        <div className="saved-artworks-grid">
               {filteredArtworks.map((artwork) => (
-                                  <div key={artwork.id} className="saved-artwork-card">
-                    <div className="artwork-image-container">
-                      {hasVideo(artwork) ? (
-                        <video
-                          src={getProtectedMediaUrl(getFirstMediaItem(artwork))}
-                          alt={artwork.name}
-                          onMouseEnter={() => handleVideoHover(artwork.id, true)}
-                          onMouseLeave={() => handleVideoHover(artwork.id, false)}
-                          autoPlay
-                          loop
-                          muted={hoveredVideoId !== artwork.id}
-                          playsInline
-                          controls={false}
-                          className="artwork-image"
-                        >
-                          Your browser does not support the video tag.
-                        </video>
-                      ) : (
-                        <img
-                          src={getProtectedMediaUrl(getFirstMediaItem(artwork))}
-                          alt={artwork.name}
-                          loading="lazy"
-                          className="artwork-image"
-                        />
-                      )}
+                <div key={artwork.id} className="saved-artwork-card">
+                  <div className="artwork-image-container">
+                    {showViolentContent || !artwork.hasViolence ? (
+                      <>
+                        {hasVideo(artwork) ? (
+                          <video
+                            src={getProtectedMediaUrl(getFirstMediaItem(artwork))}
+                            alt={artwork.name}
+                            onMouseEnter={() => handleVideoHover(artwork.id, true)}
+                            onMouseLeave={() => handleVideoHover(artwork.id, false)}
+                            autoPlay
+                            loop
+                            muted={hoveredVideoId !== artwork.id}
+                            playsInline
+                            controls={false}
+                            className="artwork-image"
+                          >
+                            Your browser does not support the video tag.
+                          </video>
+                        ) : (
+                          <img
+                            src={getProtectedMediaUrl(getFirstMediaItem(artwork))}
+                            alt={artwork.name}
+                            loading="lazy"
+                            className="artwork-image"
+                          />
+                        )}
+                      </>
+                    ) : (
+                      <div className="restricted-content-container">
+                        <div>
+                          <video className="warning-image" autoPlay muted width="200px" loop playsInline controls={false}>
+                            <source src={getProtectedVideoUrl('toxic.mp4')} type="video/mp4" />
+                            Your browser does not support the video tag.
+                          </video>
+                        </div>
+                        <p>Content Warning: This piece may contain sensitive or explicit material. Proceed with caution. To view, click the button with the crossed-out eye.</p>
+                      </div>
+                    )}
                     <div className="artwork-overlay">
                       <button
                         className="remove-button"
