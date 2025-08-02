@@ -2698,6 +2698,15 @@ select option {
   margin-bottom: var(--spacing-3xl);
 }
 
+/* Saved Artworks Page Specific Styles */
+.saved-artworks-container .saved-artworks-header {
+  margin-bottom: var(--spacing-lg);
+}
+
+.saved-artworks-container .filter-search-row {
+  margin-top: var(--spacing-md);
+}
+
 .saved-artworks-header h1 {
   font-family: var(--font-family-display);
   font-size: var(--font-size-4xl);
@@ -2881,18 +2890,17 @@ select option {
 }
 
 .saved-artworks-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-xl);
-  align-items: flex-start;
+  width: 95%;
+  margin: 2% auto;
+  columns: 2;
+  column-gap: 2%;
 }
 
 .saved-artwork-card {
-  flex: 0 0 calc(50% - var(--spacing-xl) / 2);
-  min-width: 280px;
-  max-width: 100%;
-  break-inside: avoid;
-  margin-bottom: var(--spacing-xl);
+  width: 100%;
+  margin-bottom: 4%;
+  display: block;
+  break-inside: avoid-column;
 }
 
 .saved-artwork-card {
@@ -3810,6 +3818,14 @@ a:focus {
   outline-offset: 2px;
 }
 
+/* Remove border/outline from logo and settings when active */
+nav #logo.active:focus,
+.settings-toggle:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -4707,12 +4723,8 @@ input:checked + .toggle-slider:before {
   }
   
   .saved-artworks-grid {
-    gap: var(--spacing-lg);
-  }
-  
-  .saved-artwork-card {
-    flex: 0 0 100%;
-    min-width: 100%;
+    columns: 2;
+    column-gap: 1.5%;
   }
   
   .saved-artworks-stats {
@@ -4816,12 +4828,8 @@ input:checked + .toggle-slider:before {
   }
   
   .saved-artworks-grid {
-    gap: var(--spacing-lg);
-  }
-  
-  .saved-artwork-card {
-    flex: 0 0 calc(33.333% - var(--spacing-lg) * 2 / 3);
-    min-width: 250px;
+    columns: 3;
+    column-gap: 1.5%;
   }
 }
 
@@ -4900,12 +4908,8 @@ input:checked + .toggle-slider:before {
   }
   
   .saved-artworks-grid {
-    gap: var(--spacing-xl);
-  }
-  
-  .saved-artwork-card {
-    flex: 0 0 calc(25% - var(--spacing-xl) * 3 / 4);
-    min-width: 220px;
+    columns: 4;
+    column-gap: 1%;
   }
 }
 

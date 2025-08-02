@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faHeartBroken, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faArrowLeft, 
+  faTrash, 
+  faHeartBroken,
+  faEye,
+  faEyeSlash
+} from '@fortawesome/free-solid-svg-icons';
 import { getSavedArtworks, removeSavedArtwork, clearAllSavedArtworks } from '../utils/savedArtworks';
 import { useProducts } from '../context/ProductsProvider';
+import SearchBar from '../components/SearchBar';
+import GalleryFilterSection from '../components/GalleryFilterSection';
+import SortSection from '../components/SortSection';
+import Loading from '../components/Loading';
 
 // Get protected image URL from products data
 const getProtectedImageUrl = (filename, products) => {
@@ -13,12 +23,45 @@ const getProtectedImageUrl = (filename, products) => {
 
 const SavedArtworks = () => {
   const [savedArtworks, setSavedArtworks] = useState([]);
+  const [filteredArtworks, setFilteredArtworks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { products } = useProducts();
+
+  // Search, filter, and sort state
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filters, setFilters] = useState({
+    date: 'all',
+    media: 'all',
+  });
+  const [sortBy, setSortBy] = useState('recent');
+  const [showFilters, setShowFilters] = useState(false);
+  const [showSort, setShowSort] = useState(false);
+  const [showViolentContent, setShowViolentContent] = useState(false);
+  const [loadingDueToViewerDiscretion, setLoadingDueToViewerDiscretion] = useState(false);
+
+  const sortOptions = [
+    { label: 'Recent', value: 'recent' },
+    { label: 'Oldest', value: 'oldest' },
+    { label: 'Name', value: 'name' },
+  ];
 
   useEffect(() => {
     loadSavedArtworks();
   }, []);
+
+  useEffect(() => {
+    applyFiltersAndSort();
+  }, [savedArtworks, searchTerm, filters, sortBy, showViolentContent]);
+
+  useEffect(() => {
+    setLoadingDueToViewerDiscretion(false);
+    window.scrollTo(0, 0);
+
+    // Simulate an API call or any asynchronous operation
+    setTimeout(() => {
+      setLoadingDueToViewerDiscretion(false);
+    }, 1000);
+  }, [showViolentContent]);
 
   const loadSavedArtworks = () => {
     setIsLoading(true);
@@ -43,7 +86,55 @@ const SavedArtworks = () => {
     }
   };
 
+  const filterArtworks = (artwork) => {
+    const { date, media } = filters;
+    const dateFilter = date === 'all' || artwork.date === parseInt(date, 10);
+    const mediaFilter = media === 'all' || artwork.media?.toLowerCase().includes(media.toLowerCase());
+    return dateFilter && mediaFilter;
+  };
 
+  const searchFilter = (artwork) => {
+    return artwork.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           artwork.description?.toLowerCase().includes(searchTerm.toLowerCase());
+  };
+
+  const sortArtworks = (a, b) => {
+    if (sortBy === 'name') {
+      return a.name.localeCompare(b.name);
+    } else if (sortBy === 'oldest') {
+      return new Date(a.savedAt) - new Date(b.savedAt);
+    } else if (sortBy === 'recent') {
+      return new Date(b.savedAt) - new Date(a.savedAt);
+    }
+  };
+
+  const applyFiltersAndSort = () => {
+    if (!savedArtworks || !Array.isArray(savedArtworks) || savedArtworks.length === 0) {
+      setFilteredArtworks([]);
+      return;
+    }
+    
+    const filtered = savedArtworks.filter(filterArtworks).filter(searchFilter);
+    const sorted = filtered.sort(sortArtworks);
+    setFilteredArtworks(sorted);
+  };
+
+  const handleSearchChange = (newSearchTerm) => {
+    setSearchTerm(newSearchTerm);
+  };
+
+  const handleFilterChange = () => {
+    // Filter change is handled by useEffect
+  };
+
+  const handleSortChange = () => {
+    // Sort change is handled by useEffect
+  };
+
+  const handleViewerDiscretionToggle = () => {
+    setShowViolentContent((prev) => !prev);
+    setLoadingDueToViewerDiscretion(true);
+  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -63,6 +154,11 @@ const SavedArtworks = () => {
     );
   }
 
+  // Show loading if loading due to viewer discretion toggle
+  if (loadingDueToViewerDiscretion) {
+    return <Loading />;
+  }
+
   return (
     <div className="saved-artworks-container">
       <div className="saved-artworks-header">
@@ -72,7 +168,7 @@ const SavedArtworks = () => {
         </Link>
         <h1>Saved Artworks</h1>
         <div className="saved-artworks-stats">
-          <span>{savedArtworks.length} artwork{savedArtworks.length !== 1 ? 's' : ''} saved</span>
+          <span>{filteredArtworks.length} artwork{filteredArtworks.length !== 1 ? 's' : ''} saved</span>
           {savedArtworks.length > 0 && (
             <button 
               className="clear-all-button"
@@ -96,36 +192,71 @@ const SavedArtworks = () => {
           </Link>
         </div>
       ) : (
-        <div className="saved-artworks-grid">
-          {savedArtworks.map((artwork) => (
-            <div key={artwork.id} className="saved-artwork-card">
-              <div className="artwork-image-container">
-                <img
-                  src={getProtectedImageUrl(artwork.image[0], products)}
-                  alt={artwork.title}
-                  loading="lazy"
-                />
-                <div className="artwork-overlay">
-                  <button
-                    className="remove-button"
-                    onClick={() => handleRemoveArtwork(artwork.id)}
-                    title="Remove from saved"
-                  >
-                    <FontAwesomeIcon icon={faHeartBroken} />
-                  </button>
-                </div>
-              </div>
-              <div className="artwork-info">
-                <h3>{artwork.title}</h3>
-                <p className="artwork-description">{artwork.description}</p>
-                <p className="saved-date">Saved on {formatDate(artwork.savedAt)}</p>
-                <Link to={`/cache/${artwork.id}`} className="view-details-link">
-                  View Details
-                </Link>
-              </div>
+        <>
+          <div className="filter-search-row">
+            <div className="gallery-search">
+              <SearchBar searchTerm={searchTerm} setSearchTerm={handleSearchChange} className="gallery-search-bar" />
             </div>
-          ))}
-        </div>
+            <div className="filter-and-sort-row">
+              <GalleryFilterSection 
+                filters={filters} 
+                setFilters={setFilters} 
+                showFilters={showFilters} 
+                setShowFilters={setShowFilters} 
+                handleFilterChange={handleFilterChange} 
+              />
+              <SortSection 
+                sortOptions={sortOptions} 
+                sortBy={sortBy} 
+                setSortBy={setSortBy} 
+                showSort={showSort} 
+                setShowSort={setShowSort} 
+                handleSortChange={handleSortChange} 
+              />
+              <button onClick={handleViewerDiscretionToggle} className="viewer-discretion-button">
+                {showViolentContent ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
+              </button>
+            </div>
+          </div>
+
+          {filteredArtworks.length === 0 ? (
+            <div className="no-products-message">
+              <p>No saved artworks match your search criteria.</p>
+              <p>Try adjusting your filters or search terms.</p>
+            </div>
+          ) : (
+            <div className="saved-artworks-grid">
+              {filteredArtworks.map((artwork) => (
+                <div key={artwork.id} className="saved-artwork-card">
+                  <div className="artwork-image-container">
+                    <img
+                      src={getProtectedImageUrl(artwork.image[0], products)}
+                      alt={artwork.name}
+                      loading="lazy"
+                    />
+                    <div className="artwork-overlay">
+                      <button
+                        className="remove-button"
+                        onClick={() => handleRemoveArtwork(artwork.id)}
+                        title="Remove from saved"
+                      >
+                        <FontAwesomeIcon icon={faHeartBroken} />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="artwork-info">
+                    <h3>{artwork.name}</h3>
+                    <p className="artwork-description">{artwork.description}</p>
+                    <p className="saved-date">Saved on {formatDate(artwork.savedAt)}</p>
+                    <Link to={`/cache/${artwork.id}`} className="view-details-link">
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
