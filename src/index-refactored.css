@@ -3893,8 +3893,7 @@ nav #logo.active:focus,
   background: var(--color-background);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-lg);
-  max-width: 500px;
-  width: 90%;
+  width: 80%;
   max-height: 80vh;
   overflow-y: auto;
   position: relative;
@@ -4913,6 +4912,21 @@ input:checked + .toggle-slider:before {
   .saved-artworks-grid {
     columns: 4;
     column-gap: 1%;
+  }
+  
+  .saved-artworks-container {
+    max-width: 100%;
+    padding: var(--spacing-2xl);
+  }
+  
+  .saved-artworks-container .saved-artworks-header {
+    max-width: 1200px;
+    margin: 0 auto var(--spacing-lg) auto;
+  }
+  
+  .saved-artworks-container .filter-search-row {
+    max-width: 1200px;
+    margin: var(--spacing-md) auto 0 auto;
   }
 }
 

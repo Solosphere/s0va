@@ -101,32 +101,31 @@ const AboutPage = () => {
     
     // Additional text for viewports wider than 1200px
     if (windowWidth >= 1200) {
-      baseText += `\nroot@signal.node ~ % $ cat /proc/artistic/philosophy
-  Loading artistic philosophy...
-  Digital art transcends traditional boundaries.
+      baseText += `\nroot@wound.os ~ % $ cat /proc/artistic/philosophy
+  Loading philosophy...
+  Boundaries dissolve.
   Each pixel is a choice, every color a statement.
-  In the matrix of creativity, I am both architect and artist.
-  Philosophy loaded successfully.
+  Philosophy: installed.
 
-root@signal.node ~ % $ ./execute_vision.sh
-  Initializing creative process...
-  Connecting to inspiration database...
-  Loading design patterns...
-  Synthesizing visual elements...
-  Vision execution complete.
+root@wound.os ~ % $ ./execute_vision.sh
+  > Allocating cycles...
+  > Pulling fragments from cache...
+  > Recompiling vision...
+  > Render initialized. No undo.
+  > Initializing creative process...
 
-root@signal.node ~ % $ systemctl status creativity
-● creativity.service - Infinite Creative Process
+root@wound.os ~ % $ systemctl status creativity
+● vision.service - Active Interpretation Daemon
    Loaded: loaded (/etc/systemd/system/creativity.service; enabled)
-   Active: active (running) since forever
-   Status: "Creating without limits"
+   Active: active (running)
+   Status: "Reconstruction in progress"
    Process: 1337 (artistic_expression)
    Memory: ∞
    CGroup: /system.slice/creativity.service
-           └─1337 /usr/bin/artistic_expression --infinite --boundless
+           └─1337 /usr/bin/expression --recurse --override
 
-root@signal.node ~ % $ echo 'Welcome to the digital canvas.'
-  Welcome to the digital canvas.
+root@wound.os ~ % $ echo 'Accessing the artist's cache.'
+  Cache unlocked.
 `;
     }
     
