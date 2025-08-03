@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import SaveButton from './SaveButton';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -61,45 +62,50 @@ const GalleryCard = ({ product, currentPage, showViolentContent }) => {
 
   return (
     <div className="gallery-card">
-      <Link to={`${product.id}?page=${currentPage}`} className="link-no-underline">
-        {showViolentContent || !product.hasViolence ? (
-          <>
-            {isVideo ? (
-              <video
-                className="gallery-video"
-                autoPlay
-                width="auto"
-                loop
-                muted={!isHovered}
-                onMouseOver={handleHover}
-                onMouseLeave={handleMouseLeave}
-                playsInline
-                controls={false}
-                src={fullImageUrl}
-              >
-                Your browser does not support the video tag.
-              </video>
-            ) : (
-              <img 
-                src={fullImageUrl} 
-                loading="lazy" 
-                alt={product.name} 
-                className="gallery-image"
-              />
-            )}
-          </>
-        ) : (
-          <div className="restricted-content-container">
-            <div>
-              <video className="warning-image" autoPlay muted width="200px" loop playsInline controls={false}>
-                <source src={getProtectedVideoUrl('toxic.mp4')} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+      <div className="gallery-card-content">
+        <Link to={`${product.id}?page=${currentPage}`} className="link-no-underline">
+          {showViolentContent || !product.hasViolence ? (
+            <>
+              {isVideo ? (
+                <video
+                  className="gallery-video"
+                  autoPlay
+                  width="auto"
+                  loop
+                  muted={!isHovered}
+                  onMouseOver={handleHover}
+                  onMouseLeave={handleMouseLeave}
+                  playsInline
+                  controls={false}
+                  src={fullImageUrl}
+                >
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <img 
+                  src={fullImageUrl} 
+                  loading="lazy" 
+                  alt={product.name} 
+                  className="gallery-image"
+                />
+              )}
+            </>
+          ) : (
+            <div className="restricted-content-container">
+              <div>
+                <video className="warning-image" autoPlay muted width="200px" loop playsInline controls={false}>
+                  <source src={getProtectedVideoUrl('toxic.mp4')} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <p>Content Warning: This piece may contain sensitive or explicit material. Proceed with caution. To view, click the button with the crossed-out eye.</p>
             </div>
-            <p>Content Warning: This piece may contain sensitive or explicit material. Proceed with caution. To view, click the button with the crossed-out eye.</p>
-          </div>
-        )}
-      </Link>
+          )}
+        </Link>
+        <div className="save-button-container">
+          <SaveButton artwork={product} />
+        </div>
+      </div>
     </div>
   );
 };

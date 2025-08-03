@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Solus Core Development Startup Script
+# S⍉VA Development Startup Script
 # This script starts both the frontend and backend servers
 
-echo "🚀 Starting Solus Core Development Environment..."
+echo "🚀 Starting S⍉VA Development Environment..."
 
 # Check if Node.js is installed
 if ! command -v node &> /dev/null; then

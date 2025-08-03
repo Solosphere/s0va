@@ -6,9 +6,9 @@ Welcome to Solisphere, my portfolio showcasing my work created using React, Java
 
 Solisphere is more than just a portfolio – it's an immersive experience. Hover over images to reveal hidden text, providing insights into each project and even glimpses into my personal journey.
 
-## Archive
+## cache
 
-Browse through my extensive archive of projects, each a testament to my creativity and passion. Click on a project to discover more about it, including details such as the title, media used, creation date, and potentially a description.
+Browse through my extensive cache of projects, each a testament to my creativity and passion. Click on a project to discover more about it, including details such as the title, media used, creation date, and potentially a description.
 
 ### Filter and Sort
 

@@ -9,6 +9,9 @@ import Footer from './components/Footer';
 import NotFoundPage from './pages/NotFound';
 import Loading from './components/Loading';
 import GalleryItemDetail from './components/GalleryItemDetails';
+import SavedArtworks from './pages/SavedArtworks';
+import { initializeKeyboardShortcuts } from './utils/keyboardShortcuts';
+import { NavigationProvider } from './context/NavigationContext';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -25,8 +28,42 @@ export default function App() {
     return () => clearTimeout(delay);
   }, [location.pathname]);
 
+  useEffect(() => {
+    // Initialize keyboard shortcuts
+    const cleanup = initializeKeyboardShortcuts();
+    
+    // Load saved settings on app start
+    const savedSettings = localStorage.getItem('userSettings');
+    if (savedSettings) {
+      const settings = JSON.parse(savedSettings);
+      
+      if (settings.isDarkMode !== undefined ? settings.isDarkMode : true) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+      
+      if (settings.highContrast) {
+        document.documentElement.setAttribute('data-contrast', 'high');
+      }
+      
+      if (settings.reducedMotion) {
+        document.documentElement.setAttribute('data-motion', 'reduced');
+      }
+      
+      if (settings.largeText) {
+        document.documentElement.setAttribute('data-text', 'large');
+      }
+    } else {
+      // Set dark mode as default when no settings are saved
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+    
+    return cleanup;
+  }, []);
+
   return (
-    <>
+    <NavigationProvider>
       <SiteHeadingAndNav />
       <main>
         {loading ? (
@@ -35,14 +72,15 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<AboutPage />} />
-            <Route path="/archive" element={<GalleryPage />} />
-            <Route path="/archive/:id" element={<GalleryItemDetail />} />
+            <Route path="/cache" element={<GalleryPage />} />
+            <Route path="/cache/:id" element={<GalleryItemDetail />} />
+            <Route path="/saved" element={<SavedArtworks />} />
             <Route path="/terms" element={<TermsAndConditions />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         )}
       </main>
       <Footer />
-    </>
+    </NavigationProvider>
   );
 }
