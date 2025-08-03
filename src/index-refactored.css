@@ -940,6 +940,17 @@ nav #logo span.special-char,
   }
 }
 
+/* Small Mobile - 320px to 550px */
+@media (min-width: 320px) and (max-width: 550px) {
+  .about-caption p {
+    font-size: var(--font-size-xs); /* Smaller than var(--font-size-xs) */
+  }
+  
+  .saved-artworks-grid {
+    columns: 1 !important; /* Single column for very small screens */
+  }
+}
+
 /* Tablet - 748px+ */
 @media (min-width: 748px) {
   nav {
@@ -4614,6 +4625,7 @@ input:checked + .toggle-slider:before {
 @media (min-width: 320px) {
   .filter-search-row {
     flex-direction: column;
+    margin-top: 80px; /* Reduced from 100px for smaller viewports */
   }
   
   .gallery-search {
