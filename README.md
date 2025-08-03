@@ -1,10 +1,10 @@
-# Solisphere - Portfolio
+# S⍉VA - Portfolio
 
-Welcome to Solisphere, my portfolio showcasing my work created using React, JavaScript, and CSS. Explore various projects, learn more about me, and delve into my creative journey.
+Welcome to S⍉VA, my portfolio showcasing my work created using React, JavaScript, and CSS. Explore various projects, learn more about me, and delve into my creative journey.
 
 ## About
 
-Solisphere is more than just a portfolio – it's an immersive experience. Hover over images to reveal hidden text, providing insights into each project and even glimpses into my personal journey.
+S⍉VA is more than just a portfolio – it's an immersive experience providing insights into each project and even glimpses into my personal journey.
 
 ## cache
 
@@ -20,7 +20,7 @@ Looking for a specific project? Utilize the search feature to quickly locate pro
 
 ## Get Started
 
-Ready to embark on a journey through Solisphere? Visit [here](https://solisphere.onrender.com/) to begin exploring my portfolio and discovering the depth of my creative endeavors.
+Ready to embark on a journey through S⍉VA? Visit [here](https://s0va.run) to begin exploring my portfolio and discovering the depth of my creative endeavors.
 
 ## Connect with Me
 
