@@ -3824,6 +3824,8 @@ a:focus {
 
 /* Remove border/outline from logo and settings when active */
 nav #logo.active:focus,
+nav #logo:focus,
+.footer .logo-information h2 a:focus,
 .settings-toggle:focus {
   outline: none;
   border: none;
