@@ -5,6 +5,7 @@ import { faChevronRight, faChevronLeft, faTimes } from '@fortawesome/free-solid-
 import { useProducts } from '../context/ProductsProvider';
 import { ImageService } from '../utils/imageService.js';
 import DynamicBackButton from './DynamicBackButton';
+import SaveButton from './SaveButton';
 
 const GalleryItemDetails = () => {
   const { id } = useParams();
@@ -85,7 +86,10 @@ const GalleryItemDetails = () => {
       <div className="details-container">
         <div className="details-section">
           <div className="details-title">
-            <h3>{product.name}</h3>
+            <div className="details-header">
+              <h3>{product.name}</h3>
+              <SaveButton artwork={product} />
+            </div>
             <p className="gallery-item-date">{product.date}</p>
             <p>Media: {product.media}</p>
             {product.dimensions && (
