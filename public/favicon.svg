@@ -4,8 +4,8 @@
   
   <!-- Text: S⍉VA -->
   <text x="16" y="20" 
-        font-family="Arial, sans-serif" 
-        font-size="12" 
+        font-family="changeling-neo, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif" 
+        font-size="10" 
         font-weight="bold" 
         text-anchor="middle" 
         fill="white">
