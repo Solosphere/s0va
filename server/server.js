@@ -46,6 +46,8 @@ app.use('/api/', limiter);
 app.use(cors({
   origin: [
     'http://localhost:5173',
+    'https://s0va.run',
+    'https://www.s0va.run',
     process.env.FRONTEND_URL
   ].filter(Boolean),
   credentials: true

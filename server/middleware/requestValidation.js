@@ -10,8 +10,8 @@ export function validateReferer(req) {
   // List of allowed domains
   const allowedDomains = [
     'localhost:5173',
-    'soluscore.com',
-    'www.soluscore.com'
+    's0va.run',
+    'www.s0va.run'
   ];
 
   try {
@@ -61,8 +61,8 @@ export function validateRequestOrigin(req) {
   // List of allowed origins
   const allowedOrigins = [
     'http://localhost:5173',
-    'https://soluscore.com',
-    'https://www.soluscore.com'
+    'https://s0va.run',
+    'https://www.s0va.run'
   ];
 
   return allowedOrigins.includes(origin);
