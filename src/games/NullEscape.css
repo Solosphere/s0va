@@ -833,8 +833,18 @@
 /* Responsive Design */
 @media only screen and (max-width: 768px) {
   .null-escape-modal {
-    max-width: 95vw;
-    max-height: 95vh;
+    max-width: 96vw;
+    max-height: 96vh;
+    width: 96vw;
+    height: 96vh;
+    margin: 2vh;
+    border-radius: 8px;
+  }
+  
+  .modal-body {
+    padding: 15px;
+    max-height: 85vh;
+    gap: 8px;
   }
   
   .game-stats {
@@ -856,15 +866,15 @@
   }
   
   .game-area {
-    width: 450px; /* Increased width for mobile */
-    max-width: 450px; /* Increased max width for mobile */
-    min-width: 450px; /* Force minimum width */
-    height: 400px; /* Increased height for mobile */
-    max-height: 400px; /* Increased max height for mobile */
-    min-height: 400px; /* Force minimum height */
+    width: 100%; /* Use full available width */
+    max-width: 100%; /* Use full available width */
+    min-width: 350px; /* Minimum width for very small screens */
+    height: 350px; /* Optimized height for mobile */
+    max-height: 350px; /* Optimized max height */
+    min-height: 300px; /* Minimum height */
     padding: 5px; /* Reduced padding */
     flex-shrink: 0; /* Prevent shrinking */
-    flex-grow: 0; /* Prevent growing */
+    flex-grow: 1; /* Allow growing to fill available space */
   }
   
   .ascii-map {
@@ -902,6 +912,21 @@
 }
 
 @media only screen and (max-width: 480px) {
+  .null-escape-modal {
+    max-width: 98vw;
+    max-height: 98vh;
+    width: 98vw;
+    height: 98vh;
+    margin: 1vh;
+    border-radius: 6px;
+  }
+  
+  .modal-body {
+    padding: 12px;
+    max-height: 88vh;
+    gap: 6px;
+  }
+  
   .modal-header h2 {
     font-size: 1.2em;
   }
@@ -950,12 +975,12 @@
   .game-area {
     width: 100%; /* Take full width for very small screens */
     max-width: 100%; /* Take full width */
-    min-width: 350px; /* Increased minimum width */
-    height: 350px; /* Increased height for better visibility */
-    max-height: 320px; /* Increased max height */
-    min-height: 300px; /* Increased minimum height */
+    min-width: 300px; /* Minimum width for very small screens */
+    height: 300px; /* Optimized height for very small screens */
+    max-height: 300px; /* Optimized max height */
+    min-height: 250px; /* Minimum height */
     flex-shrink: 0; /* Prevent shrinking */
-    flex-grow: 0; /* Prevent growing */
+    flex-grow: 1; /* Allow growing to fill available space */
   }
   
   .map-cell {
