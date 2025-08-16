@@ -3497,7 +3497,7 @@ select option {
   transition: var(--transition-fast);
   text-decoration: none;
   display: inline-block;
-  z-index: var(--z-dropdown);
+  z-index: 999;
   background: linear-gradient(
     135deg,
     rgba(0, 0, 0, 0.9) 0%,
@@ -3626,6 +3626,21 @@ select option {
     gap: 10px;
     margin-top: 0px;
     padding: 0px;
+    border: none;
+    box-shadow: none;
+    background: none;
+  }
+  
+  /* Remove borders and shadows from mobile controls children */
+  .mobile-controls .settings-toggle {
+    border: none !important;
+    box-shadow: none !important;
+    background: none !important;
+  }
+  
+  .mobile-controls .dropdown-btn {
+    border: none !important;
+    box-shadow: none !important;
   }
   
   /* Hide desktop settings on mobile */

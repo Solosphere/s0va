@@ -910,6 +910,13 @@ export default function NullEscape({ onClose }) {
         </div>
       </div>
 
+      <div className="detection-bar">
+        <div 
+          className="detection-fill" 
+          style={{ width: `${detectionLevel}%` }}
+        />
+      </div>
+
       <div className="game-area" ref={gameAreaRef}>
         <div className="ascii-map">
           {map && map.length > 0 ? (() => {
@@ -978,13 +985,6 @@ export default function NullEscape({ onClose }) {
           )}
         </div>
         </div>
-
-      <div className="detection-bar">
-        <div 
-          className="detection-fill" 
-          style={{ width: `${detectionLevel}%` }}
-        />
-      </div>
       
       {/* Level Up Notification */}
       {showLevelUp && (
@@ -998,39 +998,35 @@ export default function NullEscape({ onClose }) {
       )}
       
       {/* Mobile Controls */}
-      <div className="mobile-controls">
-        <div className="control-row">
-          <button 
-            className="control-btn up-btn" 
-            onTouchStart={(e) => { e.preventDefault(); movePlayer(0, -1); }}
-            onMouseDown={(e) => { e.preventDefault(); movePlayer(0, -1); }}
-          >
-            ↑
-          </button>
-        </div>
-        <div className="control-row">
-          <button 
-            className="control-btn left-btn" 
-            onTouchStart={(e) => { e.preventDefault(); movePlayer(-1, 0); }}
-            onMouseDown={(e) => { e.preventDefault(); movePlayer(-1, 0); }}
-          >
-            ←
-          </button>
-          <button 
-            className="control-btn down-btn" 
-            onTouchStart={(e) => { e.preventDefault(); movePlayer(0, 1); }}
-            onMouseDown={(e) => { e.preventDefault(); movePlayer(0, 1); }}
-          >
-            ↓
-          </button>
-          <button 
-            className="control-btn right-btn" 
-            onTouchStart={(e) => { e.preventDefault(); movePlayer(1, 0); }}
-            onMouseDown={(e) => { e.preventDefault(); movePlayer(1, 0); }}
-          >
-            →
-          </button>
-        </div>
+      <div className="null-escape-mobile-controls">
+        <button 
+          className="control-btn up-btn" 
+          onTouchStart={(e) => { e.preventDefault(); movePlayer(0, -1); }}
+          onMouseDown={(e) => { e.preventDefault(); movePlayer(0, -1); }}
+        >
+          ↑
+        </button>
+        <button 
+          className="control-btn left-btn" 
+          onTouchStart={(e) => { e.preventDefault(); movePlayer(-1, 0); }}
+          onMouseDown={(e) => { e.preventDefault(); movePlayer(-1, 0); }}
+        >
+          ←
+        </button>
+        <button 
+          className="control-btn right-btn" 
+          onTouchStart={(e) => { e.preventDefault(); movePlayer(1, 0); }}
+          onMouseDown={(e) => { e.preventDefault(); movePlayer(1, 0); }}
+        >
+          →
+        </button>
+        <button 
+          className="control-btn down-btn" 
+          onTouchStart={(e) => { e.preventDefault(); movePlayer(0, 1); }}
+          onMouseDown={(e) => { e.preventDefault(); movePlayer(0, 1); }}
+        >
+          ↓
+        </button>
       </div>
     </div>
   );
