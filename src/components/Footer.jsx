@@ -12,7 +12,8 @@ const Footer = () => {
     useEffect(() => {
       // Show or hide the back-to-top button based on scroll position
       const handleScroll = () => {
-        setShowButton(window.scrollY > 300);
+        const eightyPercentHeight = window.innerHeight * 0.8;
+        setShowButton(window.scrollY > eightyPercentHeight);
       };
   
       window.addEventListener('scroll', handleScroll);
@@ -47,7 +48,7 @@ const Footer = () => {
                     </ul>
                 </div>
 
-                <div className="back-to-top-button" onClick={scrollToTop}>
+                <div className={`back-to-top-button ${showButton ? 'fade-in' : 'fade-out'}`} onClick={scrollToTop}>
                     <h4>Back to Top</h4>
                     
                 </div>

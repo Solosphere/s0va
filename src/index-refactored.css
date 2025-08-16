@@ -3546,6 +3546,19 @@ select option {
     inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
 
+/* Fade effects for back-to-top button */
+.back-to-top-button.fade-in {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.back-to-top-button.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
 .social-media-links {
   display: flex;
   gap: var(--spacing-lg);
