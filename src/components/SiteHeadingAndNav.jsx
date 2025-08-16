@@ -17,6 +17,14 @@ export default function SiteHeadingAndNav() {
     setIsMenuOpen(false);
   };
 
+  const handleProgramsClick = () => {
+    closeMenu();
+    // Scroll to top after navigation
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+  };
+
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -51,7 +59,7 @@ export default function SiteHeadingAndNav() {
             <li><NavLink to='/about' onClick={closeMenu}>About</NavLink></li>
             <li><NavLink to='/cache' onClick={closeMenu}>Cache</NavLink></li>
             <li><NavLink to='/saved' onClick={closeMenu}>Saved</NavLink></li>
-            <li><NavLink to='/programs' onClick={closeMenu} className="nav-programs-link">Programs</NavLink></li>
+            <li><NavLink to='/programs' onClick={handleProgramsClick} className="nav-programs-link">Programs</NavLink></li>
             <li className="desktop-settings"><Settings /></li>
           </ul>
         </div>
