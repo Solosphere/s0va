@@ -595,25 +595,46 @@
 .terminal-line {
   margin-bottom: 8px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
   z-index: 2;
+  flex-wrap: wrap;
+  word-wrap: break-word;
 }
 
 .prompt {
   color: #ffffff;
   margin-right: 10px;
   font-weight: bold;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .command {
   color: #ffffff;
   font-weight: bold;
+  white-space: normal;
 }
 
 .output {
   color: #ffffff;
   font-style: italic;
+}
+
+/* Mobile optimizations for terminal lines */
+@media (max-width: 768px) {
+  .terminal-line {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+  
+  .prompt {
+    margin-right: 8px;
+  }
+  
+  .terminal-content {
+    padding: 10px;
+  }
 }
 
 .programs-grid {

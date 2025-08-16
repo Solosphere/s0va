@@ -878,13 +878,13 @@
   }
   
   .ascii-map {
-    font-size: 10px; /* Smaller font for mobile */
+    font-size: 16px; /* Increased font size for better visibility */
   }
   
   .map-cell {
-    width: 16px; /* Fixed width for mobile */
-    height: 16px; /* Fixed height for mobile */
-    font-size: 10px; /* Smaller font for mobile */
+    width: 24px; /* Increased width for better visibility */
+    height: 24px; /* Increased height for better visibility */
+    font-size: 18px; /* Increased font size */
   }
   
   .menu-header h2 {

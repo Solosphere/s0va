@@ -35,7 +35,7 @@ export default function ProgramsAccess() {
   const programs = [
     'root@wound.os ~ % $ SYSTEM_01 - Neural Interface Protocol [ACTIVE]',
     'root@wound.os ~ % $ SECURITY_02 - Firewall Penetration Test [ACTIVE]',
-    'root@wound.os ~ % $ DATA_03 - Encrypted Data Stream [STANBY]',
+    'root@wound.os ~ % $ DATA_03 - Encrypted Data Stream [STANDBY]',
     'root@wound.os ~ % $ PROTOCOL_04 - Quantum Encryption Matrix [LOCKED]',
     'root@wound.os ~ % $ NEURAL_05 - Cognitive Enhancement Suite [LOCKED]',
     'root@wound.os ~ % $ CYBER_06 - Digital Warfare Simulator [DEACTIVATED]',
@@ -53,7 +53,7 @@ export default function ProgramsAccess() {
 
   const typeCommand = (commandObj) => {
     let index = 0;
-    const fullText = `$ ${commandObj.command}`;
+    const fullText = `${commandObj.command}`;
     
     const typeInterval = setInterval(() => {
       if (index <= fullText.length) {

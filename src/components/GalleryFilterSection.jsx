@@ -130,7 +130,7 @@ const GalleryFilterSection = ({ filters, setFilters, showFilters, setShowFilters
                         >
                             <option value="all">All</option>
                             <option value="Digital">Digital</option>
-                            <option value="Website">Website</option>
+                            <option value="Website">Code</option>
                             <option value="Oil">Oil</option>
                             <option value="Tattoo">Tattoo</option>
                             <option value="Acrylic">Acrylic</option>
