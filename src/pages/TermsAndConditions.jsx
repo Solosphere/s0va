@@ -8,7 +8,7 @@ const TermsAndConditions = () => {
   return (
     <div className="container-mx-auto-p-6">
       <h1 className="text-4xl font-bold mb-4">Terms and Conditions</h1>
-      <p className="text-gray-600 mb-4">Last Updated: 02/28/2025</p>
+      <p className="text-gray-600 mb-4">Last Updated: 08/15/2025</p>
       
       <p>Welcome to S⍉VA. By accessing or using this website, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, please do not use this website.</p>
       <section className="rect-container">

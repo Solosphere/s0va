@@ -40,15 +40,19 @@ export default function SiteHeadingAndNav() {
       <nav>
         <NavLink to='/' id="logo" onClick={closeMenu}>S<span className="special-char">⍉</span>VA </NavLink> 
         <div className="right">
-          <button className="dropdown-btn" onClick={toggleMenu} ref={buttonRef}>
-            <FontAwesomeIcon icon={faBars} size="lg" />
-          </button>
+          <div className="mobile-controls">
+            <Settings />
+            <button className="dropdown-btn" onClick={toggleMenu} ref={buttonRef}>
+              <FontAwesomeIcon icon={faBars} size="lg" />
+            </button>
+          </div>
           <ul className={`main-menu ${isMenuOpen ? 'show' : ''}`} ref={menuRef}>
             <li><NavLink to='/' onClick={closeMenu}>Home</NavLink></li>
             <li><NavLink to='/about' onClick={closeMenu}>About</NavLink></li>
             <li><NavLink to='/cache' onClick={closeMenu}>Cache</NavLink></li>
             <li><NavLink to='/saved' onClick={closeMenu}>Saved</NavLink></li>
-            <li><Settings /></li>
+            <li><NavLink to='/programs' onClick={closeMenu} className="nav-programs-link">Programs</NavLink></li>
+            <li className="desktop-settings"><Settings /></li>
           </ul>
         </div>
       </nav>
