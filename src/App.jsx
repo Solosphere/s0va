@@ -4,6 +4,8 @@ import Home from './pages/Home';
 import GalleryPage from './pages/Gallery';
 import AboutPage from './pages/About';
 import TermsAndConditions from './pages/TermsAndConditions';
+import BlackSite from './pages/BlackSite';
+import ProgramsAccess from './pages/ProgramsAccess';
 import SiteHeadingAndNav from './components/SiteHeadingAndNav';
 import Footer from './components/Footer';
 import NotFoundPage from './pages/NotFound';
@@ -76,6 +78,8 @@ export default function App() {
             <Route path="/cache/:id" element={<GalleryItemDetail />} />
             <Route path="/saved" element={<SavedArtworks />} />
             <Route path="/terms" element={<TermsAndConditions />} />
+            <Route path="/programs" element={<ProgramsAccess />} />
+            <Route path="/programs/blacksite" element={<BlackSite />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         )}
