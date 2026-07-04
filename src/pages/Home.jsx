@@ -3,15 +3,12 @@ import { Link } from "react-router-dom";
 import { useProducts } from '../context/ProductsProvider';
 import Reveal from '../components/Reveal';
 import Coverflow from '../components/Coverflow';
+import HeroScene from '../components/HeroScene';
 import { useGalleryScrollRestore } from '../utils/useScrollRestore';
 import { toLogCard } from '../data/caseStudies';
 
 export default function HomePage() {
 const { products } = useProducts();
-
-// Get the intro video URL from products data
-const introVideo = products && products.length > 0 ? products.find(p => p.image && p.image.some(img => img.includes('intro.mp4'))) : null;
-const introVideoUrl = introVideo ? introVideo.image.find(img => img.includes('intro.mp4')) : '/api/media/video/intro.mp4';
 
 // Get featured images from products data
 const featuredImages = ['HCT-17.webp','kirin.webp', 'secondwind.webp', 'SAP.webp', 'metvoyager.webp', 'angel.webp'];
@@ -55,10 +52,7 @@ return (
     <div className='home-row'>
       <div className='home-container'>
         <div className="video-container">
-          <video className="landingpage-image" autoPlay muted width="100%" height="100%" loop playsInline controls={false}>
-            <source src={introVideoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          <HeroScene />
         </div>
         <div className="content">
           <h1 className="landingpage-title">METTAIRE</h1>
