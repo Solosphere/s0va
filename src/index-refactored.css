@@ -515,6 +515,15 @@ nav #logo.active,
   cursor: grabbing;
 }
 
+/* Touch devices (phones/tablets): the canvas ignores touches so a swipe scrolls
+   the page instead of being captured by orbit controls. The model keeps
+   auto-rotating; desktop (fine pointer) still gets mouse drag-to-orbit. */
+@media (hover: none) and (pointer: coarse) {
+  .hero-canvas {
+    pointer-events: none;
+  }
+}
+
 .landingpage-image {
   width: 100%;
   height: 100%;
