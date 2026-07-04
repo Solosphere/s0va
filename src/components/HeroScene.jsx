@@ -49,12 +49,15 @@ function Model() {
 }
 
 export default function HeroScene() {
+  // The camera is raised on Y so the view looks down ~15°, revealing the deck's
+  // keyboard rather than a dead-on front view. Auto-rotate keeps this elevation
+  // constant, so the keyboard stays visible from every angle as it spins.
   return (
     <Canvas
       className="hero-canvas"
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: true }}
-      camera={{ position: [0, 0.15, 3.6], fov: 40, near: 0.1, far: 100 }}
+      camera={{ position: [0, 0.95, 3.5], fov: 40, near: 0.1, far: 100 }}
     >
       <AdaptiveDpr pixelated />
 
