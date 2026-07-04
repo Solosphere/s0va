@@ -6,7 +6,7 @@ import { getLastPath } from '../utils/navTracker';
 
 // Pages a log entry can be opened from (carousel cards or the log index), so
 // "back" returns to wherever the user actually came from.
-const PAGE_LABELS = { '/': 'home', '/about': 'about', '/log': 'log' };
+const PAGE_LABELS = { '/': 'home', '/about': 'about', '/engineering': 'engineering' };
 
 // One log entry rendered as a terminal-styled STAR write-up. Section headers
 // read like console commands (cat problem, cat outcome ...) to tie into the
@@ -23,13 +23,13 @@ const EngineeringLogDetail = () => {
   const entry = findCaseStudy(id);
 
   // Capture the origin at mount (before the route tracker overwrites it) so the
-  // back button returns to the page that opened this entry, not always /log.
+  // back button returns to the page that opened this entry, not always /engineering.
   const originRef = useRef(getLastPath());
   const origin = originRef.current;
   const originLabel = PAGE_LABELS[origin];
-  const backTo = originLabel ? origin : '/log';
-  const backWhere = originLabel || 'log';
-  const backCmd = backTo === '/' ? 'cd ~' : backTo === '/log' ? 'cd ..' : `cd ~${backTo}`;
+  const backTo = originLabel ? origin : '/engineering';
+  const backWhere = originLabel || 'engineering';
+  const backCmd = backTo === '/' ? 'cd ~' : backTo === '/engineering' ? 'cd ..' : `cd ~${backTo}`;
 
   useEffect(() => {
     window.scrollTo(0, 0);

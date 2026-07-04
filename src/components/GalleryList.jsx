@@ -141,7 +141,7 @@ const GalleryList = () => {
     setCurrentPage(pageNumber);
     const newParams = new URLSearchParams(window.location.search);
     newParams.set('page', pageNumber);
-    navigate(`/cache?${newParams.toString()}`);
+    navigate(`/gallery?${newParams.toString()}`);
   };
 
   const handleFilterChange = () => {
@@ -149,7 +149,7 @@ const GalleryList = () => {
     setCurrentPage(1);
     const newParams = new URLSearchParams(window.location.search);
     newParams.set('page', '1');
-    navigate(`/cache?${newParams.toString()}`);
+    navigate(`/gallery?${newParams.toString()}`);
   };
 
   const handleSortChange = () => {
@@ -157,7 +157,7 @@ const GalleryList = () => {
     setCurrentPage(1);
     const newParams = new URLSearchParams(window.location.search);
     newParams.set('page', '1');
-    navigate(`/cache?${newParams.toString()}`);
+    navigate(`/gallery?${newParams.toString()}`);
   };
 
   const handleSearchChange = (newSearchTerm) => {
@@ -166,7 +166,7 @@ const GalleryList = () => {
     // Update URL parameter based on the new search term
   const newParams = new URLSearchParams(window.location.search);
   newParams.set('page', '1');
-  navigate(`/cache?${newParams.toString()}`);
+  navigate(`/gallery?${newParams.toString()}`);
   }
   
   
@@ -180,7 +180,7 @@ const GalleryList = () => {
   }, []);
 
   // Top on fresh entry; restore position when returning from a piece's detail.
-  useGalleryScrollRestore('cacheScrollY');
+  useGalleryScrollRestore('galleryScrollY');
 
   // Show loading if products are still loading
   if (productsLoading) {
@@ -244,7 +244,7 @@ const GalleryList = () => {
     <div className="gallery-list-container">
       <div className="filter-search-row">
         <div className="gallery-search">
-        <h1 className="gallery-title">cache</h1>
+        <h1 className="gallery-title">gallery</h1>
         <SearchBar searchTerm={searchTerm} setSearchTerm={handleSearchChange} suggestions={suggestionPool} className="gallery-search-bar" />
         </div>
         <div className="filter-and-sort-row">
@@ -283,7 +283,7 @@ const GalleryList = () => {
           <div className="gallery-list">
             {/* The arcade, surfaced as a terminal card; opens its case study */}
             {!filtersActive && currentPage === 1 && (
-              <Link to="/log/blacksite" className="gallery-arcade-card">
+              <Link to="/engineering/blacksite" className="gallery-arcade-card">
                 <span className="cf-log-prompt">root@wound.os</span>
                 <h3>BLACKSITE</h3>
                 <p>Two playable browser games, built from scratch in React + canvas.</p>

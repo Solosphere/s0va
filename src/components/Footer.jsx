@@ -41,7 +41,7 @@ const Footer = () => {
                 <div className="navigation-links">
                     <ul>
                         <li><NavLink to='/about'>About</NavLink></li>
-                        <li><NavLink to='/cache'>Cache</NavLink></li>
+                        <li><NavLink to='/gallery'>Gallery</NavLink></li>
                         <li><NavLink to='/terms' onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Terms & Conditions</NavLink></li>
                         
                     {/* Add more links as needed */}

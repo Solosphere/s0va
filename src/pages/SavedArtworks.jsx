@@ -210,8 +210,8 @@ const SavedArtworks = () => {
           <FontAwesomeIcon icon={faHeartBroken} className="empty-icon" />
           <h2>No saved artworks yet</h2>
           <p>Start exploring the gallery and save your favorite pieces!</p>
-          <Link to="/cache" className="browse-button">
-            Browse Cache
+          <Link to="/gallery" className="browse-button">
+            Browse Gallery
           </Link>
         </div>
       ) : (
@@ -296,7 +296,7 @@ const SavedArtworks = () => {
                     <h3>{artwork.name}</h3>
                     <p className="artwork-description">{artwork.description}</p>
                     <p className="saved-date">Saved on {formatDate(artwork.savedAt)}</p>
-                    <Link to={`/cache/${artwork.id}`} className="view-details-link">
+                    <Link to={`/gallery/${artwork.id}`} className="view-details-link">
                       View Details
                     </Link>
                   </div>

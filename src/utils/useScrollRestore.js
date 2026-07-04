@@ -3,7 +3,7 @@ import { getLastPath } from './navTracker';
 
 /**
  * Scroll behavior for gallery-style pages: when the user returns from a detail
- * page (a /cache/:id piece or a /log/:id case study), restore where they left
+ * page (a /gallery/:id piece or a /engineering/:id case study), restore where they left
  * off; on any other entry (nav link, direct load), start at the top. The
  * position is saved on leave.
  *
@@ -11,7 +11,7 @@ import { getLastPath } from './navTracker';
  */
 export function useGalleryScrollRestore(storageKey) {
   useEffect(() => {
-    const cameFromDetail = /^\/(cache|log)\//.test(getLastPath());
+    const cameFromDetail = /^\/(gallery|engineering)\//.test(getLastPath());
     const saved = parseInt(sessionStorage.getItem(storageKey) || '0', 10);
 
     if (cameFromDetail && saved > 0) {

@@ -50,7 +50,8 @@ export const NavigationProvider = ({ children }) => {
     const pageTitles = {
       '/': 'Home',
       '/about': 'About',
-      '/cache': 'Gallery',
+      '/gallery': 'Gallery',
+      '/engineering': 'Engineering',
       '/saved': 'Saved Artworks',
       '/terms': 'Terms and Conditions'
     };

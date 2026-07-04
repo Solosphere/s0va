@@ -46,7 +46,7 @@ const EngineeringLog = () => {
       <section className="log-grid">
         {caseStudies.map((entry, i) => (
           <Reveal as="article" className="log-card" key={entry.id} delay={(i % 2) * 0.08}>
-            <Link to={`/log/${entry.id}`} className="log-card-link">
+            <Link to={`/engineering/${entry.id}`} className="log-card-link">
               <div className="log-card-top">
                 <span className="log-card-index">
                   #{String(i + 1).padStart(2, '0')}
@@ -78,7 +78,7 @@ const EngineeringLog = () => {
         <section className="log-grid log-grid--school">
           {internships.map((p, i) => (
             <Reveal as="article" className="log-card" key={p.id} delay={(i % 2) * 0.08}>
-              <Link to={`/cache/${p.cacheId}`} className="log-card-link">
+              <Link to={`/gallery/${p.cacheId}`} className="log-card-link">
                 <div className="log-card-top">
                   <span className="log-card-org">{p.type}</span>
                   <span className="log-card-org">{p.year}</span>
@@ -118,7 +118,7 @@ const EngineeringLog = () => {
             <section className="log-grid log-grid--school">
               {school.projects.map((p, i) => (
                 <Reveal as="article" className="log-card" key={p.id} delay={(i % 2) * 0.08}>
-                  <Link to={`/cache/${p.cacheId}`} className="log-card-link">
+                  <Link to={`/gallery/${p.cacheId}`} className="log-card-link">
                     <div className="log-card-top">
                       <span className="log-card-org">{p.type}</span>
                       <span className="log-card-org">{p.year}</span>

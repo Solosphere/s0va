@@ -31,10 +31,10 @@ const AboutPage = () => {
       : null)?.id ?? null;
   const chromeId = findProductId('HCteaser.mp4');
   const tattooId = findProductId('tattoopray.webp');
-  // Whether we arrived from a detail page (a /cache/:id piece or a /log/:id
-  // case study opened from the carousel) — captured at first render, before the
-  // app-level route tracker overwrites the "came from" path.
-  const cameFromDetailRef = useRef(/^\/(cache|log)\//.test(getLastPath()));
+  // Whether we arrived from a detail page (a /gallery/:id piece or a
+  // /engineering/:id case study opened from the carousel) — captured at first
+  // render, before the app-level route tracker overwrites the "came from" path.
+  const cameFromDetailRef = useRef(/^\/(gallery|engineering)\//.test(getLastPath()));
   const tattooImages = ["tattoopray.webp", "tat-2.webp", "tat-3.webp", "customsnake.webp"]
   const [loading, setLoading] = useState(true);
   const [isSliding, setIsSliding] = useState(false);
@@ -135,7 +135,7 @@ const AboutPage = () => {
               <section className="rect-2"></section>
             </section>
               <h2>Beyond the Canvas</h2>
-              <p>My work extends well beyond the canvas. As a DevOps engineer at Salesforce, I build and secure cloud infrastructure in FedRAMP environments—automating CI/CD and patching pipelines, leading security incident response, and keeping critical systems reliable at scale. That same intent shaped projects like Second Wind and CareerSpring's Interest Finder: software built to help people move through hard moments with clarity and resilience. Whether it's art or engineering, the throughline holds—technology as a force for building things that endure and genuinely matter. Explore the full case studies in my <Link to="/log" className="log-inline-link">engineering log</Link>.</p>
+              <p>My work extends well beyond the canvas. As a DevOps engineer at Salesforce, I build and secure cloud infrastructure in FedRAMP environments—automating CI/CD and patching pipelines, leading security incident response, and keeping critical systems reliable at scale. That same intent shaped projects like Second Wind and CareerSpring's Interest Finder: software built to help people move through hard moments with clarity and resilience. Whether it's art or engineering, the throughline holds—technology as a force for building things that endure and genuinely matter. Explore the full case studies in my <Link to="/engineering" className="log-inline-link">engineering log</Link>.</p>
                 </section>
                 {/* Project Carousel */}
                 <ProjectCarousel products={products} getProtectedImageUrl={getProtectedImageUrl} />
@@ -156,7 +156,7 @@ const AboutPage = () => {
         </Reveal>
         <div className="upcoming-projects-column-2">
         <Reveal className="image-with-description" id="chrome-container">
-      <Link to={chromeId ? `/cache/${chromeId}` : '/cache'} className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
+      <Link to={chromeId ? `/gallery/${chromeId}` : '/gallery'} className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
       <video autoPlay muted width="auto" loop playsInline controls={false}>
             <source src={getProtectedVideoUrl('HCteaser.mp4', products)} type="video/mp4" />
             Your browser does not support the video tag.
@@ -169,7 +169,7 @@ const AboutPage = () => {
     </Reveal>
 
     <Reveal className="image-with-description" id="tats">
-    <Link to={tattooId ? `/cache/${tattooId}` : '/cache'} className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
+    <Link to={tattooId ? `/gallery/${tattooId}` : '/gallery'} className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
     <div className="tattoo-text">
       <h3>Tattooing</h3>
       <p> As my journey unfolds, I aim to use tattooing as another layer of my creative odyssey to explore different ways to connect art with personal experiences and cultural influences.</p>

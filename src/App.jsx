@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Home from './pages/Home';
 import GalleryPage from './pages/Gallery';
@@ -40,6 +40,15 @@ function waitForPageReady(maxTimeout) {
     };
     poll();
   });
+}
+
+// Permanent client-side redirect for the old section URLs (/cache → /gallery,
+// /log → /engineering), preserving any sub-path and query so bookmarks and
+// inbound links keep working after the rename.
+function LegacyRedirect({ from, to }) {
+  const location = useLocation();
+  const dest = location.pathname.replace(from, to) + location.search;
+  return <Navigate to={dest} replace />;
 }
 
 export default function App() {
@@ -121,10 +130,13 @@ export default function App() {
         <Routes location={location}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/cache" element={<GalleryPage />} />
-          <Route path="/cache/:id" element={<GalleryItemDetail />} />
-          <Route path="/log" element={<EngineeringLog />} />
-          <Route path="/log/:id" element={<EngineeringLogDetail />} />
+          <Route path="/gallery" element={<GalleryPage />} />
+          <Route path="/gallery/:id" element={<GalleryItemDetail />} />
+          <Route path="/engineering" element={<EngineeringLog />} />
+          <Route path="/engineering/:id" element={<EngineeringLogDetail />} />
+          {/* Redirects from the old section URLs */}
+          <Route path="/cache/*" element={<LegacyRedirect from="/cache" to="/gallery" />} />
+          <Route path="/log/*" element={<LegacyRedirect from="/log" to="/engineering" />} />
           <Route path="/saved" element={<SavedArtworks />} />
           <Route path="/terms" element={<TermsAndConditions />} />
           <Route path="/programs" element={<ProgramsAccess />} />

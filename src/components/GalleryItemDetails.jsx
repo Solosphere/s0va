@@ -9,7 +9,7 @@ import Loading from './Loading';
 import { getLastPath } from '../utils/navTracker';
 
 // Where the back button should return to, based on the route the user came from
-const PAGE_LABELS = { '/': 'home', '/cache': 'cache', '/saved': 'saved', '/about': 'about', '/log': 'log' };
+const PAGE_LABELS = { '/': 'home', '/gallery': 'gallery', '/saved': 'saved', '/about': 'about', '/engineering': 'engineering' };
 
 // Convert a media filename to its full API URL
 const getFullImageUrl = (filename) => {
@@ -71,16 +71,16 @@ const GalleryItemDetails = () => {
 
   // Navigate between pieces, preserving the gallery page we came from
   const goToProduct = (pid) => {
-    navigate(`/cache/${pid}${page ? `?page=${page}` : ''}`);
+    navigate(`/gallery/${pid}${page ? `?page=${page}` : ''}`);
   };
 
   // Dynamic back target: return to wherever the user entered from. Coming from
   // a related piece (another detail) or anywhere unknown falls back to the cache.
   const origin = originRef.current;
-  const cacheUrl = `/cache${page ? `?page=${page}` : ''}`;
+  const galleryUrl = `/gallery${page ? `?page=${page}` : ''}`;
   const originLabel = PAGE_LABELS[origin];
-  const backTo = origin === '/cache' ? cacheUrl : originLabel ? origin : cacheUrl;
-  const backWhere = originLabel || 'cache';
+  const backTo = origin === '/gallery' ? galleryUrl : originLabel ? origin : galleryUrl;
+  const backWhere = originLabel || 'gallery';
   const backLabel = `Back to ${backWhere}`;
 
   const currentImageUrl = product.image[currentImageIndex];
@@ -206,7 +206,7 @@ const GalleryItemDetails = () => {
                 return (
                   <Link
                     key={work.id}
-                    to={`/cache/${work.id}${page ? `?page=${page}` : ''}`}
+                    to={`/gallery/${work.id}${page ? `?page=${page}` : ''}`}
                     className="related-card"
                   >
                     {thumbIsVideo ? (

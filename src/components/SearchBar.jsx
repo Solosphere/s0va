@@ -61,7 +61,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, suggestions = [] }) => {
           type="text"
           value={searchTerm}
           className="search-bar-input"
-          placeholder="Search the cache…"
+          placeholder="Search the gallery…"
           onChange={(e) => { setSearchTerm(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
           onKeyDown={handleKeyDown}

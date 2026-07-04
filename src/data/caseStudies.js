@@ -305,7 +305,7 @@ export const toLogCard = (id) => {
   return {
     key: `log-${c.id}`,
     kind: 'log',
-    to: `/log/${c.id}`,
+    to: `/engineering/${c.id}`,
     title: c.title,
     org: c.org,
     summary: c.summary,

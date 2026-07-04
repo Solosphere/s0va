@@ -48,7 +48,7 @@ const ProjectCarousel = ({ products, getProtectedImageUrl }) => {
     return {
       key: p.id,
       image: p.image,
-      to: detailId ? `/cache/${detailId}` : null,
+      to: detailId ? `/gallery/${detailId}` : null,
       title: p.title,
       description: p.description,
       descriptionFull: p.descriptionFull,

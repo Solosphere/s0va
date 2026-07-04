@@ -48,8 +48,8 @@ export default function SiteHeadingAndNav() {
           </div>
           <ul className={`main-menu ${isMenuOpen ? 'show' : ''}`} ref={menuRef}>
             <li><NavLink to='/about' onClick={closeMenu}>About</NavLink></li>
-            <li><NavLink to='/log' onClick={closeMenu}>Log</NavLink></li>
-            <li><NavLink to='/cache' onClick={closeMenu}>Cache</NavLink></li>
+            <li><NavLink to='/engineering' onClick={closeMenu}>Engineering</NavLink></li>
+            <li><NavLink to='/gallery' onClick={closeMenu}>Gallery</NavLink></li>
             <li><NavLink to='/saved' onClick={closeMenu}>Saved</NavLink></li>
             <li className="desktop-settings"><Settings /></li>
           </ul>

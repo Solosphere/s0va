@@ -560,7 +560,7 @@ nav #logo.active,
   z-index: 1;
 }
 
-/* Tagline (with its log/cache links) stays above the canvas and clickable. */
+/* Tagline (with its engineering/gallery links) stays above the canvas and clickable. */
 .home-page .tagline-command {
   position: relative;
   z-index: 5;
@@ -7944,8 +7944,8 @@ input:checked + .toggle-slider:before {
   box-shadow: 0 0 10px rgba(var(--color-club-rgb), 0.22);
 }
 
-/* Landing hero entry as a single terminal command — > grep -E "cache|log" —
-   where "cache" and "log" are the clickable alternatives in the pattern. */
+/* Landing hero entry as a single terminal command — > grep -E "engineering|gallery" —
+   where "engineering" and "gallery" are the clickable alternatives in the pattern. */
 .tagline-command {
   font-family: var(--font-family-mono);
   text-transform: none;

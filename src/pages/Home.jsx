@@ -29,7 +29,7 @@ const findProductByImage = (imageFilename) => {
 // Featured items for the 3D coverflow, each linking to its detail page
 const baseFeatured = featuredImages.map((image) => {
   const product = findProductByImage(image);
-  return { key: image, image, to: product ? `/cache/${product.id}` : null };
+  return { key: image, image, to: product ? `/gallery/${product.id}` : null };
 });
 
 // Slot an engineering case study (terminal card) in among the visual works.
@@ -57,7 +57,7 @@ return (
         <div className="content">
           <h1 className="landingpage-title">METTAIRE</h1>
           <h2 className="tagline tagline-command">
-            <span className="tagline-cmd">&gt; grep -E &quot;</span><Link to="/log" className="tagline-target">log</Link><span className="tagline-pipe">|</span><Link to="/cache?page=1" className="tagline-target">cache</Link><span className="tagline-cmd">&quot;</span><span className="terminal-cursor" aria-hidden="true">▮</span>
+            <span className="tagline-cmd">&gt; grep -E &quot;</span><Link to="/engineering" className="tagline-target">engineering</Link><span className="tagline-pipe">|</span><Link to="/gallery?page=1" className="tagline-target">gallery</Link><span className="tagline-cmd">&quot;</span><span className="terminal-cursor" aria-hidden="true">▮</span>
           </h2>
         </div>
       </div>
@@ -83,8 +83,8 @@ return (
         </p>
         <div className="home-button-row">
           <Link to="/about" className="home-about-link"><button className="home-about-button">Learn More</button></Link>
-          <Link to='/cache?page=1' className="explore-gallery-link"><button className="explore-gallery-button">Explore cache</button></Link>
-          <Link to='/log' className="engineering-log-link"><button className="home-about-button engineering-log-button">Engineering Log</button></Link>
+          <Link to='/gallery?page=1' className="explore-gallery-link"><button className="explore-gallery-button">Explore Gallery</button></Link>
+          <Link to='/engineering' className="engineering-log-link"><button className="home-about-button engineering-log-button">Engineering Log</button></Link>
         </div>
       </Reveal>
     </div>
