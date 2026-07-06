@@ -1499,6 +1499,10 @@ nav #logo span.special-char,
 .about-header h1 {
   font-family: var(--font-family-display);
   font-size: var(--font-size-6xl);
+  /* Thin, letter-spaced page title echoing the METTAIRE wordmark's cut
+     (sub-headers stay bold for hierarchy). */
+  font-weight: 400;
+  letter-spacing: 0.08em;
   margin-bottom: var(--spacing-lg);
   position: relative;
   z-index: 2;
@@ -2247,13 +2251,19 @@ nav #logo span.special-char,
 .gallery-title {
   display: flex;
   align-items: center;
+  /* Declared explicitly (not just inherited from the global h1) so all four
+     page titles resolve their font the same way. */
+  font-family: var(--font-family-display);
   font-size: 2.5em;
+  /* Thin, letter-spaced page title (echoes the wordmark cut). */
+  font-weight: 400;
+  letter-spacing: 0.08em;
   height: 70px;
   color: black;
   padding-left: 3%;
   padding-right: 2%;
   margin-bottom: 0;
-  
+
 }
 
 .search-bar {
@@ -3520,6 +3530,9 @@ nav #logo span.special-char,
 .saved-artworks-header h1 {
   font-family: var(--font-family-display);
   font-size: var(--font-size-4xl);
+  /* Thin, letter-spaced page title (echoes the wordmark cut). */
+  font-weight: 400;
+  letter-spacing: 0.08em;
   color: var(--color-text);
   margin: 0;
 }
@@ -7579,7 +7592,9 @@ input:checked + .toggle-slider:before {
 .log-header h1 {
   font-family: var(--font-family-display);
   font-size: clamp(2rem, 6vw, 3.4rem);
-  letter-spacing: 0.04em;
+  /* Thin, letter-spaced page title (echoes the wordmark cut). */
+  font-weight: 400;
+  letter-spacing: 0.08em;
   margin-bottom: 0;
 }
 
