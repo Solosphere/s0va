@@ -7959,9 +7959,10 @@ input:checked + .toggle-slider:before {
   font-family: var(--font-family-mono);
   text-transform: none;
   letter-spacing: 0.02em;
-  /* Larger than the plain tagline so the tappable words are easy to hit,
-     especially on phones (bigger floor on the clamp). */
-  font-size: clamp(0.95rem, 4.2vw, 1.25rem);
+  /* Fluid size: capped at 1.25rem on tablet/desktop. The lower vw term + floor
+     keep the (now longer) "engineering|gallery" command from crowding the width
+     on phones, while padding on .tagline-target keeps the words tappable. */
+  font-size: clamp(0.75rem, 3.5vw, 1.25rem);
   /* Fade + rise in on load, mirroring the title reveal but trailing it so the
      command appears just after METTAIRE settles. The cursor blinks on its own. */
   opacity: 0;
