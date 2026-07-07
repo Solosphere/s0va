@@ -291,6 +291,12 @@ nav .right {
   list-style: none;
 }
 
+/* Full-screen mobile-menu extras — hidden on desktop, shown in the mobile menu */
+.menu-idx,
+.menu-terminal-footer {
+  display: none;
+}
+
 /* ========================================
    BUTTONS & INTERACTIVE ELEMENTS
    ======================================== */
@@ -4580,82 +4586,147 @@ nav #logo span.special-char,
     border: none;
   }
   
+  /* Keep the logo + hamburger above the full-screen menu (which is a child of
+     the fixed nav-header) so they stay visible/tappable while it's open. */
+  .nav-header #logo,
+  .nav-header .mobile-controls {
+    position: relative;
+    z-index: 995;
+  }
+
+  /* ---- Full-screen "blast-door" menu: a metal panel that wipes down ---- */
   .main-menu {
-    display: none;
-    position: absolute;
-    /* Sit just below the bar so the menu lines up under the hamburger icon */
-    top: calc(100% + 0.6vh);
-    right: 1vh;
+    position: fixed;
+    inset: 0;
+    z-index: 990; /* below the fixed nav bar (1000), above page content */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Override the global `nav ul { align-items: center }` (desktop rule) so the
+       mobile menu rows are full-width and left-aligned, not centered. */
+    align-items: stretch;
     list-style-type: none;
-    padding: 2vh;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-    z-index: 2;
-    border-radius: 8px;
-    /* Shimmering liquid-glass background, matching the coverflow cards */
+    margin: 0;
+    padding: clamp(1.6rem, 7vw, 2.6rem);
+    box-sizing: border-box;
+    overflow: hidden;
+    /* Shimmering liquid-glass metal, matching the coverflow cards */
     background:
       linear-gradient(
         135deg,
         rgba(170, 170, 170, 0.04) 0%,
-        rgba(170, 170, 170, 0.07) 25%,
-        rgba(170, 170, 170, 0.11) 50%,
-        rgba(170, 170, 170, 0.07) 75%,
+        rgba(170, 170, 170, 0.08) 25%,
+        rgba(170, 170, 170, 0.13) 50%,
+        rgba(170, 170, 170, 0.08) 75%,
         rgba(170, 170, 170, 0.04) 100%
       ),
       #060606;
     background-size: 200% 200%;
-    animation: liquid-shimmer 2s ease-in-out infinite;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    font-size: 2.5vh;
-    overflow: hidden;
+    animation: liquid-shimmer 3s ease-in-out infinite;
+    animation-play-state: paused;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    /* Closed: clipped to the top edge + non-interactive. Opening wipes it down. */
+    clip-path: inset(0 0 100% 0);
+    pointer-events: none;
+    transition: clip-path 0.55s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Light sweep across the menu background */
+  /* Wide light sweep across the panel */
   .main-menu::before {
     content: '';
     position: absolute;
-    top: 0;
+    inset: 0;
     left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
-    animation: shimmer-sweep 3s ease-in-out infinite;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.10), transparent);
+    animation: shimmer-sweep 3.5s ease-in-out infinite;
+    animation-play-state: paused;
     pointer-events: none;
     z-index: 0;
   }
 
-  .main-menu.show {
-    display: block;
+  /* Faint CRT scanlines (terminal tie-in) */
+  .main-menu::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+    background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 3px);
   }
+
+  .main-menu.show {
+    clip-path: inset(0 0 0 0);
+    pointer-events: auto;
+    animation-play-state: running;
+  }
+  .main-menu.show::before { animation-play-state: running; }
 
   .main-menu li {
     display: block;
-    padding: 2%;
-    /* Keep links above the shimmer sweep */
     position: relative;
     z-index: 1;
+    margin: 0;
+    opacity: 0; /* hidden until the menu opens, then revealed staggered */
   }
+
+  /* Stagger the links in after the panel wipes down */
+  .main-menu.show li { animation: title-reveal 0.5s ease-out both; }
+  .main-menu.show li:nth-child(1) { animation-delay: 0.18s; }
+  .main-menu.show li:nth-child(2) { animation-delay: 0.27s; }
+  .main-menu.show li:nth-child(3) { animation-delay: 0.36s; }
+  .main-menu.show li:nth-child(4) { animation-delay: 0.45s; }
   
   .main-menu li a {
-    color: white;
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 0.55rem;
+    color: #ffffff;
     text-decoration: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    display: block;
-    padding: var(--spacing-sm) 0;
+    font-family: var(--font-family-display);
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    font-size: clamp(1.5rem, 8vw, 3rem);
+    line-height: 1.15;
+    padding: 0.16em 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   }
-  
-  /* Remove border from programs link in dropdown */
-  .main-menu li a.nav-programs-link {
-    border-bottom: none;
+
+  .main-menu li a .menu-idx {
+    display: inline-block;
+    font-family: var(--font-family-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: none;
+    color: rgba(255, 255, 255, 0.4);
   }
-  
-  .main-menu li:last-child a {
-    border-bottom: none;
-  }
-  
-  /* Match dark mode: hover just darkens the link text (no orange) */
+
   .main-menu li a:hover {
     color: #cccccc;
     opacity: 1;
+  }
+
+  /* Terminal footer, pinned to the bottom of the panel */
+  .main-menu .menu-terminal-footer {
+    display: block;
+    position: absolute;
+    left: clamp(1.6rem, 7vw, 2.6rem);
+    bottom: clamp(1.6rem, 7vw, 2.6rem);
+    margin: 0;
+    opacity: 0;
+    border-bottom: none;
+    text-align: left;
+    font-family: var(--font-family-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.35);
+  }
+  .main-menu.show .menu-terminal-footer {
+    animation: title-reveal 0.5s ease-out 0.55s both;
   }
 
   /* The menu is driven solely by the `.show` state (toggled in React) so it
