@@ -2031,10 +2031,10 @@ nav #logo span.special-char,
   object-position: center bottom;
 }
 
-/* Show more of the DATA SPIKE screenshot's right side (column 2 crops to its
+/* Show more of the DATA SPIKE screenshot's left side (column 2 crops to its
    center by default). */
 .blacksite-mini-gallery .image-column-2 img {
-  object-position: right center;
+  object-position: left center;
 }
 
 /* ── Projects-in-Progress layout ────────────────────────────────────────────
