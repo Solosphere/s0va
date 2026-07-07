@@ -2148,8 +2148,14 @@ nav #logo span.special-char,
     flex-direction: column;
     justify-content: center;
   }
+  /* Chrome's default spacing (h3 margin-bottom + p top padding) stacks into a
+     bigger header/blurb gap than the tattoo/blacksite cards — tighten it to match. */
+  .chrome-text h3 {
+    margin-bottom: var(--spacing-xs);
+  }
   .chrome-text p {
     flex-grow: 0;
+    padding-top: 0;
   }
 }
 
