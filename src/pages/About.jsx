@@ -189,7 +189,7 @@ const AboutPage = () => {
     <Link to={tattooId ? `/gallery/${tattooId}` : '/gallery'} className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
     <div className="tattoo-text">
       <h3>Tattooing</h3>
-      <p> As my journey unfolds, I aim to use tattooing as another layer of my creative odyssey to explore different ways to connect art with personal experiences and cultural influences.</p>
+      <p>Tattooing is the next surface. Same interests, different medium: identity, transformation, permanence rendered in skin instead of pixels or paint.</p>
     </div>
     <div className="tattoo-mini-gallery">
       <div className='image-column-1'>
