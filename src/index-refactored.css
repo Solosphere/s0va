@@ -153,21 +153,24 @@ h1 {
 h2 {
   font-family: var(--font-family-display);
   font-size: var(--font-size-3xl);
-  font-weight: bold;
+  /* Same thin weight as the page titles so no sub-header out-weighs the h1;
+     hierarchy comes from size (titles are much larger) + the display face
+     keeping these distinct from the Helvetica body. */
+  font-weight: 400;
   margin-bottom: var(--spacing-md);
 }
 
 h3 {
   font-family: var(--font-family-display);
   font-size: var(--font-size-2xl);
-  font-weight: bold;
+  font-weight: 400;
   margin-bottom: var(--spacing-sm);
 }
 
 h4 {
   font-family: var(--font-family-display);
   font-size: var(--font-size-xl);
-  font-weight: bold;
+  font-weight: 400;
   margin-bottom: var(--spacing-sm);
 }
 
