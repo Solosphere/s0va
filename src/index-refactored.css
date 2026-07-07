@@ -5167,8 +5167,16 @@ nav #logo:focus,
 /* Full-screen "blast-door" settings panel (all viewports), matching the mobile
    nav menu. Always in the DOM; wipes open/closed via clip-path. */
 .settings-overlay {
+  /* Reveal by animating `top` (a layout property) rather than transform/clip-path.
+     Any of those promote the panel to a composited layer that Safari re-paints
+     WITHOUT its background on every repaint — and the shimmer + hovering trigger
+     constant repaints, so the fill kept going see-through. `top` never composites
+     the panel, so its solid background paints reliably at all times. */
   position: fixed;
-  inset: 0;
+  left: 0;
+  right: 0;
+  top: -100dvh;
+  height: 100dvh;
   z-index: var(--z-modal);
   /* Panel itself never scrolls, so the metal bg + shimmer always fill the full
      viewport; the inner container scrolls if the content is tall. */
@@ -5200,20 +5208,16 @@ nav #logo:focus,
       rgba(170, 170, 170, 0.13) 50%,
       rgba(170, 170, 170, 0.08) 75%,
       rgba(170, 170, 170, 0.04) 100%);
-  /* Reveal via transform (a top-down "blast-door drop") rather than clip-path.
-     Safari composited the clip-path'd panel without its fill (see-through);
-     a translateY is composited safely and paints the solid background. */
-  transform: translateY(-100%);
   visibility: hidden;
   pointer-events: none;
-  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.55s;
+  transition: top 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.55s;
 }
 
 .settings-overlay.open {
-  transform: translateY(0);
+  top: 0;
   visibility: visible;
   pointer-events: auto;
-  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s;
+  transition: top 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s;
 }
 
 /* Wide light sweep + faint CRT scanlines (terminal tie-in) */
