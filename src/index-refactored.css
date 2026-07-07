@@ -5979,14 +5979,22 @@ input:checked + .toggle-slider:before {
   color: #ffffff;
 }
 
-/* One long title (SAP) scaled down so it fits the card, especially on mobile. */
+/* SAP's home-carousel title, sized per breakpoint (desktop keeps the default). */
 .coverflow-card-text--compact h3 {
   font-size: 18px;
 }
 
+/* Tablet */
+@media (max-width: 1199px) {
+  .coverflow-card-text--compact h3 {
+    font-size: 22px;
+  }
+}
+
+/* Mobile */
 @media (max-width: 640px) {
   .coverflow-card-text--compact h3 {
-    font-size: 16px;
+    font-size: 20px;
   }
 }
 
