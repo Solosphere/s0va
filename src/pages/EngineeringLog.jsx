@@ -14,10 +14,6 @@ const EngineeringLog = () => {
   return (
     <div className="log-page">
       <header className="log-header">
-        <section className="rect-container">
-          <section className="rect-1"></section>
-          <section className="rect-2"></section>
-        </section>
         <h1>ENGINEERING LOG</h1>
       </header>
 
