@@ -140,6 +140,7 @@ const AboutPage = () => {
                 {/* Project Carousel */}
                 <ProjectCarousel products={products} getProtectedImageUrl={getProtectedImageUrl} />
                 
+                
                 </Reveal>
                 </section>
 
