@@ -2031,23 +2031,18 @@ nav #logo span.special-char,
   object-position: center bottom;
 }
 
-/* Both game screenshots zoomed in slightly to crop their window outlines.
-   DATA SPIKE (column 2) is framed to its left side and nudged a little further left. */
-.blacksite-mini-gallery .image-column-1 img {
+/* Frame both game screenshots identically — anchored to the top (so their title
+   bars line up) with the same slight zoom — so the pair reads as a neat set. */
+.blacksite-mini-gallery .image-column-1 img,
+.blacksite-mini-gallery .image-column-2 img {
+  object-position: center top;
+  transform-origin: top;
   transform: scale(1.08);
 }
 
-.blacksite-mini-gallery .image-column-1 img:hover {
-  transform: scale(1.13);
-}
-
-.blacksite-mini-gallery .image-column-2 img {
-  object-position: left center;
-  transform: scale(1.08) translateX(-5%);
-}
-
+.blacksite-mini-gallery .image-column-1 img:hover,
 .blacksite-mini-gallery .image-column-2 img:hover {
-  transform: scale(1.13) translateX(-5%);
+  transform: scale(1.13);
 }
 
 /* ── Projects-in-Progress layout ────────────────────────────────────────────
