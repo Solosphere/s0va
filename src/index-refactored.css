@@ -8244,7 +8244,7 @@ input:checked + .toggle-slider:before {
 .tagline-line {
   display: inline-block;
   max-width: 100%;
-  width: 34ch;
+  width: 36ch;
   text-align: left;
   white-space: nowrap;
 }
@@ -8263,7 +8263,7 @@ input:checked + .toggle-slider:before {
 }
 
 @keyframes tagline-type {
-  to { width: 33ch; }
+  to { width: 35ch; }
 }
 
 .tagline-cmd {
