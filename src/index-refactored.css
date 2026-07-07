@@ -2031,17 +2031,19 @@ nav #logo span.special-char,
   object-position: center bottom;
 }
 
-/* DATA SPIKE shows its left side; NULL_ESCAPE is zoomed in slightly to crop its
-   window outline. */
+/* Both game screenshots zoomed in slightly to crop their window outlines;
+   DATA SPIKE (column 2) is framed to its left side. */
 .blacksite-mini-gallery .image-column-2 img {
   object-position: left center;
 }
 
-.blacksite-mini-gallery .image-column-1 img {
+.blacksite-mini-gallery .image-column-1 img,
+.blacksite-mini-gallery .image-column-2 img {
   transform: scale(1.08);
 }
 
-.blacksite-mini-gallery .image-column-1 img:hover {
+.blacksite-mini-gallery .image-column-1 img:hover,
+.blacksite-mini-gallery .image-column-2 img:hover {
   transform: scale(1.13);
 }
 
