@@ -2031,14 +2031,17 @@ nav #logo span.special-char,
   object-position: center bottom;
 }
 
-/* Show the DATA SPIKE screenshot's left side, zoomed in slightly so its window
-   outline (which doesn't match NULL_ESCAPE's fill) is cropped out. */
+/* DATA SPIKE shows its left side; NULL_ESCAPE is zoomed in slightly to crop its
+   window outline. */
 .blacksite-mini-gallery .image-column-2 img {
   object-position: left center;
+}
+
+.blacksite-mini-gallery .image-column-1 img {
   transform: scale(1.08);
 }
 
-.blacksite-mini-gallery .image-column-2 img:hover {
+.blacksite-mini-gallery .image-column-1 img:hover {
   transform: scale(1.13);
 }
 
