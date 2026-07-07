@@ -5200,17 +5200,20 @@ nav #logo:focus,
       rgba(170, 170, 170, 0.13) 50%,
       rgba(170, 170, 170, 0.08) 75%,
       rgba(170, 170, 170, 0.04) 100%);
-  clip-path: inset(0 0 100% 0);
+  /* Reveal via transform (a top-down "blast-door drop") rather than clip-path.
+     Safari composited the clip-path'd panel without its fill (see-through);
+     a translateY is composited safely and paints the solid background. */
+  transform: translateY(-100%);
   visibility: hidden;
   pointer-events: none;
-  transition: clip-path 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.55s;
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.55s;
 }
 
 .settings-overlay.open {
-  clip-path: inset(0 0 0 0);
+  transform: translateY(0);
   visibility: visible;
   pointer-events: auto;
-  transition: clip-path 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s;
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s;
 }
 
 /* Wide light sweep + faint CRT scanlines (terminal tie-in) */
