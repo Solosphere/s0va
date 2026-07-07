@@ -16,7 +16,7 @@ const getProtectedVideoUrl = (filename) => {
 const getFullImageUrl = (filename) =>
   filename.includes('.mp4') ? `/api/media/video/${filename}` : `/api/media/image/${filename}`;
 
-const GalleryCard = ({ product, currentPage, showViolentContent }) => {
+const GalleryCard = ({ product, currentPage, showViolentContent, onSaveChange }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const reduced = useReducedMotionPref();
@@ -127,7 +127,7 @@ const GalleryCard = ({ product, currentPage, showViolentContent }) => {
       <div className="gallery-card-content">
         <Link
           ref={linkRef}
-          to={`${product.id}?page=${currentPage}`}
+          to={`/gallery/${product.id}${currentPage ? `?page=${currentPage}` : ''}`}
           className="link-no-underline"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
@@ -196,7 +196,7 @@ const GalleryCard = ({ product, currentPage, showViolentContent }) => {
           )}
         </Link>
         <div className="save-button-container">
-          <SaveButton artwork={product} />
+          <SaveButton artwork={product} onSaveChange={onSaveChange} />
         </div>
       </div>
     </motion.div>

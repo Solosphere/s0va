@@ -15,9 +15,10 @@ const featuredImages = ['HCT-17.webp','kirin.webp', 'secondwind.webp', 'SAP.webp
 
 // Function to find product by image filename
 const findProductByImage = (imageFilename) => {
-  // Special case for HCT-17.webp - link to cache/103
+  // Special case: the HCT-17 teaser image isn't on product 103, but it links to
+  // (and represents) it — return the real product so the card gets a title/meta.
   if (imageFilename === 'HCT-17.webp') {
-    return { id: 103 };
+    return products.find((p) => p.id === 103) || { id: 103 };
   }
   
   return products.find(product =>
@@ -26,10 +27,20 @@ const findProductByImage = (imageFilename) => {
   );
 };
 
+// Concise material label for pieces whose full media list is too long for a card.
+const FEATURED_MATERIAL = { 'SAP.webp': 'Creative Technology' };
+
 // Featured items for the 3D coverflow, each linking to its detail page
 const baseFeatured = featuredImages.map((image) => {
   const product = findProductByImage(image);
-  return { key: image, image, to: product ? `/gallery/${product.id}` : null };
+  const material = FEATURED_MATERIAL[image] ?? product?.media;
+  return {
+    key: image,
+    image,
+    to: product ? `/gallery/${product.id}` : null,
+    title: product?.name,
+    meta: material ? `${material}${product?.date ? ` · ${product.date}` : ''}` : undefined,
+  };
 });
 
 // Slot an engineering case study (terminal card) in among the visual works.
@@ -79,7 +90,8 @@ return (
           <section className="rect-2"></section>
         </section>
         <h2>THE VISION</h2>
-        <p>Welcome to METTAIRE. I'm Daniel Nelson — a DevOps engineer at Salesforce and a visual artist. I build and secure cloud infrastructure at scale, as well as paint, design, and write code that's entirely my own. This space holds both sides—where engineering discipline meets fine art, and every piece circles the same existential themes: absurdism, nihilism, and the search for meaning and impact.
+        <p>
+        METTAIRE fuses engineering discipline and fine art, circling the same existential ground: absurdism, nihilism, the search for meaning and impact.
         </p>
         <div className="home-button-row">
           <Link to="/about" className="home-about-link"><button className="home-about-button">Learn More</button></Link>

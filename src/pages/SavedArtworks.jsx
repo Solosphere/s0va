@@ -1,36 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faArrowLeft,
   faTrash,
   faHeartBroken
 } from '@fortawesome/free-solid-svg-icons';
-import { getSavedArtworks, removeSavedArtwork, clearAllSavedArtworks } from '../utils/savedArtworks';
-import { useProducts } from '../context/ProductsProvider';
+import { getSavedArtworks, clearAllSavedArtworks } from '../utils/savedArtworks';
 import SearchBar from '../components/SearchBar';
 import GalleryConsole from '../components/GalleryConsole';
+import GalleryCard from '../components/GalleryCard';
 import Loading from '../components/Loading';
-
-// Get protected image/video URL from products data
-const getProtectedMediaUrl = (filename) => {
-  if (filename.includes('.mp4')) {
-    return `/api/media/video/${filename}`;
-  } else {
-    return `/api/media/image/${filename}`;
-  }
-};
-
-// Get protected video URL for warning video
-const getProtectedVideoUrl = (filename) => {
-  return `/api/media/video/${filename}`;
-};
 
 const SavedArtworks = () => {
   const [savedArtworks, setSavedArtworks] = useState([]);
   const [filteredArtworks, setFilteredArtworks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { products } = useProducts();
 
   // Search, filter, and sort state
   const [searchTerm, setSearchTerm] = useState('');
@@ -41,9 +25,6 @@ const SavedArtworks = () => {
   const [sortBy, setSortBy] = useState('recent');
   const [showViolentContent, setShowViolentContent] = useState(false);
   const [loadingDueToViewerDiscretion, setLoadingDueToViewerDiscretion] = useState(false);
-
-  // Video hover state
-  const [hoveredVideoId, setHoveredVideoId] = useState(null);
 
   const sortOptions = [
     { label: 'Recent', value: 'recent' },
@@ -74,13 +55,6 @@ const SavedArtworks = () => {
     const saved = getSavedArtworks();
     setSavedArtworks(saved);
     setIsLoading(false);
-  };
-
-  const handleRemoveArtwork = (artworkId) => {
-    const success = removeSavedArtwork(artworkId);
-    if (success) {
-      setSavedArtworks(prev => prev.filter(artwork => artwork.id !== artworkId));
-    }
   };
 
   const handleClearAll = () => {
@@ -154,29 +128,6 @@ const SavedArtworks = () => {
     setShowViolentContent(!showViolentContent);
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString();
-  };
-
-  // Check if artwork has video
-  const hasVideo = (artwork) => {
-    return artwork.image && Array.isArray(artwork.image) && 
-           artwork.image.some(item => item.includes('.mp4'));
-  };
-
-  // Get the first media item (image or video)
-  const getFirstMediaItem = (artwork) => {
-    if (!artwork.image || !Array.isArray(artwork.image) || artwork.image.length === 0) {
-      return null;
-    }
-    return artwork.image[0];
-  };
-
-  // Handle video hover
-  const handleVideoHover = (artworkId, isHovered) => {
-    setHoveredVideoId(isHovered ? artworkId : null);
-  };
-
   // Show loading if loading due to viewer discretion toggle
   if (loadingDueToViewerDiscretion) {
     return <Loading />;
@@ -241,66 +192,14 @@ const SavedArtworks = () => {
               <p>Try adjusting your filters or search terms.</p>
             </div>
           ) : (
-                        <div className="saved-artworks-grid">
+            <div className="gallery-list">
               {filteredArtworks.map((artwork) => (
-                <div key={artwork.id} className="saved-artwork-card">
-                  <div className="artwork-image-container">
-                    {showViolentContent || !artwork.hasViolence ? (
-                      <>
-                        {hasVideo(artwork) ? (
-                          <video
-                            src={getProtectedMediaUrl(getFirstMediaItem(artwork))}
-                            alt={artwork.name}
-                            onMouseEnter={() => handleVideoHover(artwork.id, true)}
-                            onMouseLeave={() => handleVideoHover(artwork.id, false)}
-                            autoPlay
-                            loop
-                            muted={hoveredVideoId !== artwork.id}
-                            playsInline
-                            controls={false}
-                            className="artwork-image"
-                          >
-                            Your browser does not support the video tag.
-                          </video>
-                        ) : (
-                          <img
-                            src={getProtectedMediaUrl(getFirstMediaItem(artwork))}
-                            alt={artwork.name}
-                            loading="lazy"
-                            className="artwork-image"
-                          />
-                        )}
-                      </>
-                    ) : (
-                      <div className="restricted-content-container">
-                        <div>
-                          <video className="warning-image" autoPlay muted width="200px" loop playsInline controls={false}>
-                            <source src={getProtectedVideoUrl('toxic.mp4')} type="video/mp4" />
-                            Your browser does not support the video tag.
-                          </video>
-                        </div>
-                        <p>Content Warning: This piece may contain sensitive or explicit material. Proceed with caution. To view, click the button with the crossed-out eye.</p>
-                      </div>
-                    )}
-                    <div className="artwork-overlay">
-                      <button
-                        className="remove-button"
-                        onClick={() => handleRemoveArtwork(artwork.id)}
-                        title="Remove from saved"
-                      >
-                        <FontAwesomeIcon icon={faHeartBroken} />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="artwork-info">
-                    <h3>{artwork.name}</h3>
-                    <p className="artwork-description">{artwork.description}</p>
-                    <p className="saved-date">Saved on {formatDate(artwork.savedAt)}</p>
-                    <Link to={`/gallery/${artwork.id}`} className="view-details-link">
-                      View Details
-                    </Link>
-                  </div>
-                </div>
+                <GalleryCard
+                  key={artwork.id}
+                  product={artwork}
+                  showViolentContent={showViolentContent}
+                  onSaveChange={loadSavedArtworks}
+                />
               ))}
             </div>
           )}
