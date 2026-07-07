@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faSun, faMoon, faEye, faEyeSlash, faVolumeUp, faVolumeMute } from '@fortawesome/free-solid-svg-icons';
 import Loading from './Loading';
@@ -156,8 +157,11 @@ export default function Settings() {
         <FontAwesomeIcon icon={faCog} size="lg" />
       </button>
 
-      {/* Settings Modal — always rendered so it can wipe open and closed */}
-      <div className={`settings-overlay ${isOpen ? 'open' : ''}`} role="dialog" aria-modal="true">
+      {/* Settings Modal — portaled to <body> so it isn't nested inside the
+          position:fixed nav-header, which made Chromium composite it see-through
+          on repaint/hover. Always rendered so it can wipe open and closed. */}
+      {createPortal(
+        <div className={`settings-overlay ${isOpen ? 'open' : ''}`} role="dialog" aria-modal="true">
           <button
             className="settings-close"
             onClick={closeSettings}
@@ -285,7 +289,9 @@ export default function Settings() {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
+      )}
 
       {/* METTAIRE loading screen while a toggled change applies */}
       {applying && (
