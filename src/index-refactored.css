@@ -5987,14 +5987,14 @@ input:checked + .toggle-slider:before {
 /* Tablet */
 @media (max-width: 1199px) {
   .coverflow-card-text--compact h3 {
-    font-size: 22px;
+    font-size: 20px;
   }
 }
 
 /* Mobile */
 @media (max-width: 640px) {
   .coverflow-card-text--compact h3 {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
