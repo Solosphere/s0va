@@ -8263,7 +8263,7 @@ input:checked + .toggle-slider:before {
 }
 
 @keyframes tagline-type {
-  to { width: 34ch; }
+  to { width: 33.75ch; }
 }
 
 .tagline-cmd {
