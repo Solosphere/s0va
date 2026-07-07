@@ -140,7 +140,7 @@ const SavedArtworks = () => {
   return (
     <div className="saved-artworks-container">
       <div className="saved-artworks-header">
-        <h1>Saved Artworks</h1>
+        <h1>SAVED WORKS</h1>
         <div className="saved-artworks-stats">
           <span>{filteredArtworks.length} artwork{filteredArtworks.length !== 1 ? 's' : ''} saved</span>
           {savedArtworks.length > 0 && (

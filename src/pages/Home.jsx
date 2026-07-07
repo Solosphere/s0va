@@ -40,6 +40,7 @@ const baseFeatured = featuredImages.map((image) => {
     to: product ? `/gallery/${product.id}` : null,
     title: product?.name,
     meta: material ? `${material}${product?.date ? ` · ${product.date}` : ''}` : undefined,
+    compactTitle: image === 'SAP.webp', // long title — scale it down so it fits
   };
 });
 

@@ -126,7 +126,7 @@ const Coverflow = ({ items = [], getImageUrl, showCaption = false, onNavigate })
                 <img src={getImageUrl(item.image)} loading="lazy" alt={item.title ?? ''} />
               )}
               {item.kind !== 'log' && item.title && (
-                <div className="coverflow-card-text">
+                <div className={`coverflow-card-text${item.compactTitle ? ' coverflow-card-text--compact' : ''}`}>
                   <h3>{item.title}</h3>
                   {item.meta && <p className="coverflow-card-meta">{item.meta}</p>}
                 </div>

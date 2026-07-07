@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import GalleryCard from './GalleryCard';
 import SearchBar from './SearchBar';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import GalleryConsole from './GalleryConsole';
 import Loading from './Loading';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -281,15 +281,6 @@ const GalleryList = () => {
       ) : (
         <>
           <div className="gallery-list">
-            {/* The arcade, surfaced as a terminal card; opens its case study */}
-            {!filtersActive && currentPage === 1 && (
-              <Link to="/engineering/blacksite" className="gallery-arcade-card">
-                <span className="cf-log-prompt">root@wound.os</span>
-                <h3>BLACKSITE</h3>
-                <p>Two playable browser games, built from scratch in React + canvas.</p>
-                <span className="cf-log-cta">open ▸</span>
-              </Link>
-            )}
             {currentItems.map((product) => (
               <GalleryCard key={product.id} product={product} currentPage={currentPage} showViolentContent={showViolentContent} />
             ))}

@@ -5979,6 +5979,17 @@ input:checked + .toggle-slider:before {
   color: #ffffff;
 }
 
+/* One long title (SAP) scaled down so it fits the card, especially on mobile. */
+.coverflow-card-text--compact h3 {
+  font-size: 16px;
+}
+
+@media (max-width: 640px) {
+  .coverflow-card-text--compact h3 {
+    font-size: 14px;
+  }
+}
+
 @keyframes coverflow-glow {
   to {
     box-shadow:

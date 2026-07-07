@@ -168,6 +168,23 @@ const AboutPage = () => {
       </Link>
     </Reveal>
 
+    <Reveal className="image-with-description" id="blacksite">
+    <Link to="/programs/blacksite" className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
+    <div className="tattoo-text">
+      <h3>BLACKSITE</h3>
+      <p>A browser-game arcade gated behind a secure-access terminal — two games built from scratch in React and canvas: DATA SPIKE, a neural-interface reflex game, and NULL_ESCAPE, a fragment-hunting maze.</p>
+    </div>
+    <div className="tattoo-mini-gallery">
+      <div className='image-column-1'>
+        <img src="/images/nullescape.webp" alt="NULL_ESCAPE game" />
+      </div>
+      <div className='image-column-2'>
+        <img src="/images/dataspike.webp" alt="DATA SPIKE game" />
+      </div>
+    </div>
+    </Link>
+    </Reveal>
+
     <Reveal className="image-with-description" id="tats">
     <Link to={tattooId ? `/gallery/${tattooId}` : '/gallery'} className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
     <div className="tattoo-text">
