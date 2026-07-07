@@ -2031,18 +2031,12 @@ nav #logo span.special-char,
   object-position: center bottom;
 }
 
-/* Frame both game screenshots identically — anchored to the top (so their title
-   bars line up) with the same slight zoom — so the pair reads as a neat set. */
+/* Both game screenshots are square-cropped to the same frame. Anchor both to the
+   top-left at every breakpoint so their title bars line up and each game's name
+   (left side) stays visible, even when a narrow column crops the width. */
 .blacksite-mini-gallery .image-column-1 img,
 .blacksite-mini-gallery .image-column-2 img {
-  object-position: center top;
-  transform-origin: top;
-  transform: scale(1.08);
-}
-
-.blacksite-mini-gallery .image-column-1 img:hover,
-.blacksite-mini-gallery .image-column-2 img:hover {
-  transform: scale(1.13);
+  object-position: left top;
 }
 
 /* ── Projects-in-Progress layout ────────────────────────────────────────────
