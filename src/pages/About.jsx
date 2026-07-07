@@ -134,8 +134,8 @@ const AboutPage = () => {
               <section className="rect-1"></section>
               <section className="rect-2"></section>
             </section>
-              <h2>Beyond the Canvas</h2>
-              <p>My work extends well beyond the canvas. At Salesforce, I build and secure infrastructure in FedRAMP environments: automating CI/CD and patching pipelines, leading security incident response, and keeping critical systems reliable at scale. That same intent shaped projects like Second Wind and CareerSpring's Interest Finder, software built to help people move through hard moments with clarity and resilience. Art or engineering, the throughline holds: technology as a force for building things that endure and genuinely matter. Explore the full case studies in my <Link to="/engineering" className="log-inline-link">engineering logs</Link>.</p>
+              <h2>THE ENGINEER</h2>
+              <p>My work extends well beyond the canvas. At Salesforce, I build and secure infrastructure in FedRAMP environments: automating CI/CD and patching pipelines, leading security incident response, and keeping critical systems reliable at scale. That same intent shaped projects like Second Wind and CareerSpring's Interest Finder, software built to help people move through hard moments with clarity and resilience. Explore the full case studies in my <Link to="/engineering" className="log-inline-link">engineering logs</Link>.</p>
                 </section>
                 {/* Project Carousel */}
                 <ProjectCarousel products={products} getProtectedImageUrl={getProtectedImageUrl} />
@@ -174,11 +174,8 @@ const AboutPage = () => {
       <h3>BLACKSITE</h3>
       <p>A browser-game arcade gated behind a secure-access terminal — two games built from scratch in React and canvas: DATA SPIKE, a neural-interface reflex game, and NULL_ESCAPE, a fragment-hunting maze.</p>
     </div>
-    <div className="tattoo-mini-gallery">
+    <div className="tattoo-mini-gallery blacksite-mini-gallery">
       <div className='image-column-1'>
-        <img src="/images/nullescape.webp" alt="NULL_ESCAPE game" />
-      </div>
-      <div className='image-column-2'>
         <img src="/images/dataspike.webp" alt="DATA SPIKE game" />
       </div>
     </div>
@@ -187,10 +184,6 @@ const AboutPage = () => {
 
     <Reveal className="image-with-description" id="tats">
     <Link to={tattooId ? `/gallery/${tattooId}` : '/gallery'} className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
-    <div className="tattoo-text">
-      <h3>Tattooing</h3>
-      <p>Tattooing is the next surface. Same interests, different medium: identity, transformation, permanence rendered in skin instead of pixels or paint.</p>
-    </div>
     <div className="tattoo-mini-gallery">
       <div className='image-column-1'>
                   <img src={getProtectedImageUrl(tattooImages[0], products)} alt={"tat-0"} />
@@ -199,6 +192,10 @@ const AboutPage = () => {
       {/* <img src = {`/images/${tattooImages[4]}`} alt= {"tat-4"} /> */}
                   <img src={getProtectedImageUrl(tattooImages[3], products)} alt={"tat-3"} />
       </div>
+    </div>
+    <div className="tattoo-text">
+      <h3>Tattooing</h3>
+      <p>Tattooing is the next surface. Same interests, different medium: identity, transformation, permanence rendered in skin instead of pixels or paint.</p>
     </div>
     </Link>
     </Reveal>

@@ -2031,6 +2031,16 @@ nav #logo span.special-char,
   object-position: center bottom;
 }
 
+/* BLACKSITE shows a single game screenshot — one full-width column, framed from
+   the top so the game's title bar stays visible. */
+.blacksite-mini-gallery {
+  grid-template-columns: 1fr;
+}
+
+.blacksite-mini-gallery .image-column-1 img {
+  object-position: center top;
+}
+
 /* ── Projects-in-Progress layout ────────────────────────────────────────────
    Mobile + tablet (<748px): media-forward overlay cards (title + blurb in a
    gradient over the media). Desktop (>=748px): alternating editorial rows with
