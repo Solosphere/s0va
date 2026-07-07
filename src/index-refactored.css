@@ -8205,6 +8205,34 @@ input:checked + .toggle-slider:before {
   animation: title-reveal 2.2s ease-out 0.45s forwards;
 }
 
+/* After the fade-in, the command types out left-to-right (steps) with the cursor
+   leading it. The line reserves the full width so the centered tagline doesn't
+   shift while typing; the cursor blinks from the start (typed width starts at 0). */
+.tagline-line {
+  display: inline-block;
+  max-width: 100%;
+  width: 34ch;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tagline-typed {
+  display: inline-block;
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+  animation: tagline-type 1.4s steps(31, end) 2.65s forwards;
+}
+
+.tagline-command .terminal-cursor {
+  vertical-align: bottom;
+}
+
+@keyframes tagline-type {
+  to { width: 33ch; }
+}
+
 .tagline-cmd {
   color: inherit;
 }

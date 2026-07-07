@@ -68,7 +68,7 @@ return (
         <div className="content">
           <h1 className="landingpage-title">METTAIRE</h1>
           <h2 className="tagline tagline-command">
-            <span className="tagline-cmd">&gt; grep -E &quot;</span><Link to="/engineering" className="tagline-target">engineering</Link><span className="tagline-pipe">|</span><Link to="/gallery?page=1" className="tagline-target">gallery</Link><span className="tagline-cmd">&quot;</span><span className="terminal-cursor" aria-hidden="true">▮</span>
+            <span className="tagline-line"><span className="tagline-typed"><span className="tagline-cmd">&gt; grep -E &quot;</span><Link to="/engineering" className="tagline-target">engineering</Link><span className="tagline-pipe">|</span><Link to="/gallery?page=1" className="tagline-target">gallery</Link><span className="tagline-cmd">&quot;</span></span><span className="terminal-cursor" aria-hidden="true">▮</span></span>
           </h2>
         </div>
       </div>
