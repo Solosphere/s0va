@@ -2031,14 +2031,10 @@ nav #logo span.special-char,
   object-position: center bottom;
 }
 
-/* BLACKSITE shows a single game screenshot — one full-width column, framed from
-   the top so the game's title bar stays visible. */
-.blacksite-mini-gallery {
-  grid-template-columns: 1fr;
-}
-
-.blacksite-mini-gallery .image-column-1 img {
-  object-position: center top;
+/* Show more of the DATA SPIKE screenshot's right side (column 2 crops to its
+   center by default). */
+.blacksite-mini-gallery .image-column-2 img {
+  object-position: right center;
 }
 
 /* ── Projects-in-Progress layout ────────────────────────────────────────────
