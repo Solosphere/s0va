@@ -131,6 +131,20 @@ export default function Settings() {
     };
   }, [isOpen]);
 
+  // Esc to close + lock background scroll while the full-screen panel is open.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   return (
     <>
       {/* Settings Toggle Button */}
@@ -142,19 +156,18 @@ export default function Settings() {
         <FontAwesomeIcon icon={faCog} size="lg" />
       </button>
 
-      {/* Settings Modal */}
-      {isOpen && (
-        <div className="settings-overlay">
+      {/* Settings Modal — always rendered so it can wipe open and closed */}
+      <div className={`settings-overlay ${isOpen ? 'open' : ''}`} role="dialog" aria-modal="true">
+          <button
+            className="settings-close"
+            onClick={closeSettings}
+            aria-label="Close settings"
+          >
+            ×
+          </button>
           <div className="settings-container">
             <div className="settings-header">
               <h2>Settings</h2>
-              <button 
-                className="settings-close"
-                onClick={closeSettings}
-                aria-label="Close settings"
-              >
-                ×
-              </button>
             </div>
 
             <div className="settings-content">
@@ -273,7 +286,6 @@ export default function Settings() {
             </div>
           </div>
         </div>
-      )}
 
       {/* METTAIRE loading screen while a toggled change applies */}
       {applying && (
