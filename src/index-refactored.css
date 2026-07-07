@@ -2031,10 +2031,15 @@ nav #logo span.special-char,
   object-position: center bottom;
 }
 
-/* Show more of the DATA SPIKE screenshot's left side (column 2 crops to its
-   center by default). */
+/* Show the DATA SPIKE screenshot's left side, zoomed in slightly so its window
+   outline (which doesn't match NULL_ESCAPE's fill) is cropped out. */
 .blacksite-mini-gallery .image-column-2 img {
   object-position: left center;
+  transform: scale(1.12);
+}
+
+.blacksite-mini-gallery .image-column-2 img:hover {
+  transform: scale(1.17);
 }
 
 /* ── Projects-in-Progress layout ────────────────────────────────────────────
