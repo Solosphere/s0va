@@ -142,7 +142,7 @@ const SavedArtworks = () => {
       <div className="saved-artworks-header">
         <h1>SAVED WORKS</h1>
         <div className="saved-artworks-stats">
-          <span>{filteredArtworks.length} artwork{filteredArtworks.length !== 1 ? 's' : ''} saved</span>
+          <span>{filteredArtworks.length} piece{filteredArtworks.length !== 1 ? 's' : ''} saved</span>
           {savedArtworks.length > 0 && (
             <button 
               className="clear-all-button"
@@ -159,7 +159,7 @@ const SavedArtworks = () => {
       {savedArtworks.length === 0 ? (
         <div className="empty-state">
           <FontAwesomeIcon icon={faHeartBroken} className="empty-icon" />
-          <h2>No saved artworks yet</h2>
+          <h2>No saved pieces yet</h2>
           <p>Start exploring the gallery and save your favorite pieces!</p>
           <Link to="/gallery" className="browse-button">
             Browse Gallery
@@ -188,7 +188,7 @@ const SavedArtworks = () => {
 
           {filteredArtworks.length === 0 ? (
             <div className="no-products-message">
-              <p>No saved artworks match your search criteria.</p>
+              <p>No saves match your search criteria.</p>
               <p>Try adjusting your filters or search terms.</p>
             </div>
           ) : (
