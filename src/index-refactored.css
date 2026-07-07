@@ -1506,6 +1506,7 @@ nav #logo span.special-char,
      (sub-headers stay bold for hierarchy). */
   font-weight: 400;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
   margin-bottom: var(--spacing-lg);
   position: relative;
   z-index: 2;
@@ -2261,6 +2262,7 @@ nav #logo span.special-char,
   /* Thin, letter-spaced page title (echoes the wordmark cut). */
   font-weight: 400;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
   height: 70px;
   color: black;
   padding-left: 3%;
@@ -3536,6 +3538,7 @@ nav #logo span.special-char,
   /* Thin, letter-spaced page title (echoes the wordmark cut). */
   font-weight: 400;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--color-text);
   margin: 0;
 }
@@ -7598,6 +7601,7 @@ input:checked + .toggle-slider:before {
   /* Thin, letter-spaced page title (echoes the wordmark cut). */
   font-weight: 400;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
   margin-bottom: 0;
 }
 
