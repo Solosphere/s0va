@@ -124,7 +124,7 @@ const AboutPage = () => {
             <section className="rect-2"></section>
           </section>
           <h2>THE CREATIVE</h2>
-          <p>I'm Daniel Nelson, the creator behind METTAIRE—a DevOps engineer by profession, and an artist, designer, and builder by nature. METTAIRE is how I leave a piece of myself inside the machine: a space where my work exists on its own terms. Inspired by thinkers like Dostoevsky, Camus, Schopenhauer, and Musashi, my creations explore individualism, transformation, and the human condition. Whether I'm shaping cloud infrastructure or a multimedia painting, the craft is the same—merging fine art with technology and weaving existential themes (absurdism, nihilism, existentialism) into work meant to be encountered, absorbed, and interpreted freely.
+          <p>I'm Daniel Nelson, the creator behind METTAIRE: a DevOps engineer by profession, and an artist, designer, and builder by nature. METTAIRE is how I leave a piece of myself inside the machine, a space where my work exists on its own terms. Inspired by thinkers like Dostoevsky, Camus, Schopenhauer, and Musashi, my creations explore individualism, transformation, and the human condition. Whether I'm shaping cloud infrastructure or a multimedia painting, the craft is the same: merging fine art with technology, weaving absurdism, nihilism, and existentialism into work meant to be encountered, absorbed, and interpreted freely.
           </p>
         </section>
         </Reveal>
@@ -135,7 +135,7 @@ const AboutPage = () => {
               <section className="rect-2"></section>
             </section>
               <h2>Beyond the Canvas</h2>
-              <p>My work extends well beyond the canvas. As a DevOps engineer at Salesforce, I build and secure cloud infrastructure in FedRAMP environments—automating CI/CD and patching pipelines, leading security incident response, and keeping critical systems reliable at scale. That same intent shaped projects like Second Wind and CareerSpring's Interest Finder: software built to help people move through hard moments with clarity and resilience. Whether it's art or engineering, the throughline holds—technology as a force for building things that endure and genuinely matter. Explore the full case studies in my <Link to="/engineering" className="log-inline-link">engineering log</Link>.</p>
+              <p>My work extends well beyond the canvas. At Salesforce, I build and secure infrastructure in FedRAMP environments: automating CI/CD and patching pipelines, leading security incident response, and keeping critical systems reliable at scale. That same intent shaped projects like Second Wind and CareerSpring's Interest Finder, software built to help people move through hard moments with clarity and resilience. Art or engineering, the throughline holds: technology as a force for building things that endure and genuinely matter. Explore the full case studies in my <Link to="/engineering" className="log-inline-link">engineering logs</Link>.</p>
                 </section>
                 {/* Project Carousel */}
                 <ProjectCarousel products={products} getProtectedImageUrl={getProtectedImageUrl} />
