@@ -2281,6 +2281,7 @@ nav #logo span.special-char,
 .gallery-title {
   display: flex;
   align-items: center;
+  flex: 0 0 auto;
   /* Declared explicitly (not just inherited from the global h1) so all four
      page titles resolve their font the same way. */
   font-family: var(--font-family-display);
@@ -2292,15 +2293,23 @@ nav #logo span.special-char,
   height: 70px;
   color: black;
   padding-left: 3%;
-  padding-right: 2%;
+  padding-right: 0;
+  margin-right: -0.08em; /* cancel the trailing letter-spacing after the last glyph */
   margin-bottom: 0;
-
 }
 
 .search-bar {
-  width: 100%;
-  margin-left: var(--spacing-sm);
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-left: 0;
   position: relative;
+}
+
+.search-bar > label {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 /* Center the search bar on mobile + tablet (instead of hugging the left) */
@@ -2330,7 +2339,9 @@ nav #logo span.special-char,
 }
 
 .search-bar-input {
-  width: 97%;
+  display: block;
+  width: 100%;
+  margin: 0;
   height: 70px;
   background: linear-gradient(
     135deg,
@@ -2345,19 +2356,27 @@ nav #logo span.special-char,
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 
+  box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     inset 0 -1px 0 rgba(0, 0, 0, 0.1);
   border-top-right-radius: 40px;
   border-bottom-right-radius: 40px;
-  font-size: 1.5em;
+  font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.65em;
+  letter-spacing: 0.04em;
   margin-block: auto; /* vertical only — horizontal handled per breakpoint */
-  padding: 0 2% 0 4%;
+  padding: 0 2% 0 24px;
   position: relative;
   overflow: hidden;
   color: #333333;
   transform: translateY(-1px);
+}
+
+.search-bar-input::placeholder {
+  font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  letter-spacing: 0.06em;
+  color: rgba(51, 51, 51, 0.55);
 }
 
 .search-bar-input::before {
@@ -2410,10 +2429,11 @@ nav #logo span.special-char,
 .filter-and-sort-row {
   display: flex;
   flex-direction: row;
-  width: 35%;
-  justify-content: start;
-  justify-content: space-evenly;
+  align-items: center;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
   padding-right: 0px;
+  margin-left: var(--spacing-sm);
   position: relative; /* anchor for the console dropdown panel */
 }
 
@@ -8133,19 +8153,19 @@ input:checked + .toggle-slider:before {
   margin-top: 4px;
 }
 
-/* Desktop+ (≥1025px): tighten the gap between the "cache" title and the search
-   bar, and slim the bar's width slightly. Height/styling otherwise unchanged. */
+/* Desktop+ (≥1025px): title and search bar sit flush; the input fills the
+   remaining row width. */
 @media (min-width: 1025px) {
   .gallery-title {
-    padding-right: var(--spacing-sm);
+    padding-right: 0;
   }
 
   .search-bar {
-    margin-left: var(--spacing-xs);
+    margin-left: 0;
   }
 
   .search-bar-input {
-    width: 90%;
+    width: 100%;
   }
 }
 
