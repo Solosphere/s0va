@@ -31,6 +31,9 @@ const GalleryItemDetails = () => {
   // Hooks must run on every render — declare them before any early return.
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // Direction of the last carousel move — drives the slide-in animation on
+  // the hero media so it feels like a real slider, not an image swap.
+  const [transitionDir, setTransitionDir] = useState(null);
   // Capture, at mount, the route the user came from so "back" returns there.
   const originRef = useRef(getLastPath());
   // Track the thumbnail list so we can scroll the active thumb into view when
@@ -80,14 +83,17 @@ const GalleryItemDetails = () => {
   }
 
   const handleNextImage = () => {
+    setTransitionDir('next');
     setCurrentImageIndex((prev) => (prev + 1) % product.image.length);
   };
 
   const handlePrevImage = () => {
+    setTransitionDir('prev');
     setCurrentImageIndex((prev) => (prev - 1 + product.image.length) % product.image.length);
   };
 
   const handleThumbnailClick = (index) => {
+    setTransitionDir(index > currentImageIndex ? 'next' : 'prev');
     setCurrentImageIndex(index);
   };
 
@@ -181,13 +187,23 @@ const GalleryItemDetails = () => {
 
         <div className="strip-main">
           <header className="strip-meta">
-            <h3 className="strip-meta-title">{product.name}</h3>
+            <h3 className="strip-meta-title">
+              <span className="strip-meta-title-name">{product.name}</span>
+              {product.date && (
+                <span className="strip-meta-title-year">
+                  <span className="strip-meta-title-year-bracket" aria-hidden="true">[</span>
+                  {product.date}
+                  <span className="strip-meta-title-year-bracket" aria-hidden="true">]</span>
+                </span>
+              )}
+            </h3>
           </header>
 
           <div className="strip-hero">
             {isVideo ? (
               <video
-                className="strip-hero-media"
+                key={currentImageIndex}
+                className={`strip-hero-media strip-hero-media--${transitionDir || 'none'}`}
                 autoPlay
                 playsInline
                 controls
@@ -197,7 +213,8 @@ const GalleryItemDetails = () => {
               </video>
             ) : (
               <img
-                className="strip-hero-media"
+                key={currentImageIndex}
+                className={`strip-hero-media strip-hero-media--${transitionDir || 'none'}`}
                 src={fullImageUrl}
                 alt={product.name}
                 onClick={openModal}
@@ -229,7 +246,6 @@ const GalleryItemDetails = () => {
             {product.collection && (
               <span className="strip-meta-tag">{product.collection} series</span>
             )}
-            {product.date && <span className="strip-meta-tag">{product.date}</span>}
             {product.media && <span className="strip-meta-tag">{product.media}</span>}
             {product.dimensions && (
               <span className="strip-meta-tag">{product.dimensions}</span>
