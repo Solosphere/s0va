@@ -97,9 +97,9 @@ return (
         METTAIRE fuses engineering discipline and fine art, circling the same existential ground: absurdism, nihilism, the search for meaning and impact.
         </p>
         <div className="home-button-row">
-          <Link to="/about" className="home-about-link"><button className="home-about-button">Learn More</button></Link>
-          <Link to='/gallery?page=1' className="explore-gallery-link"><button className="explore-gallery-button">Explore Gallery</button></Link>
-          <Link to='/engineering' className="engineering-log-link"><button className="home-about-button engineering-log-button">Engineering Log</button></Link>
+          <Link to="/about" className="home-about-link"><button className="home-about-button"><span className="btn-prompt">CD</span>/ABOUT</button></Link>
+          <Link to='/gallery?page=1' className="explore-gallery-link"><button className="explore-gallery-button"><span className="btn-prompt">CD</span>/GALLERY</button></Link>
+          <Link to='/engineering' className="engineering-log-link"><button className="home-about-button engineering-log-button"><span className="btn-prompt">CD</span>/ENGINEERING</button></Link>
         </div>
       </Reveal>
     </div>

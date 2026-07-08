@@ -219,14 +219,14 @@ const AboutPage = () => {
           
           <div className="social-media-row">
             <div className="social-media-links">
+                <a href="https://www.linkedin.com/in/dnelson777" target="_blank" rel="noopener noreferrer">
+                    <FontAwesomeIcon icon={faLinkedin} size="2x" />
+                </a>
                 <a href="https://github.com/danielnelson37" target="_blank" rel="noopener noreferrer">
                     <FontAwesomeIcon icon={faGithub} size="2x" />
                 </a>
                 <a href="https://medium.com/@lukannelson" target="_blank" rel="noopener noreferrer">
                     <FontAwesomeIcon icon={faMedium} size="2x" />
-                </a>
-                <a href="https://www.linkedin.com/in/dnelson777" target="_blank" rel="noopener noreferrer">
-                    <FontAwesomeIcon icon={faLinkedin} size="2x" />
                 </a>
             </div>
           </div>

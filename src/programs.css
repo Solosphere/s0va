@@ -1190,7 +1190,7 @@
   padding: 20px;
 }
 
-.modal-content {
+.program-modal .modal-content {
   background: rgba(0, 0, 0, 0.98);
   border: 2px solid rgba(255, 255, 255, 0.5);
   border-radius: 8px;
@@ -1202,7 +1202,7 @@
   position: relative;
 }
 
-.modal-content::before {
+.program-modal .modal-content::before {
   content: '';
   position: absolute;
   top: 0;
@@ -1797,7 +1797,7 @@
     width: 95%;
   }
   
-  .modal-content {
+  .program-modal .modal-content {
     margin: 10px;
     max-height: 90vh;
   }

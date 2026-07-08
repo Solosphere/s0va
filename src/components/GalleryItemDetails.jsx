@@ -144,7 +144,6 @@ const GalleryItemDetails = () => {
                 <video
                   className="gallery-video"
                   autoPlay
-                  width="500"
                   playsInline
                   controls
                   src={fullImageUrl}
@@ -245,7 +244,9 @@ const GalleryItemDetails = () => {
       {isModalOpen && (
         <div className="modal">
           <div className="modal-content">
-            <FontAwesomeIcon icon={faTimes} onClick={closeModal} className="modal-close" />
+            <button type="button" onClick={closeModal} className="modal-close" aria-label="Close">
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
             {isVideo ? (
               <video
                 className="modal-video"

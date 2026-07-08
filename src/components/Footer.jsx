@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUp } from '@fortawesome/free-solid-svg-icons'; // Change to free-solid-svg-icons for arrow up
 import { faGithub, faMedium, faLinkedin} from '@fortawesome/free-brands-svg-icons';
 
 const Footer = () => {
@@ -56,14 +55,14 @@ const Footer = () => {
 
             <div className="footer-row">
                 <div className="social-media-links">
+                    <a href="https://www.linkedin.com/in/dnelson777" target="_blank" rel="noopener noreferrer">
+                        <FontAwesomeIcon icon={faLinkedin} size="2x" />
+                    </a>
                     <a href="https://github.com/danielnelson37" target="_blank" rel="noopener noreferrer">
                         <FontAwesomeIcon icon={faGithub} size="2x" />
                     </a>
                     <a href="https://medium.com/@lukannelson" target="_blank" rel="noopener noreferrer">
                         <FontAwesomeIcon icon={faMedium} size="2x" />
-                    </a>
-                    <a href="https://www.linkedin.com/in/dnelson777" target="_blank" rel="noopener noreferrer">
-                        <FontAwesomeIcon icon={faLinkedin} size="2x" />
                     </a>
                 </div>
             </div>
