@@ -10,7 +10,7 @@ import {
 } from '@react-three/drei';
 import * as THREE from 'three';
 
-const MODEL_URL = '/models/chromedeck.glb';
+const MODEL_URL = '/api/media/model/chromedeck.glb';
 const MODEL_YAW = 0; // rotate so the front faces the camera at rest
 // Fraction of the SMALLER viewport dimension the model's diameter fills. Using
 // the smaller dimension + the bounding sphere keeps the model fully in-frame on

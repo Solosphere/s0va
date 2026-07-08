@@ -177,10 +177,10 @@ const AboutPage = () => {
     </div>
     <div className="tattoo-mini-gallery blacksite-mini-gallery">
       <div className='image-column-1'>
-        <img src="/images/nullescape.webp" alt="NULL_ESCAPE game" />
+        <img src="/api/media/image/nullescape.webp" alt="NULL_ESCAPE game" />
       </div>
       <div className='image-column-2'>
-        <img src="/images/dataspike.webp" alt="DATA SPIKE game" />
+        <img src="/api/media/image/dataspike.webp" alt="DATA SPIKE game" />
       </div>
     </div>
     </Link>

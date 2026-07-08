@@ -1,4 +1,4 @@
-import { S3Client, GetObjectCommand, HeadObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3';
+import { S3Client, GetObjectCommand, HeadObjectCommand, ListObjectsV2Command, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
 import '../loadEnv.js';
@@ -107,6 +107,18 @@ export async function streamObjectToResponse(key, req, res) {
   });
 
   body.pipe(res);
+}
+
+// Upload a file to R2 with an explicit content type (used for adding new assets).
+export async function uploadFile(key, body, contentType) {
+  const command = new PutObjectCommand({
+    Bucket: BUCKET_NAME,
+    Key: key,
+    Body: body,
+    ContentType: contentType,
+  });
+  await r2Client.send(command);
+  return key;
 }
 
 // Check if file exists in R2

@@ -144,6 +144,24 @@ app.get('/api/media/video/:filename', async (req, res) => {
   }
 });
 
+// Model serving endpoint (e.g. .glb 3D assets) — stream from R2
+app.get('/api/media/model/:filename', async (req, res) => {
+  try {
+    const { filename } = req.params;
+
+    if (!filename || filename.includes('..') || filename.includes('/')) {
+      return res.status(400).json({ error: 'Invalid filename' });
+    }
+
+    await streamObjectToResponse(filename, req, res);
+  } catch (error) {
+    console.error('Model endpoint error:', error);
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Failed to serve model' });
+    }
+  }
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
