@@ -137,7 +137,7 @@ const AboutPage = () => {
               <section className="rect-2"></section>
             </section>
               <h2>THE ENGINEER</h2>
-              <p>My work extends well beyond the canvas. At Salesforce, I build and secure infrastructure in FedRAMP environments: automating CI/CD and patching pipelines, leading security incident response, and keeping critical systems reliable at scale. That same intent shaped projects like Second Wind and CareerSpring's Interest Finder, software built to help people move through hard moments with clarity and resilience. Explore the full case studies in my <Link to="/engineering" className="log-inline-link">engineering logs</Link>.</p>
+              <p>My work extends well beyond the canvas. At Salesforce, I build and secure infrastructure in FedRAMP environments: automating CI/CD and patching pipelines, leading security incident response, and keeping critical systems reliable at scale. That same intent shaped projects like Second Wind and CareerSpring's Interest Finder, software built to help people move through hard moments with clarity and resilience. Explore the full case studies in my <Link to="/engineering" className="log-inline-link">engineering log</Link>.</p>
                 </section>
                 {/* Project Carousel */}
                 <ProjectCarousel products={products} getProtectedImageUrl={getProtectedImageUrl} />

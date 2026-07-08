@@ -8633,3 +8633,191 @@ input:checked + .toggle-slider:before {
   background-image: none;
 }
 
+/* ============================================================
+   TERMS & CONDITIONS — terminal / system-log treatment
+   Matches the Engineering Log vocabulary (prompt line + hairlines).
+   ============================================================ */
+.terms-page {
+  min-height: 60vh;
+  padding: 40px var(--spacing-lg) var(--spacing-4xl);
+  color: var(--color-text);
+}
+
+.terms-header {
+  max-width: 780px;
+  margin: 0 auto var(--spacing-2xl);
+  padding-top: var(--spacing-2xl);
+}
+
+.terms-title {
+  font-family: var(--font-family-display);
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.terms-prompt {
+  font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  margin: 0 0 var(--spacing-xs) 0;
+  word-break: break-word;
+  text-align: center;
+}
+
+.terms-prompt-sign {
+  color: var(--color-club);
+}
+
+.terms-stamp {
+  display: flex;
+  justify-content: center;
+  gap: 0.6em;
+  margin: 0;
+  font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.terms-stamp-key {
+  color: var(--color-club);
+  opacity: 0.8;
+}
+
+.terms-stamp-value {
+  color: rgba(var(--color-text-rgb, 92, 225, 230), 0.6);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Body ------------------------------------------------------- */
+.terms-body {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-xl);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(15, 15, 15, 0.8) 50%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.terms-intro {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0 0 var(--spacing-xl) 0;
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px dashed rgba(var(--color-club-rgb), 0.25);
+}
+
+/* Section blocks --------------------------------------------- */
+.terms-section {
+  margin: 0 0 var(--spacing-xl) 0;
+}
+
+.terms-section + .terms-section {
+  padding-top: var(--spacing-lg);
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.terms-section-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7em;
+  margin: 0 0 var(--spacing-sm) 0;
+  font-family: var(--font-family-display);
+  font-size: 1.05rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.terms-section-num {
+  font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.75em;
+  letter-spacing: 0.18em;
+  color: var(--color-club);
+  opacity: 0.9;
+}
+
+.terms-section-body {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.terms-section-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.terms-section-list li {
+  position: relative;
+  padding-left: 1.4em;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0.35em 0;
+}
+
+.terms-section-list li::before {
+  content: '›';
+  position: absolute;
+  left: 0.15em;
+  top: 0;
+  color: var(--color-club);
+  font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+}
+
+.terms-mail {
+  font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  color: var(--color-club);
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(var(--color-club-rgb), 0.5);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.terms-mail:hover {
+  color: #ffffff;
+  border-bottom-color: rgba(255, 255, 255, 0.8);
+}
+
+.terms-eof {
+  margin: var(--spacing-2xl) 0 0 0;
+  text-align: center;
+  font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+@media (max-width: 600px) {
+  .terms-page {
+    padding: 32px var(--spacing-md) var(--spacing-2xl);
+  }
+  .terms-body {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+  .terms-section-heading {
+    font-size: 0.95rem;
+    flex-wrap: wrap;
+    gap: 0.5em;
+  }
+}
+
