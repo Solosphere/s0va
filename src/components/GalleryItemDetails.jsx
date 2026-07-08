@@ -33,6 +33,9 @@ const GalleryItemDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Capture, at mount, the route the user came from so "back" returns there.
   const originRef = useRef(getLastPath());
+  // Track the thumbnail list so we can scroll the active thumb into view when
+  // the user pages via the hero chevrons.
+  const railListRef = useRef(null);
 
   // Reset image position and scroll to top whenever we open a different piece
   useEffect(() => {
@@ -40,6 +43,27 @@ const GalleryItemDetails = () => {
     setCurrentImageIndex(0);
     setIsModalOpen(false);
   }, [id]);
+
+  // Keep the active thumbnail visible in the rail as the user navigates.
+  // Scroll only the rail itself — scrollIntoView would drag the page too.
+  useEffect(() => {
+    const list = railListRef.current;
+    if (!list) return;
+    const active = list.querySelector('.strip-rail-thumb.active');
+    if (!active) return;
+    const listRect = list.getBoundingClientRect();
+    const activeRect = active.getBoundingClientRect();
+    const isHorizontal = list.scrollWidth > list.clientWidth;
+    if (isHorizontal) {
+      const target =
+        list.scrollLeft + (activeRect.left - listRect.left) - (listRect.width - activeRect.width) / 2;
+      list.scrollTo({ left: target, behavior: 'smooth' });
+    } else {
+      const target =
+        list.scrollTop + (activeRect.top - listRect.top) - (listRect.height - activeRect.height) / 2;
+      list.scrollTo({ top: target, behavior: 'smooth' });
+    }
+  }, [currentImageIndex]);
 
   if (loading) {
     return <Loading />;
@@ -106,9 +130,9 @@ const GalleryItemDetails = () => {
 
   return (
     <div className="gallery-details">
-      <div className="gallery-nav">
+      <div className="details-strip">
         <button
-          className="dynamic-back-button back-button"
+          className="dynamic-back-button back-button strip-back-button"
           onClick={() => navigate(backTo)}
           title={backLabel}
         >
@@ -117,79 +141,104 @@ const GalleryItemDetails = () => {
             Back<span className="back-button-suffix">{` to ${backWhere}`}</span>
           </span>
         </button>
-      </div>
-      <div className="details-container">
-        <div className="details-section">
-          <div className="details-title">
-            <div className="details-header">
-              <h3>{product.name}</h3>
-            </div>
-            {product.collection && (
-              <p className="gallery-item-collection">{product.collection} series</p>
-            )}
-            <p className="gallery-item-date">{product.date}</p>
-            <p>Media: {product.media}</p>
-            {product.dimensions && (
-              <p className="gallery-dimensions">Dimensions: {product.dimensions}</p>
-            )}
-            {product.description && (
-              <div className="gallery-bio">
-                <p>Description: {product.description}</p>
-              </div>
-            )}
-          </div>
-          <div className='view'>
-            <div className="image-section">
-              {isVideo ? (
-                <video
-                  className="gallery-video"
-                  autoPlay
-                  playsInline
-                  controls
-                  src={fullImageUrl}
-                >
-                  Your browser does not support the video tag.
-                </video>
-              ) : (
-                <img
-                  src={fullImageUrl}
-                  alt={product.name}
-                  onClick={openModal}
-                  style={{ cursor: 'pointer' }}
-                />
-              )}
-              {product.image.length > 1 && (
-                <div className="thumbnail-row">
-                  {product.image.map((image, index) => (
-                    <div
-                      key={index}
-                      className={`thumbnail ${index === currentImageIndex ? 'selected' : ''}`}
-                      onClick={() => handleThumbnailClick(index)}
-                    >
-                      {image.includes('.mp4') ? (
-                        <video playsInline controls={false}>
-                          <source src={getFullImageUrl(image)} type="video/mp4" />
-                          Your browser does not support the video tag.
-                        </video>
-                      ) : (
-                        <img
-                          src={getFullImageUrl(image)}
-                          loading="lazy"
-                          alt={`${product.name} - Thumbnail ${index}`}
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+        <aside className="strip-rail-column">
+          <div className="strip-rail" aria-label="Angle selector">
             {product.image.length > 1 && (
-              <div className="image-navigation">
-                <FontAwesomeIcon icon={faChevronLeft} onClick={handlePrevImage} className="prev" />
-                <FontAwesomeIcon icon={faChevronRight} onClick={handleNextImage} className="next"/>
+              <div className="strip-rail-counter">
+                <span className="strip-rail-counter-current">{String(currentImageIndex + 1).padStart(2, '0')}</span>
+                <span className="strip-rail-counter-sep">/</span>
+                <span className="strip-rail-counter-total">{String(product.image.length).padStart(2, '0')}</span>
+              </div>
+            )}
+            <ul className="strip-rail-list" ref={railListRef}>
+              {product.image.map((image, index) => {
+                const active = index === currentImageIndex;
+                const thumbIsVideo = image.includes('.mp4');
+                return (
+                  <li key={index}>
+                    <button
+                      type="button"
+                      className={`strip-rail-thumb ${active ? 'active' : ''}`}
+                      onClick={() => handleThumbnailClick(index)}
+                      aria-current={active ? 'true' : undefined}
+                      aria-label={`View angle ${index + 1}`}
+                    >
+                      <span className="strip-rail-thumb-index">{String(index + 1).padStart(2, '0')}</span>
+                      <span className="strip-rail-thumb-media">
+                        {thumbIsVideo ? (
+                          <video playsInline muted src={getFullImageUrl(image)} />
+                        ) : (
+                          <img src={getFullImageUrl(image)} loading="lazy" alt="" />
+                        )}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </aside>
+
+        <div className="strip-main">
+          <header className="strip-meta">
+            <h3 className="strip-meta-title">{product.name}</h3>
+          </header>
+
+          <div className="strip-hero">
+            {isVideo ? (
+              <video
+                className="strip-hero-media"
+                autoPlay
+                playsInline
+                controls
+                src={fullImageUrl}
+              >
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <img
+                className="strip-hero-media"
+                src={fullImageUrl}
+                alt={product.name}
+                onClick={openModal}
+              />
+            )}
+            {product.image.length > 1 && (
+              <div className="strip-hero-nav" aria-hidden="true">
+                <button
+                  type="button"
+                  className="strip-hero-nav-btn prev"
+                  onClick={handlePrevImage}
+                  aria-label="Previous angle"
+                >
+                  <FontAwesomeIcon icon={faChevronLeft} />
+                </button>
+                <button
+                  type="button"
+                  className="strip-hero-nav-btn next"
+                  onClick={handleNextImage}
+                  aria-label="Next angle"
+                >
+                  <FontAwesomeIcon icon={faChevronRight} />
+                </button>
               </div>
             )}
           </div>
+
+          <div className="strip-meta-rows">
+            {product.collection && (
+              <span className="strip-meta-tag">{product.collection} series</span>
+            )}
+            {product.date && <span className="strip-meta-tag">{product.date}</span>}
+            {product.media && <span className="strip-meta-tag">{product.media}</span>}
+            {product.dimensions && (
+              <span className="strip-meta-tag">{product.dimensions}</span>
+            )}
+          </div>
+
+          {product.description && (
+            <p className="strip-meta-desc">{product.description}</p>
+          )}
         </div>
       </div>
 

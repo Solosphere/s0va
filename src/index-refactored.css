@@ -3413,7 +3413,406 @@ nav #logo span.special-char,
 }
 
 .thumbnail:hover {
-  border-color: var(--color-club); 
+  border-color: var(--color-club);
+}
+
+/* ========================================
+   GALLERY DETAIL — CONTACT-SHEET STRIP
+   Left thumbnail rail + sticky hero image, terminal styling.
+   ======================================== */
+.details-strip {
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) 1fr;
+  grid-template-areas:
+    "back  back"
+    "rail  main";
+  gap: var(--spacing-md) var(--spacing-xl);
+  max-width: min(1400px, 100%);
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-lg) 0;
+  color: var(--color-text);
+}
+
+.strip-rail-column {
+  grid-area: rail;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  align-self: start;
+  position: sticky;
+  top: var(--spacing-xl);
+  max-height: calc(100vh - 2 * var(--spacing-xl));
+}
+
+.strip-back-button {
+  grid-area: back;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  justify-self: start;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  text-align: center;
+  line-height: 1.25;
+  min-height: 0;
+}
+
+.strip-rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  min-height: 0;
+  max-height: calc(100vh - 180px);
+  flex: 1;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(18, 18, 18, 0.9) 50%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
+  background-size: 200% 200%;
+  animation: liquid-shimmer 8s ease-in-out infinite;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.strip-rail-counter {
+  font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.55);
+  padding: 0 var(--spacing-xs);
+  display: flex;
+  align-items: baseline;
+  gap: 0.25em;
+}
+.strip-rail-counter-current {
+  color: var(--color-club);
+  font-size: var(--font-size-sm);
+}
+.strip-rail-counter-sep {
+  opacity: 0.4;
+}
+
+.strip-rail-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--color-club-rgb), 0.4) transparent;
+}
+.strip-rail-list::-webkit-scrollbar {
+  width: 4px;
+}
+.strip-rail-list::-webkit-scrollbar-thumb {
+  background: rgba(var(--color-club-rgb), 0.4);
+  border-radius: 2px;
+}
+
+.strip-rail-thumb {
+  all: unset;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: var(--spacing-sm);
+  align-items: center;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.4);
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.strip-rail-thumb:hover {
+  border-color: rgba(var(--color-club-rgb), 0.45);
+  box-shadow: 0 0 12px rgba(var(--color-club-rgb), 0.2);
+}
+.strip-rail-thumb.active {
+  border-color: rgba(var(--color-club-rgb), 0.75);
+  background: rgba(var(--color-club-rgb), 0.06);
+  box-shadow: 0 0 14px rgba(var(--color-club-rgb), 0.28);
+}
+.strip-rail-thumb-index {
+  font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: right;
+  padding-right: 2px;
+}
+.strip-rail-thumb.active .strip-rail-thumb-index {
+  color: var(--color-club);
+}
+.strip-rail-thumb-media {
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #000;
+}
+.strip-rail-thumb-media img,
+.strip-rail-thumb-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease, filter 0.3s ease;
+  filter: grayscale(0.35) brightness(0.85);
+}
+.strip-rail-thumb.active .strip-rail-thumb-media img,
+.strip-rail-thumb.active .strip-rail-thumb-media video,
+.strip-rail-thumb:hover .strip-rail-thumb-media img,
+.strip-rail-thumb:hover .strip-rail-thumb-media video {
+  filter: none;
+  transform: scale(1.04);
+}
+
+.strip-main {
+  grid-area: main;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.strip-meta {
+  padding: 0 0 var(--spacing-sm) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.strip-meta-title {
+  font-family: var(--font-family-display);
+  font-size: clamp(1.25rem, 2.4vw, 1.85rem);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 var(--spacing-xs) 0;
+  color: #ffffff;
+  line-height: 1.15;
+}
+.strip-meta-rows {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-bottom: 0;
+}
+.strip-meta-tag {
+  font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(0, 0, 0, 0.35);
+}
+.strip-meta-desc {
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
+  margin: var(--spacing-sm) 0 0 0;
+  max-width: 68ch;
+}
+
+.strip-hero {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 0;
+}
+.strip-hero-media {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 180px);
+  width: auto;
+  height: auto;
+  border-radius: 6px;
+  cursor: zoom-in;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: transform 0.5s ease, box-shadow 0.4s ease;
+}
+.strip-hero-media:hover {
+  box-shadow:
+    0 26px 70px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(var(--color-club-rgb), 0.25),
+    0 0 24px rgba(var(--color-club-rgb), 0.18);
+}
+
+.strip-hero-nav {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--spacing-sm);
+}
+.strip-hero-nav-btn {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  line-height: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  cursor: pointer;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(15, 15, 15, 0.8) 50%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  opacity: 0.65;
+}
+.strip-hero:hover .strip-hero-nav-btn {
+  opacity: 1;
+}
+.strip-hero-nav-btn:hover {
+  transform: scale(1.08);
+  border-color: rgba(var(--color-club-rgb), 0.6);
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.5),
+    0 0 14px rgba(var(--color-club-rgb), 0.35);
+}
+
+/* Tablet + mobile: flatten the strip into a single flex column so the back
+   button, title, chips, hero image, thumbnails, and description reorder cleanly.
+   Rail is NOT sticky here — hero owns the fold. */
+@media (max-width: 1024px) {
+  .gallery-details {
+    margin-top: 60px !important;
+    padding-top: 0 !important;
+    overflow: visible;
+  }
+
+  .details-strip {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md) 0;
+  }
+
+  /* Flatten the rail wrapper so its rail child becomes a direct flex child
+     of .details-strip. .strip-main children participate through their own
+     display: contents below. */
+  .strip-rail-column { display: contents; }
+  .strip-main { display: contents; }
+
+  .strip-back-button {
+    display: inline-flex;
+    align-self: flex-start;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    min-height: 0;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+    order: 0;
+  }
+
+  .strip-meta { order: 1; padding-bottom: 0; border-bottom: none; }
+  .strip-meta-rows { order: 2; margin: 0; }
+  .strip-hero { order: 3; min-height: auto; }
+  .strip-rail { order: 4; }
+  .strip-meta-desc { order: 5; }
+
+  /* Rail wrapper: plain horizontal strip below the hero */
+  .strip-rail {
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    animation: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    max-height: none;
+    gap: var(--spacing-xs);
+  }
+
+  .strip-rail-counter {
+    padding: 0 var(--spacing-xs);
+  }
+
+  .strip-rail-list {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: var(--spacing-sm);
+    padding-bottom: 6px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .strip-rail-thumb {
+    grid-template-columns: 1fr;
+    width: 84px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    padding: 4px;
+  }
+
+  .strip-rail-thumb-index {
+    text-align: center;
+    padding-right: 0;
+  }
+
+  .strip-hero-media {
+    max-height: 70vh;
+    cursor: default;
+  }
+
+  /* Always-visible touch chevrons, larger targets */
+  .strip-hero-nav-btn {
+    width: 48px;
+    height: 48px;
+    opacity: 0.9;
+  }
+}
+
+/* Small phones: even more compact */
+@media (max-width: 560px) {
+  .strip-hero-media {
+    max-height: 60vh;
+  }
+  .strip-hero-nav-btn {
+    width: 42px;
+    height: 42px;
+  }
+  .strip-meta-title {
+    font-size: clamp(1.1rem, 5vw, 1.4rem);
+  }
+  .strip-rail-thumb {
+    width: 72px;
+  }
 }
 
 /*Modal CSS*/
