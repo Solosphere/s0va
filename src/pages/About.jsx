@@ -175,7 +175,7 @@ const AboutPage = () => {
     <Link to="/programs/blacksite" className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
     <div className="tattoo-text">
       <h3>BLACKSITE</h3>
-      <p>A browser-game arcade gated behind a secure-access terminal — two games built from scratch in React and canvas: DATA SPIKE, a neural-interface reflex game, and NULL_ESCAPE, a fragment-hunting maze.</p>
+      <p>A browser-game arcade behind a secure-access terminal. New games added over time — currently DATA SPIKE and NULL_ESCAPE, built in React and canvas.</p>
     </div>
     <div className="tattoo-mini-gallery blacksite-mini-gallery">
       <div className='image-column-1'>

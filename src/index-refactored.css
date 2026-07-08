@@ -8166,6 +8166,7 @@ input:checked + .toggle-slider:before {
 
   .search-bar-input {
     width: 100%;
+    font-size: 0.75rem;
   }
 }
 
