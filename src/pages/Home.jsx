@@ -53,9 +53,11 @@ const featuredItems = featuredLogCard
 // Top on fresh entry; restore to the mini-gallery when returning from a piece.
 useGalleryScrollRestore('homeScrollY');
 
-// Get protected image URL from products data
+// Get protected image URL from products data. Accepts either a bare filename
+// or a pre-built /api/media/... path (the /api/products endpoint ships the
+// latter form).
 const getProtectedImageUrl = (filename) => {
-  // Always return the full API URL, regardless of products data
+  if (filename.startsWith('/api/media/')) return filename;
   return `/api/media/image/${filename}`;
 };
 

@@ -3,20 +3,24 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
-import SaveButton from './SaveButton';
 import { useReducedMotionPref } from '../utils/useReducedMotionPref';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Get protected video URL
 const getProtectedVideoUrl = (filename) => {
+  if (filename.startsWith('/api/media/')) return filename;
   return `${API_BASE_URL}/media/video/${filename}`;
 };
 
-const getFullImageUrl = (filename) =>
-  filename.includes('.mp4') ? `/api/media/video/${filename}` : `/api/media/image/${filename}`;
+// The /api/products endpoint already returns image paths as full API URLs
+// (e.g. "/api/media/video/HCT-22.mp4"), so accept either form.
+const getFullImageUrl = (filename) => {
+  if (filename.startsWith('/api/media/')) return filename;
+  return filename.includes('.mp4') ? `/api/media/video/${filename}` : `/api/media/image/${filename}`;
+};
 
-const GalleryCard = ({ product, currentPage, showViolentContent, onSaveChange }) => {
+const GalleryCard = ({ product, currentPage, showViolentContent }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const reduced = useReducedMotionPref();
@@ -195,9 +199,6 @@ const GalleryCard = ({ product, currentPage, showViolentContent, onSaveChange })
             </div>
           )}
         </Link>
-        <div className="save-button-container">
-          <SaveButton artwork={product} onSaveChange={onSaveChange} />
-        </div>
       </div>
     </motion.div>
   );

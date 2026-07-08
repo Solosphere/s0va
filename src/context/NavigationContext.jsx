@@ -52,7 +52,6 @@ export const NavigationProvider = ({ children }) => {
       '/about': 'About',
       '/gallery': 'Gallery',
       '/engineering': 'Engineering',
-      '/saved': 'Saved Artworks',
       '/terms': 'Terms and Conditions'
     };
     return pageTitles[path] || 'Page';

@@ -8,7 +8,6 @@ const NAV_ITEMS = [
   { to: '/about', label: 'About' },
   { to: '/engineering', label: 'Engineering' },
   { to: '/gallery', label: 'Gallery' },
-  { to: '/saved', label: 'Saved' },
 ];
 
 export default function SiteHeadingAndNav() {

@@ -3,16 +3,17 @@ import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft, faTimes, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { useProducts } from '../context/ProductsProvider';
-import SaveButton from './SaveButton';
 import Reveal from './Reveal';
 import Loading from './Loading';
 import { getLastPath } from '../utils/navTracker';
 
 // Where the back button should return to, based on the route the user came from
-const PAGE_LABELS = { '/': 'home', '/gallery': 'gallery', '/saved': 'saved', '/about': 'about', '/engineering': 'engineering' };
+const PAGE_LABELS = { '/': 'home', '/gallery': 'gallery', '/about': 'about', '/engineering': 'engineering' };
 
-// Convert a media filename to its full API URL
+// Convert a media filename to its full API URL. The /api/products endpoint
+// already returns paths in the /api/media/... form, so accept either form.
 const getFullImageUrl = (filename) => {
+  if (filename.startsWith('/api/media/')) return filename;
   if (filename.includes('.mp4')) {
     return `/api/media/video/${filename}`;
   }
@@ -122,7 +123,6 @@ const GalleryItemDetails = () => {
           <div className="details-title">
             <div className="details-header">
               <h3>{product.name}</h3>
-              <SaveButton artwork={product} />
             </div>
             {product.collection && (
               <p className="gallery-item-collection">{product.collection} series</p>

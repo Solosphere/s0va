@@ -9,15 +9,17 @@ import { faGithub, faMedium, faLinkedin} from '@fortawesome/free-brands-svg-icon
 import { useProducts } from '../context/ProductsProvider';
 import { getLastPath } from '../utils/navTracker';
 
-// Get protected image URL from products data
+// Get protected image URL from products data. Accepts either a bare filename
+// or a pre-built /api/media/... path (the /api/products endpoint ships the
+// latter form).
 const getProtectedImageUrl = (filename, products) => {
-  // Always return the full API URL, regardless of products data
+  if (filename.startsWith('/api/media/')) return filename;
   return `/api/media/image/${filename}`;
 };
 
-// Get protected video URL from products data
+// Get protected video URL from products data.
 const getProtectedVideoUrl = (filename, products) => {
-  // Always return the full API URL, regardless of products data
+  if (filename.startsWith('/api/media/')) return filename;
   return `/api/media/video/${filename}`;
 };
 

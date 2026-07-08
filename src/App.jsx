@@ -14,7 +14,6 @@ import Footer from './components/Footer';
 import NotFoundPage from './pages/NotFound';
 import Loading from './components/Loading';
 import GalleryItemDetail from './components/GalleryItemDetails';
-import SavedArtworks from './pages/SavedArtworks';
 import { initializeKeyboardShortcuts } from './utils/keyboardShortcuts';
 import { NavigationProvider } from './context/NavigationContext';
 import { nextFrame, waitForVisibleMedia } from './utils/mediaReady';
@@ -137,7 +136,6 @@ export default function App() {
           {/* Redirects from the old section URLs */}
           <Route path="/cache/*" element={<LegacyRedirect from="/cache" to="/gallery" />} />
           <Route path="/log/*" element={<LegacyRedirect from="/log" to="/engineering" />} />
-          <Route path="/saved" element={<SavedArtworks />} />
           <Route path="/terms" element={<TermsAndConditions />} />
           <Route path="/programs" element={<ProgramsAccess />} />
           <Route path="/programs/blacksite" element={<BlackSite />} />
