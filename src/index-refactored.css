@@ -885,8 +885,10 @@ nav #logo span.special-char,
 
 .explore-gallery-button:hover {
   transform: translateY(-2px);
-  box-shadow: 
+  border-color: rgba(var(--color-club-rgb), 0.6);
+  box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(var(--color-club-rgb), 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
     inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
@@ -936,8 +938,10 @@ nav #logo span.special-char,
 
 .home-about-button:hover {
   transform: translateY(-2px);
-  box-shadow: 
+  border-color: rgba(var(--color-club-rgb), 0.6);
+  box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(var(--color-club-rgb), 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
     inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
@@ -2464,8 +2468,10 @@ nav #logo span.special-char,
 
 .viewer-discretion-button:hover {
   transform: translateY(-2px);
-  box-shadow: 
+  border-color: rgba(var(--color-club-rgb), 0.6);
+  box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(var(--color-club-rgb), 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
     inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
@@ -2602,6 +2608,12 @@ nav #logo span.special-char,
 
 .console-toggle:hover {
   transform: translateY(-2px);
+  border-color: rgba(var(--color-club-rgb), 0.6);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(var(--color-club-rgb), 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
 
 /* Lit-up state when the console is open */
@@ -2611,6 +2623,15 @@ nav #logo span.special-char,
     0 8px 32px rgba(0, 0, 0, 0.35),
     0 0 14px rgba(255, 255, 255, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.console-toggle.active:hover {
+  border-color: rgba(var(--color-club-rgb), 0.6);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(var(--color-club-rgb), 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
 
 .console-toggle-label {
@@ -2873,8 +2894,10 @@ nav #logo span.special-char,
 
 .pagination button:hover {
   transform: translateY(-2px);
-  box-shadow: 
+  border-color: rgba(var(--color-club-rgb), 0.6);
+  box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(var(--color-club-rgb), 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
     inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
@@ -2914,6 +2937,15 @@ nav #logo span.special-char,
   animation: shimmer-sweep 2s ease-in-out infinite;
 }
 
+.pagination button.active:hover {
+  border: 1px solid rgba(var(--color-club-rgb), 0.6);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(var(--color-club-rgb), 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+}
+
 @keyframes shimmer-sweep {
   0% {
     left: -100%;
@@ -2936,8 +2968,10 @@ nav #logo span.special-char,
 
 .pagination-prev:hover, .pagination-next:hover {
   transform: translateY(-2px);
-  box-shadow: 
+  border: 1px solid rgba(var(--color-club-rgb), 0.6) !important;
+  box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(var(--color-club-rgb), 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
     inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
@@ -3023,8 +3057,10 @@ nav #logo span.special-char,
     rgba(5, 5, 5, 0.95) 75%,
     rgba(0, 0, 0, 0.98) 100%
   );
-  box-shadow: 
+  border-color: rgba(var(--color-club-rgb), 0.6);
+  box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(var(--color-club-rgb), 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
     inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
@@ -4269,8 +4305,10 @@ nav #logo span.special-char,
 
 .dynamic-back-button:hover {
   transform: translateY(-2px);
+  border-color: rgba(var(--color-club-rgb), 0.6);
   box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(var(--color-club-rgb), 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
     inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
@@ -4464,8 +4502,10 @@ nav #logo span.special-char,
 
 .back-to-top-button:hover {
   transform: translateY(-2px);
-  box-shadow: 
+  border-color: rgba(var(--color-club-rgb), 0.6);
+  box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(var(--color-club-rgb), 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
     inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
@@ -5746,8 +5786,10 @@ input:checked + .toggle-slider:before {
 
 .carousel-nav:hover {
   transform: scale(1.1);
+  border-color: rgba(var(--color-club-rgb), 0.6);
   box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(var(--color-club-rgb), 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
     inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
@@ -6948,6 +6990,15 @@ input:checked + .toggle-slider:before {
   border: 1px solid #333333;
 }
 
+[data-theme="dark"] .back-to-top-button:hover {
+  border-color: rgba(var(--color-club-rgb), 0.6);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(var(--color-club-rgb), 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+}
+
 [data-theme="dark"] .content {
   color: #ffffff;
 }
@@ -7238,6 +7289,12 @@ input:checked + .toggle-slider:before {
     rgba(0, 0, 0, 0.95) 100%
   ) !important;
   color: #ffffff !important;
+  border-color: rgba(var(--color-club-rgb), 0.6) !important;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(var(--color-club-rgb), 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
 [data-theme="dark"] .details-title {
@@ -7562,11 +7619,20 @@ input:checked + .toggle-slider:before {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.2);
   color: #ffffff;
+}
+
+[data-theme="dark"] .dynamic-back-button:hover {
+  border-color: rgba(var(--color-club-rgb), 0.6);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 14px rgba(var(--color-club-rgb), 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
 
 /* Dark mode override for image navigation icons */
