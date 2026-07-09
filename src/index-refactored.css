@@ -8943,4 +8943,48 @@ input:checked + .toggle-slider:before {
   }
 }
 
+/* ============================================================
+   ACTIVE-LINK + REVEAL LEGIBILITY FIX
+   ------------------------------------------------------------
+   The mobile menu link for the current route (e.g. "About" while
+   viewing /about) picked up the generic .active glow — three
+   simultaneous text-shadows over a light-on-dark headline read
+   as smeared/blurry versus its siblings. Strip the glow for the
+   full-screen menu; keep the crisper wordmark treatment for the
+   METTAIRE logo elsewhere.
+
+   The settings header + shortcut list use a `title-reveal`
+   animation that starts with `filter: blur(3px)`; Safari
+   occasionally leaves the final frame's filter layer live,
+   which softens "Settings" and the shortcut section. Force
+   a clean end state so the text lands sharp regardless.
+   ============================================================ */
+
+.main-menu li a.active {
+  text-shadow: none;
+  font-weight: 400;
+}
+
+/* Ensure the reveal animation always resolves to zero blur. */
+.settings-overlay.open .settings-header,
+.settings-overlay.open .setting-group {
+  filter: none;
+}
+
+/* Boost contrast on the "Keyboard Shortcuts" heading and its rows
+   so the section reads as crisply as the toggle rows above it. */
+.settings-overlay .setting-group h3 {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.settings-overlay .shortcut-item span {
+  color: #ffffff;
+}
+
+.settings-overlay .shortcut-item kbd {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #ffffff;
+}
+
 
