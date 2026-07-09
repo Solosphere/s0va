@@ -3006,7 +3006,7 @@ nav #logo span.special-char,
   flex-direction: column;
   max-width: 90%;
   margin: 2% auto;
-  margin-top: 50px !important;
+  margin-top: 100px !important;
   padding: 1%;
   padding-top: 20px !important;
   border-radius: 30px;
@@ -8841,4 +8841,106 @@ input:checked + .toggle-slider:before {
     gap: 0.5em;
   }
 }
+
+/* ============================================================
+   GPU / COMPOSITOR RELIEF
+   ------------------------------------------------------------
+   Two site-wide adjustments that keep the visual language intact
+   but eliminate an iOS Safari crash-and-reload loop caused by
+   dozens of simultaneous backdrop-filter + liquid-shimmer layers.
+
+   1) Strip backdrop-filter from elements that sit over the solid
+      dark page background — the blur samples black and returns
+      black, so it's visually a no-op but the GPU still allocates
+      a per-element offscreen buffer every frame. Kept on modals
+      and nav overlays (where content genuinely shows through).
+   2) Pause liquid-shimmer by default so it doesn't animate ~15
+      elements at all times; it runs on hover/focus/active instead,
+      which is where the interaction cue actually matters.
+   ============================================================ */
+
+/* 1) Drop backdrop-filter on solid-bg elements. Modals + nav keep it. */
+.back-button,
+.dynamic-back-button,
+.strip-back-button,
+.strip-rail,
+.strip-hero-nav-btn,
+.related-card,
+.artwork-pager-btn,
+.home-about-button,
+.explore-gallery-button,
+.engineering-log-button,
+.search-bar-input,
+.pagination button,
+.filter-btn,
+.viewer-discretion-button,
+.log-card,
+.log-detail,
+.log-launch,
+.details-title,
+.terms-body,
+.log-header {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 2) Pause ambient liquid-shimmer; wake it on interaction. Modals,
+   nav, and search input already look glass-like via their gradient. */
+.back-button,
+.dynamic-back-button,
+.strip-back-button,
+.strip-rail,
+.related-card,
+.artwork-pager-btn,
+.home-about-button,
+.explore-gallery-button,
+.engineering-log-button,
+.pagination button,
+.filter-btn,
+.viewer-discretion-button,
+.log-card,
+.log-detail,
+.log-launch,
+.details-title {
+  animation-play-state: paused;
+}
+
+.back-button:hover,
+.back-button:focus-visible,
+.dynamic-back-button:hover,
+.dynamic-back-button:focus-visible,
+.strip-back-button:hover,
+.strip-back-button:focus-visible,
+.related-card:hover,
+.related-card:focus-visible,
+.artwork-pager-btn:hover,
+.artwork-pager-btn:focus-visible,
+.home-about-button:hover,
+.home-about-button:focus-visible,
+.explore-gallery-button:hover,
+.explore-gallery-button:focus-visible,
+.engineering-log-button:hover,
+.engineering-log-button:focus-visible,
+.pagination button:hover,
+.pagination button:focus-visible,
+.filter-btn:hover,
+.filter-btn:focus-visible,
+.viewer-discretion-button:hover,
+.viewer-discretion-button:focus-visible,
+.log-card:hover,
+.log-card:focus-visible,
+.log-launch:hover,
+.log-launch:focus-visible {
+  animation-play-state: running;
+}
+
+/* Extra guard for iOS Safari specifically — even the blur(6px) on
+   nav badges piles up. Kills any remaining ambient blur on touch. */
+@supports (-webkit-touch-callout: none) {
+  * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
 

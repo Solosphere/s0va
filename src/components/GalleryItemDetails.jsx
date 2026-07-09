@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft, faTimes, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -39,12 +39,40 @@ const GalleryItemDetails = () => {
   // Track the thumbnail list so we can scroll the active thumb into view when
   // the user pages via the hero chevrons.
   const railListRef = useRef(null);
+  // Delay rendering the "related works" section (with 4 more image decodes)
+  // until the user scrolls it into view. Cheap to observe, big memory win on
+  // pages that are never scrolled past the fold — especially on iOS Safari.
+  const relatedSentinelRef = useRef(null);
+  const [relatedVisible, setRelatedVisible] = useState(false);
 
   // Reset image position and scroll to top whenever we open a different piece
   useEffect(() => {
     window.scrollTo(0, 0);
     setCurrentImageIndex(0);
     setIsModalOpen(false);
+    setRelatedVisible(false);
+  }, [id]);
+
+  // Observe the sentinel; once it enters the viewport the related works
+  // section renders. Old browsers just render immediately.
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') {
+      setRelatedVisible(true);
+      return;
+    }
+    const el = relatedSentinelRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setRelatedVisible(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '400px 0px' }
+    );
+    io.observe(el);
+    return () => io.disconnect();
   }, [id]);
 
   // Keep the active thumbnail visible in the rail as the user navigates.
@@ -118,21 +146,29 @@ const GalleryItemDetails = () => {
   const isVideo = currentImageUrl.includes('.mp4');
   const fullImageUrl = getFullImageUrl(currentImageUrl);
 
-  // Previous / next piece across the full collection of works
-  const orderedProducts = Array.isArray(products) ? products : [];
-  const currentIndex = orderedProducts.findIndex((p) => p.id === product.id);
-  const hasSiblings = currentIndex !== -1 && orderedProducts.length > 1;
-  const prevProduct = hasSiblings
-    ? orderedProducts[(currentIndex - 1 + orderedProducts.length) % orderedProducts.length]
-    : null;
-  const nextProduct = hasSiblings
-    ? orderedProducts[(currentIndex + 1) % orderedProducts.length]
-    : null;
+  // Previous / next piece across the full collection of works. Memoized so
+  // the O(n) find + modular indexing don't rerun on every state change (image
+  // index, modal, transition dir) — they only depend on the product cache
+  // and the current piece's id.
+  const { prevProduct, nextProduct, hasSiblings } = useMemo(() => {
+    const ordered = Array.isArray(products) ? products : [];
+    const idx = ordered.findIndex((p) => p.id === product.id);
+    const siblings = idx !== -1 && ordered.length > 1;
+    return {
+      hasSiblings: siblings,
+      prevProduct: siblings ? ordered[(idx - 1 + ordered.length) % ordered.length] : null,
+      nextProduct: siblings ? ordered[(idx + 1) % ordered.length] : null,
+    };
+  }, [products, product.id]);
 
   // Other works in the same series/collection
-  const relatedWorks = product.collection
-    ? getProductsByCollection(product.collection).filter((p) => p.id !== product.id).slice(0, 4)
-    : [];
+  const relatedWorks = useMemo(
+    () =>
+      product.collection
+        ? getProductsByCollection(product.collection).filter((p) => p.id !== product.id).slice(0, 4)
+        : [],
+    [product.collection, product.id, getProductsByCollection]
+  );
 
   return (
     <div className="gallery-details">
@@ -258,7 +294,8 @@ const GalleryItemDetails = () => {
         </div>
       </div>
 
-      {relatedWorks.length > 0 && (
+      <div ref={relatedSentinelRef} aria-hidden="true" style={{ height: 1 }} />
+      {relatedVisible && relatedWorks.length > 0 && (
         <Reveal as="section" className="related-works">
             <h4 className="related-heading">More from the {product.collection} series</h4>
             <div className="related-grid">
@@ -274,7 +311,9 @@ const GalleryItemDetails = () => {
                     className="related-card"
                   >
                     {thumbIsVideo ? (
-                      <video src={getFullImageUrl(thumb)} muted loop autoPlay playsInline />
+                      // preload=none + no autoplay: several related videos
+                      // decoding at once was a mobile-Safari OOM trigger.
+                      <video src={getFullImageUrl(thumb)} muted loop playsInline preload="none" />
                     ) : (
                       <img src={getFullImageUrl(thumb)} loading="lazy" alt={work.name} />
                     )}
