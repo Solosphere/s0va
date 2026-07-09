@@ -49,6 +49,16 @@ export const ProductsProvider = ({ children }) => {
     };
 
     fetchProducts();
+
+    // iOS Safari restores closed tabs from bfcache. If the products fetch
+    // was in-flight when the tab was frozen, the promise never resolves on
+    // restore — the app stays stuck on the loading screen. Re-fetch when the
+    // page is restored from bfcache so the cache seeds itself again.
+    const onPageShow = (event) => {
+      if (event.persisted) fetchProducts();
+    };
+    window.addEventListener('pageshow', onPageShow);
+    return () => window.removeEventListener('pageshow', onPageShow);
   }, [API_BASE_URL]);
 
   const getProductById = (id) => {

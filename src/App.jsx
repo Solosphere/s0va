@@ -86,6 +86,29 @@ export default function App() {
     recordPath(location.pathname);
   }, [location.pathname]);
 
+  // iOS Safari restores closed tabs from bfcache, which freezes React state
+  // exactly as it was — including a mid-navigation `loading: true`. That
+  // leaves the black loading overlay pinned over the page. Clear it as soon
+  // as the tab becomes visible or is restored, and force a fresh re-check
+  // so the media-ready path can run once more if anything's still pending.
+  useEffect(() => {
+    const clearOverlay = () => setLoading(false);
+
+    const onPageShow = (event) => {
+      if (event.persisted) clearOverlay();
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') clearOverlay();
+    };
+
+    window.addEventListener('pageshow', onPageShow);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      window.removeEventListener('pageshow', onPageShow);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, []);
+
   useEffect(() => {
     // Initialize keyboard shortcuts
     const cleanup = initializeKeyboardShortcuts();
