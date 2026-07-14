@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import { useProducts } from '../context/ProductsProvider';
 import Reveal from '../components/Reveal';
@@ -6,8 +6,57 @@ import HeroScene from '../components/HeroScene';
 import { useGalleryScrollRestore } from '../utils/useScrollRestore';
 import { withImageWidth, WIDTHS } from '../utils/imageService';
 
+// Mobile tagline: single row that alternates between the two roles under the
+// name. Each swap types the outgoing role out right-to-left, then types the
+// incoming role in left-to-right — matches the desktop whoami's terminal
+// feel and keeps the block from popping.
+const ROTATING_ROLES = [
+  { to: '/engineering', text: 'DevOps engineer @ Salesforce' },
+  { to: '/gallery', text: 'multimedia artist' },
+];
+
+const HOLD_MS = 2600;   // pause once a role is fully typed
+const ERASE_MS = 32;    // per-char erase interval
+const TYPE_MS = 55;     // per-char type interval
+
 export default function HomePage() {
 const { products } = useProducts();
+
+// Mobile tagline: which role is being rendered right now, and how much of
+// its text is currently visible. The animation walks through four phases:
+//   typing → holding → erasing → next role (typing again).
+// Splitting typed characters from the role index lets us keep the Link's
+// href pointing at the correct destination even while the label is only
+// partially typed.
+const [roleIndex, setRoleIndex] = useState(0);
+const [displayText, setDisplayText] = useState(ROTATING_ROLES[0].text);
+const [phase, setPhase] = useState('holding'); // typing | holding | erasing
+useEffect(() => {
+  const targetText = ROTATING_ROLES[roleIndex].text;
+  let timer;
+  if (phase === 'typing') {
+    if (displayText.length < targetText.length) {
+      timer = setTimeout(() => {
+        setDisplayText(targetText.slice(0, displayText.length + 1));
+      }, TYPE_MS);
+    } else {
+      setPhase('holding');
+    }
+  } else if (phase === 'holding') {
+    timer = setTimeout(() => setPhase('erasing'), HOLD_MS);
+  } else if (phase === 'erasing') {
+    if (displayText.length > 0) {
+      timer = setTimeout(() => {
+        setDisplayText(displayText.slice(0, -1));
+      }, ERASE_MS);
+    } else {
+      setRoleIndex((n) => (n + 1) % ROTATING_ROLES.length);
+      setPhase('typing');
+    }
+  }
+  return () => clearTimeout(timer);
+}, [phase, displayText, roleIndex]);
+const activeRole = ROTATING_ROLES[roleIndex];
 
 
 // Get featured images from products data
@@ -60,8 +109,10 @@ return (
         </div>
         <div className="content">
           <h1 className="landingpage-title">METTAIRE</h1>
+          {/* Desktop / tablet+: original single-line whoami. Hidden on
+              mobile via CSS. */}
           <div
-            className="whoami-block"
+            className="whoami-block whoami--desktop"
             role="doc-subtitle"
             aria-label="Daniel Nelson — DevOps engineer at Salesforce and multimedia artist"
           >
@@ -74,6 +125,31 @@ return (
                 <Link to="/gallery" className="whoami-role whoami-role--artist">multimedia artist</Link>
               </span>
               <span className="terminal-cursor whoami-cursor" aria-hidden="true">▮</span>
+            </p>
+          </div>
+          {/* Mobile: name on top, rotating role below. Shown on mobile via CSS. */}
+          <div
+            className="whoami-block whoami--rotating"
+            role="doc-subtitle"
+            aria-label="Daniel Nelson — DevOps engineer at Salesforce and multimedia artist"
+          >
+            <p className="whoami-output">
+              <span className="whoami-name">Daniel Nelson</span>
+              <span className="whoami-rot-line">
+                <span className="whoami-rot-prompt" aria-hidden="true">&gt;&nbsp;</span>
+                <Link
+                  to={activeRole.to}
+                  className="whoami-role whoami-rot-role"
+                  aria-label={activeRole.text}
+                >
+                  {displayText}
+                  <span
+                    className="whoami-rot-caret"
+                    data-phase={phase}
+                    aria-hidden="true"
+                  >▮</span>
+                </Link>
+              </span>
             </p>
           </div>
         </div>

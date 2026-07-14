@@ -121,9 +121,17 @@ const GalleryCard = ({ product, showViolentContent }) => {
     }
   };
 
+  // Remember which card the visitor opened, so when they hit back the
+  // gallery can scroll THIS card back into view — a pixel-offset restore
+  // drifts once lazy images below decode and expand the page.
+  const rememberOrigin = () => {
+    try { sessionStorage.setItem('galleryReturnId', String(product.id)); } catch (_) {}
+  };
+
   return (
     <motion.div
       className="gallery-card"
+      data-piece-id={product.id}
       initial={reduced ? false : { opacity: 0, y: 36 }}
       whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
@@ -134,6 +142,7 @@ const GalleryCard = ({ product, showViolentContent }) => {
           ref={linkRef}
           to={`/gallery/${product.id}`}
           className="link-no-underline"
+          onClick={rememberOrigin}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           onClickCapture={handleClickCapture}

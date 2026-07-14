@@ -757,19 +757,97 @@ nav #logo span.special-char,
   vertical-align: bottom;
 }
 
-@media (max-width: 550px) {
+/* Any viewport where the 65-char mono line can't sit on one row: wrap it,
+   drop the width-based typing animation (which looks broken over a wrapping
+   run), and let the block breathe up to the viewport edges instead of
+   clamping at its intrinsic content width (which would overflow). The 720px
+   threshold covers every common phone + small tablet portrait. */
+@media (max-width: 720px) {
   .whoami-block {
-    font-size: 0.7rem;
+    width: auto;
+    max-width: 100vw;
+    font-size: clamp(0.72rem, 3vw, 0.95rem);
+    padding: 0 0.6rem;
+    box-sizing: border-box;
   }
-  /* Narrow phones: the line wraps, and a width-based typing animation over a
-     wrapping run looks broken. Skip typing and just show the text once the
-     block finishes fading in. */
   .whoami-output {
     white-space: normal;
+    overflow-wrap: anywhere;
   }
   .whoami-typed {
     width: auto;
+    display: inline;
+    white-space: normal;
+    overflow: visible;
     animation: none;
+  }
+  .whoami-sep {
+    /* The middot separators anchor line breaks in the middle of the phrase
+       so it wraps at natural boundaries instead of splitting the role text. */
+    display: inline-block;
+  }
+
+  /* Mobile swap: the one-line "desktop" block is hidden; the rotating block
+     takes over. Name sits on top, a single role rotates below (~3.8s cycle)
+     with a prompt marker and a blinking cursor — space-efficient and keeps
+     the terminal-output feel intact on narrow viewports. */
+  .whoami--desktop {
+    display: none !important;
+  }
+  .whoami--rotating {
+    display: block;
+    text-align: center;
+    max-width: 100vw;
+    padding: 0 0.6rem;
+    animation: title-reveal 1.6s ease-out 0.35s forwards;
+  }
+  .whoami--rotating .whoami-output {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2em;
+    line-height: 1.4;
+  }
+  .whoami--rotating .whoami-rot-line {
+    display: inline-flex;
+    align-items: baseline;
+    max-width: 100%;
+  }
+  .whoami--rotating .whoami-rot-prompt {
+    color: rgba(var(--color-club-rgb), 0.6);
+    font-weight: 500;
+  }
+  .whoami--rotating .whoami-rot-role {
+    padding: 0;
+    background: transparent;
+    overflow-wrap: anywhere;
+    /* React updates displayText char-by-char (~55ms/type, ~32ms/erase). A tiny
+       opacity ease on each render smooths the leading/trailing letter so the
+       cursor edge doesn't strobe. */
+    transition: text-shadow 0.15s ease;
+  }
+  /* Inline caret that follows the last typed character. Stays solid while
+     letters are appearing or disappearing (so the motion reads as continuous),
+     then blinks during the hold pause so a fully-typed role feels alive. */
+  .whoami--rotating .whoami-rot-caret {
+    display: inline-block;
+    margin-left: 0.05em;
+    color: var(--color-club);
+  }
+  .whoami--rotating .whoami-rot-caret[data-phase="holding"] {
+    animation: whoami-caret-blink 1.05s steps(1, end) infinite;
+  }
+  @keyframes whoami-caret-blink {
+    0%, 55%   { opacity: 1; }
+    55.01%, 100% { opacity: 0; }
+  }
+}
+
+/* Above the mobile breakpoint, the rotating block is hidden and the
+   original single-line whoami takes over. */
+@media (min-width: 721px) {
+  .whoami--rotating {
+    display: none !important;
   }
 }
 
@@ -2651,13 +2729,12 @@ nav #logo span.special-char,
     margin-right: auto;
   }
 
-  /* The input is 97% wide and centered here, so match the suggestions dropdown
-     to it (1.5% margin each side) instead of the left-aligned desktop default.
-     Scoped under .search-bar to outrank the base .search-suggest (which is
-     later in the file). */
+  /* Input is 94% wide with a symmetric 3% gutter — line the suggestions
+     dropdown up under it. Scoped under .search-bar to outrank the base
+     .search-suggest (which is later in the file). */
   .search-bar .search-suggest {
-    left: 1.5%;
-    right: 1.5%;
+    left: 3%;
+    right: 3%;
   }
 }
 
@@ -2827,7 +2904,7 @@ nav #logo span.special-char,
 .search-suggest {
   position: absolute;
   top: calc(100% + 6px);
-  left: 0;
+  left: 3%;
   right: 3%;
   z-index: 300;
   margin: 0;
@@ -6697,7 +6774,9 @@ input:checked + .toggle-slider:before {
     height: 50px;
     font-size: 1.2em;
     border-radius: 25px;
-    width: 97%; /* match the dropdown (left:0, right:3%) so they line up */
+    width: 94%; /* leave a symmetric 3% gutter on both sides */
+    margin-left: 3%;
+    margin-right: 3%;
     max-width: 100%;
   }
   
@@ -6805,6 +6884,11 @@ input:checked + .toggle-slider:before {
   .search-bar-input {
     height: 60px;
     font-size: 1.3em;
+    /* At row layout the title is the visual left anchor — reset the mobile
+       symmetric-gutter override so the input fills its flex slot. */
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
   }
   
   .filter-and-sort-row {

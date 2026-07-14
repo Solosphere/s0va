@@ -8,7 +8,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useProducts } from '../context/ProductsProvider';
 import { matchesSearch } from '../utils/search';
 import { nextFrame, waitForVisibleMedia } from '../utils/mediaReady';
-import { useGalleryScrollRestore } from '../utils/useScrollRestore';
 import { getLastPath } from '../utils/navTracker';
 
 const BATCH_SIZE = 16;
@@ -168,18 +167,58 @@ const GalleryList = () => {
     setShownCount((n) => n + BATCH_SIZE);
   };
 
-  // Top on fresh entry; restore position when returning from a piece's detail.
-  useGalleryScrollRestore('galleryScrollY');
-
   // Persist the load-more chain so returning from a piece doesn't collapse
-  // the grid back to the first batch — the scroll restore lands on air
-  // otherwise. Fresh entries (any nav that isn't a return-from-detail) reset
-  // to one batch, matching the sibling scroll-to-top behavior above.
+  // the grid back to the first batch. Fresh entries (any nav that isn't a
+  // return-from-detail) already reset above via the useState initializer.
   useEffect(() => {
     return () => {
       sessionStorage.setItem(SHOWN_STORAGE_KEY, String(shownCount));
     };
   }, [shownCount]);
+
+  // Card-anchored scroll restore. On return from a piece, find that exact
+  // card in the DOM and pin it into view — a saved pixel offset drifts as
+  // lazy images below decode and expand the page. If the piece lived beyond
+  // the currently-shown batch, expand shownCount enough to include it before
+  // scrolling. Consumes galleryReturnId (set on card click) once, then clears
+  // it so a subsequent top-level navigation lands at the top of the grid.
+  useEffect(() => {
+    const cameFromDetail = /^\/gallery\//.test(getLastPath());
+    if (!cameFromDetail) {
+      sessionStorage.removeItem('galleryReturnId');
+      window.scrollTo(0, 0);
+      return;
+    }
+    const returnIdRaw = sessionStorage.getItem('galleryReturnId');
+    sessionStorage.removeItem('galleryReturnId');
+    const returnId = returnIdRaw ? parseInt(returnIdRaw, 10) : NaN;
+    if (Number.isNaN(returnId)) {
+      // No card id captured — nothing to anchor to; stay at top.
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    // If the piece is past the currently-shown batch, extend so it renders.
+    const list = applyFiltersAndSort();
+    const idx = list.findIndex((p) => p.id === returnId);
+    if (idx >= 0 && idx >= shownCount) {
+      const needed = Math.ceil((idx + 1) / BATCH_SIZE) * BATCH_SIZE;
+      setShownCount(needed);
+    }
+
+    // Keep re-anchoring for ~1.5s so lazy media below can decode without
+    // knocking the target off-screen.
+    let raf;
+    const start = performance.now();
+    const pin = () => {
+      const el = document.querySelector(`[data-piece-id="${returnId}"]`);
+      if (el) el.scrollIntoView({ block: 'center', behavior: 'auto' });
+      if (performance.now() - start < 1500) raf = requestAnimationFrame(pin);
+    };
+    raf = requestAnimationFrame(pin);
+    return () => { if (raf) cancelAnimationFrame(raf); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Show loading if products are still loading
   if (productsLoading) {
