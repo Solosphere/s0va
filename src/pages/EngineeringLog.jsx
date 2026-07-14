@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Reveal from '../components/Reveal';
 import LogTimeline from '../components/LogTimeline';
-import caseStudies, { logMeta, schools, internships, skills } from '../data/caseStudies';
+import LogSectionNav from '../components/LogSectionNav';
+import caseStudies, { logMeta, schools, internships, skills, findCaseStudy } from '../data/caseStudies';
 
 // Engineering Log — a grid of work-experience "log entries" (STAR case
 // studies). Each card links to its own detail page, mirroring the cache.
@@ -11,36 +12,40 @@ const EngineeringLog = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  // The top case-studies grid is Salesforce/OWN work + BLACKSITE. Anything
+  // that lives in its own section below (e.g. internships) is filtered out
+  // here so it doesn't double up.
+  const featuredCaseStudies = caseStudies.filter(
+    (c) => !internships.some((i) => i.id === c.id),
+  );
+
   return (
     <div className="log-page">
       <header className="log-header">
         <h1>ENGINEERING LOG</h1>
-      </header>
-
-      <LogTimeline />
-
-      <div className="log-section-label log-career-intro">
-        <p className="log-prompt-line">
+        {/* One establishing terminal line for the whole page — subsequent
+            sections no longer repeat the root@wound.os prefix so it reads as
+            hierarchy, not decoration. */}
+        <p className="log-prompt-line log-prompt-line--intro">
           <span className="log-prompt-sign" aria-hidden="true">root@wound.os ~ %</span>{' '}
           cat /var/log/career
         </p>
-      </div>
+      </header>
 
-      <div className="log-school-head log-work-head" id="exp-salesforce">
+      <LogTimeline />
+      <LogSectionNav />
+
+      <div className="log-school-head log-work-head" id="sec-case-studies">
         <h3>{logMeta.role}</h3>
         <span>{logMeta.timeline}</span>
       </div>
 
       <div className="log-section-label log-section-label--sub log-section-label--nested">
-        <p className="log-prompt-line">
-          <span className="log-prompt-sign" aria-hidden="true">root@wound.os ~ %</span>{' '}
-          cat /var/log/career/case-studies
-        </p>
         <h2><span className="log-tree" aria-hidden="true">└─ </span>CASE STUDIES</h2>
       </div>
 
       <section className="log-grid">
-        {caseStudies.map((entry, i) => (
+        {featuredCaseStudies.map((entry, i) => (
           <Reveal as="article" className="log-card" key={entry.id} delay={(i % 2) * 0.08}>
             <Link to={`/engineering/${entry.id}`} className="log-card-link">
               <div className="log-card-top">
@@ -66,42 +71,52 @@ const EngineeringLog = () => {
         ))}
       </section>
 
-      <div className="log-school" id="exp-careerspring">
-        <div className="log-school-head">
-          <h3>CareerSpring</h3>
-          <span>Internship · 2023</span>
-        </div>
-        <section className="log-grid log-grid--school">
-          {internships.map((p, i) => (
-            <Reveal as="article" className="log-card" key={p.id} delay={(i % 2) * 0.08}>
-              <Link to={`/gallery/${p.cacheId}`} className="log-card-link">
-                <div className="log-card-top">
-                  <span className="log-card-org">{p.type}</span>
-                  <span className="log-card-org">{p.year}</span>
-                </div>
-                <h2 className="log-card-title">{p.title}</h2>
-                <p className="log-card-summary">{p.summary}</p>
-                <div className="log-chips">
-                  {p.stack.slice(0, 4).map((tech) => (
-                    <span key={tech} className="log-chip">{tech}</span>
-                  ))}
-                  {p.stack.length > 4 && (
-                    <span className="log-chip log-chip--more">+{p.stack.length - 4}</span>
-                  )}
-                </div>
-                <span className="log-card-cta" aria-hidden="true">view piece →</span>
-              </Link>
-            </Reveal>
-          ))}
-        </section>
-      </div>
-
-      <section className="log-education">
+      <section className="log-internship" id="sec-internship">
         <div className="log-section-label">
-          <p className="log-prompt-line">
-            <span className="log-prompt-sign" aria-hidden="true">root@wound.os ~ %</span>{' '}
-            cat /var/log/education
-          </p>
+          <h2>INTERNSHIP</h2>
+        </div>
+        <div className="log-school">
+          <div className="log-school-head">
+            <h3>CareerSpring</h3>
+            <span>Internship · Summer 2023</span>
+          </div>
+          <section className="log-grid log-grid--school">
+            {internships.map((p, i) => {
+              // Prefer the full case study when one exists — the internship
+              // metadata (id / title / stack) already matches the case study,
+              // so the card can point at /engineering/:id instead of dumping
+              // the visitor into the art gallery.
+              const cs = findCaseStudy(p.id);
+              const to = cs ? `/engineering/${cs.id}` : `/gallery/${p.cacheId}`;
+              const cta = cs ? 'read entry →' : 'view piece →';
+              return (
+                <Reveal as="article" className="log-card" key={p.id} delay={(i % 2) * 0.08}>
+                  <Link to={to} className="log-card-link">
+                    <div className="log-card-top">
+                      <span className="log-card-org">{p.type}</span>
+                      <span className="log-card-org">{p.year}</span>
+                    </div>
+                    <h2 className="log-card-title">{p.title}</h2>
+                    <p className="log-card-summary">{p.summary}</p>
+                    <div className="log-chips">
+                      {p.stack.slice(0, 4).map((tech) => (
+                        <span key={tech} className="log-chip">{tech}</span>
+                      ))}
+                      {p.stack.length > 4 && (
+                        <span className="log-chip log-chip--more">+{p.stack.length - 4}</span>
+                      )}
+                    </div>
+                    <span className="log-card-cta" aria-hidden="true">{cta}</span>
+                  </Link>
+                </Reveal>
+              );
+            })}
+          </section>
+        </div>
+      </section>
+
+      <section className="log-education" id="sec-education">
+        <div className="log-section-label">
           <h2>EDUCATION</h2>
         </div>
 
@@ -138,12 +153,8 @@ const EngineeringLog = () => {
         ))}
       </section>
 
-      <section className="log-skills">
+      <section className="log-skills" id="sec-skills">
         <div className="log-section-label">
-          <p className="log-prompt-line">
-            <span className="log-prompt-sign" aria-hidden="true">root@wound.os ~ %</span>{' '}
-            cat /var/log/skills
-          </p>
           <h2>SKILLS</h2>
         </div>
         <div className="log-skill-groups">

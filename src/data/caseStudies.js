@@ -264,6 +264,34 @@ VPC Flow Logs → 365-day retention`,
       'My first taste of infrastructure and config management. Ansible felt intimidating but the declarative model clicked fast — you describe what you want, not how to get there. It taught me that infra bugs aren’t always code bugs; sometimes it’s just legacy entropy nobody cleaned up.',
   },
   {
+    id: 'careerspring-interest-finder',
+    title: 'CareerSpring Interest Finder',
+    org: 'CareerSpring',
+    period: 'Summer 2023',
+    stack: ['WordPress', 'PHP', 'JavaScript', 'HTML', 'CSS'],
+    summary:
+      'Built a custom career-interest profiler on WordPress — design through deploy — that routes first-gen users toward careers aligned with their answers.',
+    problem:
+      "CareerSpring serves first-generation students who often arrive without a clear sense of what careers even exist for their interests. Their site needed a lightweight, self-serve tool that could turn a short set of interest signals into a real career direction — not another static resource page.",
+    constraints:
+      'Developer intern on a small team — sole owner of the feature from wireframe to deploy. WordPress was the required platform (rest of the site lived on it), and the interaction had to survive a wide range of devices and reading levels.',
+    approach: [
+      'Wireframed the interest-to-career flow with the team and translated it into a step-by-step profiler.',
+      'Built the profiler as a custom WordPress component — form logic, question weighting, and result routing wired into the CMS so non-engineers could update questions later.',
+      'Wrote the front-end in plain JavaScript + CSS to keep the surface small and load fast on low-end devices in a school-computer context.',
+      'Tested against the existing CareerSpring pages and got the tool live in the summer window.',
+    ],
+    architecture: `user starts profiler
+  └─ WordPress page (custom template)
+     └─ question set (interest signals)
+        └─ JS scoring ── maps answers → career families
+           └─ result view ── links into CareerSpring's career library`,
+    outcome:
+      'A live, self-serve career-interest tool inside the CareerSpring site — students get an actionable direction from a short set of answers instead of a wall of static content, and the profiler itself is CMS-editable so the team can iterate on questions without a developer.',
+    reflection:
+      'My first internship shipping to a real audience. The hardest part wasn\'t the code — it was building something for a user I wasn\'t. Sitting with what a first-gen student actually needs from a career tool changed the design more than any technical decision, and set the pattern for how I approach product work now.',
+  },
+  {
     id: 'blacksite',
     title: 'BLACKSITE — Browser Game Arcade',
     org: 'Personal',
@@ -393,9 +421,9 @@ export const internships = [
 export const timeline = [
   { year: '2020', label: 'Parsons School of Design', sub: 'Education', to: '#edu-parsons', origin: true },
   { year: '2022', label: 'Marcy Lab School', sub: 'Education', to: '#edu-marcy' },
-  { year: '2023', label: 'CareerSpring', sub: 'Internship', to: '#exp-careerspring' },
-  { year: '2024', label: 'OWN', sub: 'Internship', to: '#exp-salesforce' },
-  { year: '2025', label: 'Salesforce', sub: 'AMTS', to: '#exp-salesforce', current: true },
+  { year: '2023', label: 'CareerSpring', sub: 'Internship', to: '#sec-internship' },
+  { year: '2024', label: 'OWN', sub: 'Internship', to: '#sec-case-studies' },
+  { year: '2025', label: 'Salesforce', sub: 'AMTS', to: '#sec-case-studies', current: true },
 ];
 
 // Skills grouped by domain — its own section (cat /var/log/skills).

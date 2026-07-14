@@ -9077,10 +9077,107 @@ input:checked + .toggle-slider:before {
   background: none;
 }
 
-/* Anchor targets the career line scrolls to — clear the fixed nav header */
+/* Anchor targets the career line scrolls to — clear the fixed nav header
+   AND the sticky section nav that sits under it. The section nav is ~44px
+   tall; the fixed site nav is ~56px; 132px gives both a little breathing
+   room so the heading isn't jammed against the pill bar. */
 .log-work-head,
-.log-school {
-  scroll-margin-top: 100px;
+.log-school,
+.log-internship,
+.log-education,
+.log-skills {
+  scroll-margin-top: 132px;
+}
+
+/* ---- Sticky secondary nav (Case Studies / Internship / Education / Skills)
+   ------------------------------------------------------------------------
+   A recruiter jump-bar. Sits under the fixed site nav, stays put while the
+   long page scrolls, highlights the section the reader is currently in via
+   IntersectionObserver. Terminal pill styling to fit the rest of the log. */
+.log-section-nav {
+  position: sticky;
+  /* Site nav is ~56px; nudge just under it so the pill doesn't collide. */
+  top: 56px;
+  z-index: calc(var(--z-dropdown) - 1);
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.85) 85%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  padding: var(--spacing-sm) var(--spacing-lg) var(--spacing-md);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.log-section-nav ul {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+}
+
+.log-section-nav a {
+  display: inline-block;
+  font-family: var(--font-family-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+  text-decoration: none;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.5);
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.log-section-nav a:hover,
+.log-section-nav a:focus-visible {
+  color: var(--color-club);
+  border-color: rgba(var(--color-club-rgb), 0.55);
+  background: rgba(var(--color-club-rgb), 0.08);
+}
+
+.log-section-nav a.is-active {
+  color: var(--color-club);
+  border-color: var(--color-club);
+  background: rgba(var(--color-club-rgb), 0.12);
+  box-shadow: 0 0 12px rgba(var(--color-club-rgb), 0.35);
+}
+
+/* Internship section spacing matches Education */
+.log-internship {
+  padding-bottom: var(--spacing-md);
+}
+
+/* The single establishing prompt at the top gets a touch more air below,
+   since the section headers no longer carry their own prompt lines. */
+.log-prompt-line--intro {
+  text-align: center;
+  margin-top: var(--spacing-sm);
+  margin-bottom: 0;
+}
+
+@media (max-width: 767px) {
+  .log-section-nav {
+    /* Mobile site nav is a touch shorter. */
+    top: 48px;
+    padding: var(--spacing-xs) var(--spacing-md) var(--spacing-sm);
+  }
+  .log-section-nav ul {
+    /* Horizontal scroll instead of wrap on narrow — 4 chips + gaps just fit
+       in most phone widths, so this is a safety valve for the smallest. */
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .log-section-nav a {
+    white-space: nowrap;
+  }
 }
 
 /* CASE STUDIES nested under the career header (tree connector + slight indent) */

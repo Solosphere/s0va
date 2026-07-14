@@ -9,12 +9,12 @@ import { getLastPath } from '../utils/navTracker';
 const PAGE_LABELS = { '/': 'home', '/about': 'about', '/engineering': 'engineering' };
 
 // One log entry rendered as a terminal-styled STAR write-up. Section headers
-// read like console commands (cat problem, cat outcome ...) to tie into the
-// root@wound.os motif used across the site.
+// read like console commands (cat problem, cat outcome ...) — the shell
+// prompt itself only appears once, at the top back link, so the repeated
+// prefix doesn't substitute for real hierarchy on each subsection.
 const Prompt = ({ cmd }) => (
   <h2 className="log-section-head">
-    <span className="log-prompt-sign" aria-hidden="true">root@wound.os ~ %</span>{' '}
-    <span className="log-cmd">{cmd}</span>
+    <span className="log-cmd">$ {cmd}</span>
   </h2>
 );
 
