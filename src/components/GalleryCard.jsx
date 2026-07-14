@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import { useReducedMotionPref } from '../utils/useReducedMotionPref';
+import { withImageWidth, WIDTHS } from '../utils/imageService';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -158,7 +159,7 @@ const GalleryCard = ({ product, currentPage, showViolentContent }) => {
                 </video>
               ) : (
                 <img
-                  src={fullImageUrl}
+                  src={withImageWidth(fullImageUrl, WIDTHS.GALLERY_CARD)}
                   loading="lazy"
                   alt={product.name}
                   className="gallery-image"

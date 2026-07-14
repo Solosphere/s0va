@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { withImageWidth, WIDTHS } from '../utils/imageService';
 
 /**
  * A 3D glowing coverflow slider (autoplay, swipe, dots, arrows).
@@ -123,7 +124,7 @@ const Coverflow = ({ items = [], getImageUrl, showCaption = false, onNavigate })
                   <span className="cf-log-cta">read log →</span>
                 </div>
               ) : (
-                <img src={getImageUrl(item.image)} loading="lazy" alt={item.title ?? ''} />
+                <img src={withImageWidth(getImageUrl(item.image), WIDTHS.GALLERY_CARD)} loading="lazy" alt={item.title ?? ''} />
               )}
               {item.kind !== 'log' && item.title && (
                 <div className={`coverflow-card-text${item.compactTitle ? ' coverflow-card-text--compact' : ''}`}>

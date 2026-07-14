@@ -8,13 +8,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faMedium, faLinkedin} from '@fortawesome/free-brands-svg-icons';
 import { useProducts } from '../context/ProductsProvider';
 import { getLastPath } from '../utils/navTracker';
+import { withImageWidth, WIDTHS } from '../utils/imageService';
 
 // Get protected image URL from products data. Accepts either a bare filename
 // or a pre-built /api/media/... path (the /api/products endpoint ships the
-// latter form).
-const getProtectedImageUrl = (filename, products) => {
-  if (filename.startsWith('/api/media/')) return filename;
-  return `/api/media/image/${filename}`;
+// latter form). Appends a width hint so we serve downscaled variants — same
+// design, an order-of-magnitude less memory on iOS Safari.
+const getProtectedImageUrl = (filename, products, width = WIDTHS.GALLERY_CARD) => {
+  const base = filename.startsWith('/api/media/') ? filename : `/api/media/image/${filename}`;
+  return withImageWidth(base, width);
 };
 
 // Get protected video URL from products data.

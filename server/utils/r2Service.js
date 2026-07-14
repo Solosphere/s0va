@@ -1,6 +1,7 @@
 import { S3Client, GetObjectCommand, HeadObjectCommand, ListObjectsV2Command, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
+import sharp from 'sharp';
 import '../loadEnv.js';
 
 // Debug: Log environment variables
@@ -47,11 +48,91 @@ export async function generateSignedUrl(key, expiresIn = 3600) {
   }
 }
 
+// Small LRU-ish in-memory cache of resized image buffers. Full-res source
+// assets (a few MB each) decode to ~10× their file size in raw pixels, which
+// on mobile Safari blows past the ~256 MB per-page decoded-image budget and
+// crashes the tab to a white page. Serving downscaled variants keeps every
+// page well under budget; caching them avoids re-running sharp on repeat hits.
+const RESIZE_CACHE_MAX = 128;
+const resizeCache = new Map(); // key: `${key}|${width}` -> { buffer, contentType }
+
+async function readObjectFully(key) {
+  const response = await r2Client.send(new GetObjectCommand({ Bucket: BUCKET_NAME, Key: key }));
+  const body = response.Body;
+  const chunks = [];
+  for await (const chunk of body) chunks.push(chunk);
+  return { buffer: Buffer.concat(chunks), contentType: response.ContentType };
+}
+
+async function getResizedImage(key, width) {
+  const cacheKey = `${key}|${width}`;
+  const hit = resizeCache.get(cacheKey);
+  if (hit) {
+    // LRU touch
+    resizeCache.delete(cacheKey);
+    resizeCache.set(cacheKey, hit);
+    return hit;
+  }
+  const { buffer } = await readObjectFully(key);
+  const resized = await sharp(buffer, { failOnError: false, sequentialRead: true })
+    .rotate() // honor EXIF orientation
+    .resize(width, null, { fit: 'inside', withoutEnlargement: true })
+    .webp({ quality: 82, effort: 3 })
+    .toBuffer();
+  const entry = { buffer: resized, contentType: 'image/webp' };
+  if (resizeCache.size >= RESIZE_CACHE_MAX) {
+    const oldestKey = resizeCache.keys().next().value;
+    resizeCache.delete(oldestKey);
+  }
+  resizeCache.set(cacheKey, entry);
+  return entry;
+}
+
+// Widths callers can request via ?w=. Values outside the whitelist are
+// clamped to keep an attacker from filling memory with arbitrary sizes.
+const ALLOWED_WIDTHS = [200, 400, 800, 1200, 1600, 2000];
+
+function parseWidth(rawWidth) {
+  if (rawWidth == null) return null;
+  const n = Number.parseInt(rawWidth, 10);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  // Snap to the nearest allowed width (round UP to keep quality)
+  for (const w of ALLOWED_WIDTHS) if (w >= n) return w;
+  return ALLOWED_WIDTHS[ALLOWED_WIDTHS.length - 1];
+}
+
 /**
  * Stream an object from R2 through Express (same-origin for the browser — avoids R2 CORS).
  * Forwards Range when present (needed for HTML5 video seeking).
+ * If a `?w=<pixels>` query is present on an image request, serves a downscaled
+ * WebP instead of the full asset — critical for mobile Safari memory budget.
  */
 export async function streamObjectToResponse(key, req, res) {
+  // Only images support resizing; videos always stream raw.
+  const isImageKey = /\.(webp|jpe?g|png|gif|avif)$/i.test(key);
+  const requestedWidth = isImageKey ? parseWidth(req.query?.w) : null;
+
+  if (requestedWidth) {
+    try {
+      const { buffer, contentType } = await getResizedImage(key, requestedWidth);
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Content-Length', String(buffer.length));
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      res.setHeader('Vary', 'Accept');
+      res.status(200).end(buffer);
+      return;
+    } catch (err) {
+      const code = err.name || err.Code;
+      const status = err.$metadata?.httpStatusCode;
+      if (code === 'NotFound' || code === 'NoSuchKey' || status === 404) {
+        if (!res.headersSent) res.status(404).json({ error: 'Not found' });
+        return;
+      }
+      console.error('Resize error, falling through to raw stream:', err);
+      // fall through to raw streaming as a safety net
+    }
+  }
+
   const input = {
     Bucket: BUCKET_NAME,
     Key: key,

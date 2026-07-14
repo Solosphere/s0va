@@ -6,6 +6,7 @@ import { useProducts } from '../context/ProductsProvider';
 import Reveal from './Reveal';
 import Loading from './Loading';
 import { getLastPath } from '../utils/navTracker';
+import { withImageWidth, WIDTHS } from '../utils/imageService';
 
 // Where the back button should return to, based on the route the user came from
 const PAGE_LABELS = { '/': 'home', '/gallery': 'gallery', '/about': 'about', '/engineering': 'engineering' };
@@ -210,7 +211,7 @@ const GalleryItemDetails = () => {
                         {thumbIsVideo ? (
                           <video playsInline muted src={getFullImageUrl(image)} />
                         ) : (
-                          <img src={getFullImageUrl(image)} loading="lazy" alt="" />
+                          <img src={withImageWidth(getFullImageUrl(image), WIDTHS.RAIL_THUMB)} loading="lazy" alt="" />
                         )}
                       </span>
                     </button>
@@ -251,7 +252,7 @@ const GalleryItemDetails = () => {
               <img
                 key={currentImageIndex}
                 className={`strip-hero-media strip-hero-media--${transitionDir || 'none'}`}
-                src={fullImageUrl}
+                src={withImageWidth(fullImageUrl, WIDTHS.HERO)}
                 alt={product.name}
                 onClick={openModal}
               />
@@ -315,7 +316,7 @@ const GalleryItemDetails = () => {
                       // decoding at once was a mobile-Safari OOM trigger.
                       <video src={getFullImageUrl(thumb)} muted loop playsInline preload="none" />
                     ) : (
-                      <img src={getFullImageUrl(thumb)} loading="lazy" alt={work.name} />
+                      <img src={withImageWidth(getFullImageUrl(thumb), WIDTHS.RELATED_CARD)} loading="lazy" alt={work.name} />
                     )}
                     <span className="related-card-title">{work.name}</span>
                   </Link>
@@ -363,7 +364,7 @@ const GalleryItemDetails = () => {
               </video>
             ) : (
               <img
-                src={fullImageUrl}
+                src={withImageWidth(fullImageUrl, WIDTHS.HERO)}
                 alt={product.name}
                 className="modal-image"
               />

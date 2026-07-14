@@ -6,6 +6,7 @@ import Coverflow from '../components/Coverflow';
 import HeroScene from '../components/HeroScene';
 import { useGalleryScrollRestore } from '../utils/useScrollRestore';
 import { toLogCard } from '../data/caseStudies';
+import { withImageWidth, WIDTHS } from '../utils/imageService';
 
 export default function HomePage() {
 const { products } = useProducts();
@@ -55,10 +56,12 @@ useGalleryScrollRestore('homeScrollY');
 
 // Get protected image URL from products data. Accepts either a bare filename
 // or a pre-built /api/media/... path (the /api/products endpoint ships the
-// latter form).
+// latter form). Appends a width hint so the backend serves a downscaled
+// variant — the coverflow renders at ~800px effective width even on desktop,
+// so pulling full-res 3 MB assets was pure memory waste on iOS Safari.
 const getProtectedImageUrl = (filename) => {
-  if (filename.startsWith('/api/media/')) return filename;
-  return `/api/media/image/${filename}`;
+  const base = filename.startsWith('/api/media/') ? filename : `/api/media/image/${filename}`;
+  return withImageWidth(base, WIDTHS.GALLERY_CARD);
 };
 
 return (
