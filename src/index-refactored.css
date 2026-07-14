@@ -8822,10 +8822,28 @@ input:checked + .toggle-slider:before {
   padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-md);
 }
 
+/* When a section label (EDUCATION / INTERNSHIP) is immediately followed by
+   a school row, collapse the double-gap: the section H2 already provides
+   the visual separator, so an extra 2× spacing-md above the H3 reads as
+   drift rather than hierarchy. Matches the tight CASE STUDIES stack, where
+   the sub-label sits right on top of its role header. */
+.log-section-label + .log-school {
+  margin-top: 0;
+}
+.log-section-label + .log-school > .log-school-head {
+  padding-top: var(--spacing-xs);
+}
+
 .log-section-label h2 {
   font-family: var(--font-family-display);
-  font-size: clamp(1.4rem, 4vw, 2rem);
-  letter-spacing: 0.04em;
+  /* Bumped up so INTERNSHIP / EDUCATION / SKILLS sit clearly *above* the
+     org/school h3 (1rem) in the hierarchy — the previous clamp bottomed
+     out at 1.4rem which was only a hair larger than the h3 below it and
+     read as the same tier on phones. */
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   margin: var(--spacing-xs) 0 0;
 }
 
@@ -8849,8 +8867,12 @@ input:checked + .toggle-slider:before {
 
 .log-school-head h3 {
   font-family: var(--font-family-display);
-  font-size: 1.2rem;
-  letter-spacing: 0.04em;
+  /* One clear step below the section label above (1.75rem+). Keeps org
+     names readable without competing with the section title. */
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--color-text-light);
   margin: 0;
 }
 
@@ -9078,15 +9100,15 @@ input:checked + .toggle-slider:before {
 }
 
 /* Anchor targets the career line scrolls to — clear the fixed nav header
-   AND the sticky section nav that sits under it. The section nav is ~44px
-   tall; the fixed site nav is ~56px; 132px gives both a little breathing
-   room so the heading isn't jammed against the pill bar. */
+   AND the sticky section nav that sits under it. Site nav ~56px + gap ~16px
+   + pill row ~44px + a little breathing room = ~150px. */
 .log-work-head,
 .log-school,
 .log-internship,
 .log-education,
-.log-skills {
-  scroll-margin-top: 132px;
+.log-skills,
+.log-case-studies {
+  scroll-margin-top: 150px;
 }
 
 /* ---- Sticky secondary nav (Case Studies / Internship / Education / Skills)
@@ -9096,8 +9118,10 @@ input:checked + .toggle-slider:before {
    IntersectionObserver. Terminal pill styling to fit the rest of the log. */
 .log-section-nav {
   position: sticky;
-  /* Site nav is ~56px; nudge just under it so the pill doesn't collide. */
-  top: 56px;
+  /* Site nav sits at the top; give the pill row a comfortable gap below it
+     so the two rows read as distinct and the pills aren't clipped by the
+     nav's bottom border. */
+  top: 72px;
   z-index: calc(var(--z-dropdown) - 1);
   background: linear-gradient(
     to bottom,
@@ -9164,8 +9188,8 @@ input:checked + .toggle-slider:before {
 
 @media (max-width: 767px) {
   .log-section-nav {
-    /* Mobile site nav is a touch shorter. */
-    top: 48px;
+    /* Mobile site nav is a touch shorter — keep the same visual gap below it. */
+    top: 60px;
     padding: var(--spacing-xs) var(--spacing-md) var(--spacing-sm);
   }
   .log-section-nav ul {
@@ -9188,7 +9212,10 @@ input:checked + .toggle-slider:before {
 }
 
 .log-section-label--nested {
-  padding-left: var(--spacing-2xl);
+  /* Sits just a hair inside the role-header block above (which uses the
+     default var(--spacing-lg) horizontal padding) — the tree connector supplies
+     the "nested" cue, so we don't need a deep indent to reinforce it. */
+  padding-left: calc(var(--spacing-lg) + 4px);
 }
 
 /* Skills — its own section (cat /var/log/skills), grouped by domain */

@@ -35,40 +35,42 @@ const EngineeringLog = () => {
       <LogTimeline />
       <LogSectionNav />
 
-      <div className="log-school-head log-work-head" id="sec-case-studies">
-        <h3>{logMeta.role}</h3>
-        <span>{logMeta.timeline}</span>
-      </div>
-
-      <div className="log-section-label log-section-label--sub log-section-label--nested">
-        <h2><span className="log-tree" aria-hidden="true">└─ </span>CASE STUDIES</h2>
-      </div>
-
-      <section className="log-grid">
-        {featuredCaseStudies.map((entry, i) => (
-          <Reveal as="article" className="log-card" key={entry.id} delay={(i % 2) * 0.08}>
-            <Link to={`/engineering/${entry.id}`} className="log-card-link">
-              <div className="log-card-top">
-                <span className="log-card-index">
-                  #{String(i + 1).padStart(2, '0')}
-                </span>
-                <span className="log-card-org">{entry.org}</span>
-              </div>
-              <h2 className="log-card-title">{entry.title}</h2>
-              <p className="log-card-period">{entry.period}</p>
-              <p className="log-card-summary">{entry.summary}</p>
-              <div className="log-chips">
-                {entry.stack.slice(0, 4).map((tech) => (
-                  <span key={tech} className="log-chip">{tech}</span>
-                ))}
-                {entry.stack.length > 4 && (
-                  <span className="log-chip log-chip--more">+{entry.stack.length - 4}</span>
-                )}
-              </div>
-              <span className="log-card-cta" aria-hidden="true">read entry →</span>
-            </Link>
-          </Reveal>
-        ))}
+      <section className="log-case-studies" id="sec-case-studies">
+        <div className="log-section-label">
+          <h2>CASE STUDIES</h2>
+        </div>
+        <div className="log-school">
+          <div className="log-school-head log-work-head">
+            <h3>{logMeta.role}</h3>
+            <span>{logMeta.timeline}</span>
+          </div>
+          <section className="log-grid">
+            {featuredCaseStudies.map((entry, i) => (
+              <Reveal as="article" className="log-card" key={entry.id} delay={(i % 2) * 0.08}>
+                <Link to={`/engineering/${entry.id}`} className="log-card-link">
+                  <div className="log-card-top">
+                    <span className="log-card-index">
+                      #{String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className="log-card-org">{entry.org}</span>
+                  </div>
+                  <h2 className="log-card-title">{entry.title}</h2>
+                  <p className="log-card-period">{entry.period}</p>
+                  <p className="log-card-summary">{entry.summary}</p>
+                  <div className="log-chips">
+                    {entry.stack.slice(0, 4).map((tech) => (
+                      <span key={tech} className="log-chip">{tech}</span>
+                    ))}
+                    {entry.stack.length > 4 && (
+                      <span className="log-chip log-chip--more">+{entry.stack.length - 4}</span>
+                    )}
+                  </div>
+                  <span className="log-card-cta" aria-hidden="true">read entry →</span>
+                </Link>
+              </Reveal>
+            ))}
+          </section>
+        </div>
       </section>
 
       <section className="log-internship" id="sec-internship">
