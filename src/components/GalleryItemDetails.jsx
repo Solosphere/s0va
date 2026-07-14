@@ -94,6 +94,34 @@ const GalleryItemDetails = () => {
     }
   }, [currentImageIndex]);
 
+  const product = getProductById(parseInt(id, 10));
+
+  // Previous / next piece across the full collection of works. Memoized so
+  // the O(n) find + modular indexing don't rerun on every state change (image
+  // index, modal, transition dir) — they only depend on the product cache
+  // and the current piece's id. Declared before any early return so the hook
+  // count stays constant across renders (loading → loaded transition).
+  const { prevProduct, nextProduct, hasSiblings } = useMemo(() => {
+    if (!product) return { hasSiblings: false, prevProduct: null, nextProduct: null };
+    const ordered = Array.isArray(products) ? products : [];
+    const idx = ordered.findIndex((p) => p.id === product.id);
+    const siblings = idx !== -1 && ordered.length > 1;
+    return {
+      hasSiblings: siblings,
+      prevProduct: siblings ? ordered[(idx - 1 + ordered.length) % ordered.length] : null,
+      nextProduct: siblings ? ordered[(idx + 1) % ordered.length] : null,
+    };
+  }, [products, product]);
+
+  // Other works in the same series/collection
+  const relatedWorks = useMemo(
+    () =>
+      product && product.collection
+        ? getProductsByCollection(product.collection).filter((p) => p.id !== product.id).slice(0, 4)
+        : [],
+    [product, getProductsByCollection]
+  );
+
   if (loading) {
     return <Loading />;
   }
@@ -101,8 +129,6 @@ const GalleryItemDetails = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-
-  const product = getProductById(parseInt(id, 10));
 
   if (!product) {
     return <p>Product not found.</p>;
@@ -144,30 +170,6 @@ const GalleryItemDetails = () => {
   const currentImageUrl = product.image[currentImageIndex];
   const isVideo = currentImageUrl.includes('.mp4');
   const fullImageUrl = getFullImageUrl(currentImageUrl);
-
-  // Previous / next piece across the full collection of works. Memoized so
-  // the O(n) find + modular indexing don't rerun on every state change (image
-  // index, modal, transition dir) — they only depend on the product cache
-  // and the current piece's id.
-  const { prevProduct, nextProduct, hasSiblings } = useMemo(() => {
-    const ordered = Array.isArray(products) ? products : [];
-    const idx = ordered.findIndex((p) => p.id === product.id);
-    const siblings = idx !== -1 && ordered.length > 1;
-    return {
-      hasSiblings: siblings,
-      prevProduct: siblings ? ordered[(idx - 1 + ordered.length) % ordered.length] : null,
-      nextProduct: siblings ? ordered[(idx + 1) % ordered.length] : null,
-    };
-  }, [products, product.id]);
-
-  // Other works in the same series/collection
-  const relatedWorks = useMemo(
-    () =>
-      product.collection
-        ? getProductsByCollection(product.collection).filter((p) => p.id !== product.id).slice(0, 4)
-        : [],
-    [product.collection, product.id, getProductsByCollection]
-  );
 
   return (
     <div className="gallery-details">
