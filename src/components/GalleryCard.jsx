@@ -21,7 +21,7 @@ const getFullImageUrl = (filename) => {
   return filename.includes('.mp4') ? `/api/media/video/${filename}` : `/api/media/image/${filename}`;
 };
 
-const GalleryCard = ({ product, currentPage, showViolentContent }) => {
+const GalleryCard = ({ product, showViolentContent }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const reduced = useReducedMotionPref();
@@ -132,7 +132,7 @@ const GalleryCard = ({ product, currentPage, showViolentContent }) => {
       <div className="gallery-card-content">
         <Link
           ref={linkRef}
-          to={`/gallery/${product.id}${currentPage ? `?page=${currentPage}` : ''}`}
+          to={`/gallery/${product.id}`}
           className="link-no-underline"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft, faTimes, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { useProducts } from '../context/ProductsProvider';
@@ -24,9 +24,6 @@ const getFullImageUrl = (filename) => {
 const GalleryItemDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const page = searchParams.get('page');
   const { products, getProductById, getProductsByCollection, loading, error } = useProducts();
 
   // Hooks must run on every render — declare them before any early return.
@@ -129,15 +126,16 @@ const GalleryItemDetails = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  // Navigate between pieces, preserving the gallery page we came from
+  // Navigate between pieces. The gallery uses sessionStorage-based restore, so
+  // no page param needs to hitch a ride on detail URLs.
   const goToProduct = (pid) => {
-    navigate(`/gallery/${pid}${page ? `?page=${page}` : ''}`);
+    navigate(`/gallery/${pid}`);
   };
 
   // Dynamic back target: return to wherever the user entered from. Coming from
   // a related piece (another detail) or anywhere unknown falls back to the cache.
   const origin = originRef.current;
-  const galleryUrl = `/gallery${page ? `?page=${page}` : ''}`;
+  const galleryUrl = '/gallery';
   const originLabel = PAGE_LABELS[origin];
   const backTo = origin === '/gallery' ? galleryUrl : originLabel ? origin : galleryUrl;
   const backWhere = originLabel || 'gallery';
@@ -308,7 +306,7 @@ const GalleryItemDetails = () => {
                 return (
                   <Link
                     key={work.id}
-                    to={`/gallery/${work.id}${page ? `?page=${page}` : ''}`}
+                    to={`/gallery/${work.id}`}
                     className="related-card"
                   >
                     {thumbIsVideo ? (

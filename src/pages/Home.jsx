@@ -2,14 +2,13 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import { useProducts } from '../context/ProductsProvider';
 import Reveal from '../components/Reveal';
-import Coverflow from '../components/Coverflow';
 import HeroScene from '../components/HeroScene';
 import { useGalleryScrollRestore } from '../utils/useScrollRestore';
-import { toLogCard } from '../data/caseStudies';
 import { withImageWidth, WIDTHS } from '../utils/imageService';
 
 export default function HomePage() {
 const { products } = useProducts();
+
 
 // Get featured images from products data
 const featuredImages = ['HCT-17.webp','kirin.webp', 'secondwind.webp', 'SAP.webp', 'metvoyager.webp', 'angel.webp'];
@@ -28,28 +27,16 @@ const findProductByImage = (imageFilename) => {
   );
 };
 
-// Concise material label for pieces whose full media list is too long for a card.
-const FEATURED_MATERIAL = { 'SAP.webp': 'Creative Technology' };
-
-// Featured items for the 3D coverflow, each linking to its detail page
+// Static featured tile data — each links to the piece's detail page.
 const baseFeatured = featuredImages.map((image) => {
   const product = findProductByImage(image);
-  const material = FEATURED_MATERIAL[image] ?? product?.media;
   return {
     key: image,
     image,
     to: product ? `/gallery/${product.id}` : null,
     title: product?.name,
-    meta: material ? `${material}${product?.date ? ` · ${product.date}` : ''}` : undefined,
-    compactTitle: image === 'SAP.webp', // long title — scale it down so it fits
   };
 });
-
-// Slot an engineering case study (terminal card) in among the visual works.
-const featuredLogCard = toLogCard('nat-refresh-pipeline');
-const featuredItems = featuredLogCard
-  ? [baseFeatured[0], featuredLogCard, ...baseFeatured.slice(1)]
-  : baseFeatured;
 
 // Top on fresh entry; restore to the mini-gallery when returning from a piece.
 useGalleryScrollRestore('homeScrollY');
@@ -73,23 +60,26 @@ return (
         </div>
         <div className="content">
           <h1 className="landingpage-title">METTAIRE</h1>
-          <h2 className="tagline tagline-command">
-            <span className="tagline-line"><span className="tagline-typed"><span className="tagline-cmd">&gt; grep -E &quot;</span><Link to="/engineering" className="tagline-target">engineering</Link><span className="tagline-pipe">|</span><Link to="/gallery?page=1" className="tagline-target">gallery</Link><span className="tagline-cmd">&quot;</span></span><span className="terminal-cursor" aria-hidden="true">▮</span></span>
-          </h2>
+          <div
+            className="whoami-block"
+            role="doc-subtitle"
+            aria-label="Daniel Nelson — DevOps engineer at Salesforce and multimedia artist"
+          >
+            <p className="whoami-output">
+              <span className="whoami-typed">
+                <span className="whoami-name">Daniel Nelson</span>
+                <span className="whoami-sep" aria-hidden="true">&nbsp;&middot;&nbsp;</span>
+                <Link to="/engineering" className="whoami-role whoami-role--engineer">DevOps engineer @ Salesforce</Link>
+                <span className="whoami-sep" aria-hidden="true">&nbsp;&middot;&nbsp;</span>
+                <Link to="/gallery" className="whoami-role whoami-role--artist">multimedia artist</Link>
+              </span>
+              <span className="terminal-cursor whoami-cursor" aria-hidden="true">▮</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
     <div className="featured-art-content">
-      <Reveal className="featured-art-container">
-        <div className="featured-work-title">
-          <section className="rect-home-container">
-            <section className="rect-1"></section>
-            <section className="rect-2"></section>
-          </section>
-          <h2 className="rotate-text">Featured Works</h2>
-        </div>
-        <Coverflow items={featuredItems} getImageUrl={getProtectedImageUrl} />
-      </Reveal>
       <Reveal className="detailed-bio">
         <section className="rect-home-container">
           <section className="rect-1"></section>
@@ -97,13 +87,45 @@ return (
         </section>
         <h2>THE VISION</h2>
         <p>
-        METTAIRE fuses engineering discipline and fine art, circling the same existential ground: absurdism, nihilism, the search for meaning and impact.
+          Two disciplines, one preoccupation: what a person is when the systems around them break. The site is split into engineering case studies and a gallery of visual works. All of it circles the same question.
         </p>
         <div className="home-button-row">
-          <Link to="/about" className="home-about-link"><button className="home-about-button"><span className="btn-prompt">CD</span>/ABOUT</button></Link>
-          <Link to='/gallery?page=1' className="explore-gallery-link"><button className="explore-gallery-button"><span className="btn-prompt">CD</span>/GALLERY</button></Link>
-          <Link to='/engineering' className="engineering-log-link"><button className="home-about-button engineering-log-button"><span className="btn-prompt">CD</span>/ENGINEERING</button></Link>
+          <Link to="/about" className="home-about-link"><button className="home-about-button home-cta"><span className="btn-prompt">CD</span>/ABOUT</button></Link>
+          <Link to='/engineering' className="engineering-log-link"><button className="home-about-button engineering-log-button home-cta"><span className="btn-prompt">CD</span>/ENGINEERING</button></Link>
+          <Link to='/gallery' className="explore-gallery-link"><button className="explore-gallery-button home-cta"><span className="btn-prompt">CD</span>/GALLERY</button></Link>
         </div>
+      </Reveal>
+
+      <Reveal as="section" className="home-featured-strip" aria-label="Featured works">
+        <div className="home-featured-strip-header">
+          <section className="rect-home-container">
+            <section className="rect-1"></section>
+            <section className="rect-2"></section>
+          </section>
+          <h2>FEATURED</h2>
+        </div>
+        <div className="home-featured-tiles">
+          {baseFeatured.slice(0, 3).map((item) => (
+            <Link
+              key={item.key}
+              to={item.to || '/gallery'}
+              className="home-featured-tile"
+              aria-label={item.title ? `Open ${item.title}` : 'Open featured work'}
+            >
+              <img
+                src={getProtectedImageUrl(item.image)}
+                alt={item.title || ''}
+                loading="lazy"
+              />
+              {item.title && (
+                <span className="home-featured-tile-title">{item.title}</span>
+              )}
+            </Link>
+          ))}
+        </div>
+        <Link to="/gallery" className="home-featured-viewall">
+          view all {products?.length ? `${products.length} ` : ''}works &rarr;
+        </Link>
       </Reveal>
     </div>
   </div>

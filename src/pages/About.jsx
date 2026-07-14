@@ -86,7 +86,7 @@ const AboutPage = () => {
       // wrong section as the page grows.
       const section = sessionStorage.getItem('aboutReturn') || 'carousel';
       sessionStorage.removeItem('aboutReturn');
-      const selector = section === 'projects' ? '.upcoming-projects' : '.project-carousel';
+      const selector = section === 'projects' ? '.trajectory-projects' : '.project-carousel';
       const start = performance.now();
       const pin = () => {
         const el = document.querySelector(selector);
@@ -121,94 +121,89 @@ const AboutPage = () => {
 
       <section className="about-row-1">
         <Reveal as="section" className="introduction">
-        <img src={getProtectedImageUrl(getProfileImage(), products)} loading="lazy" alt="selfportrait"/>
-        <section className="intro-text">
-          <section className="rect-container">
-            <section className="rect-1"></section>
-            <section className="rect-2"></section>
-          </section>
-          <h2>THE CREATIVE</h2>
-          <p>I'm Daniel Nelson, the creator behind METTAIRE: a DevOps engineer by profession, and an artist, designer, and builder by nature. METTAIRE is how I leave a piece of myself inside the machine, a space where my work exists on its own terms. Inspired by thinkers like Dostoevsky, Camus, Schopenhauer, and Musashi, my creations explore individualism, transformation, and the human condition. Whether I'm shaping cloud infrastructure or a multimedia painting, the craft is the same: merging fine art with technology, weaving absurdism, nihilism, and existentialism into work meant to be encountered, absorbed, and interpreted freely.
-          </p>
-        </section>
-        </Reveal>
-        <Reveal as="section" className="philosophy-inspiration-container">
-          <section>
+          <img src={getProtectedImageUrl(getProfileImage(), products)} loading="lazy" alt="selfportrait"/>
+          <section className="intro-text">
             <section className="rect-container">
               <section className="rect-1"></section>
               <section className="rect-2"></section>
             </section>
-              <h2>THE ENGINEER</h2>
-              <p>My work extends well beyond the canvas. At Salesforce, I build and secure infrastructure in FedRAMP environments: automating CI/CD and patching pipelines, leading security incident response, and keeping critical systems reliable at scale. That same intent shaped projects like Second Wind and CareerSpring's Interest Finder, software built to help people move through hard moments with clarity and resilience. Explore the full case studies in my <Link to="/engineering" className="log-inline-link">engineering log</Link>.</p>
-                </section>
-                {/* Project Carousel */}
-                <ProjectCarousel products={products} getProtectedImageUrl={getProtectedImageUrl} />
-                
-                
-                </Reveal>
-                </section>
+            <h2>THE WORK</h2>
+            <p>
+              I'm Daniel Nelson. DevOps engineer by profession, artist and builder by nature. METTAIRE is where those two collapse into one practice.
+            </p>
+            <p>
+              At Salesforce I build and secure infrastructure in FedRAMP environments: automating CI/CD and patching pipelines, leading security incident response, keeping critical systems reliable at scale. That same intent shaped projects like Second Wind and CareerSpring's Interest Finder, software built to help people move through hard moments with clarity. Full case studies live in the <Link to="/engineering" className="log-inline-link">engineering log</Link>.
+            </p>
+            <p>
+              The influences don't shift with the medium. Dostoevsky, Camus, Musashi. Individualism, transformation, the human condition. Cloud infrastructure or a multimedia painting, the craft is the same: merge technology with fine art, put the result out to be encountered on its own terms.
+            </p>
+          </section>
+        </Reveal>
+        <Reveal as="section" className="about-carousel-row">
+          <ProjectCarousel products={products} getProtectedImageUrl={getProtectedImageUrl} />
+        </Reveal>
 
-      <section className="about-row-3">
-      <section className="upcoming-projects">
-      <section className="rect-container">
+        <Reveal as="section" className="trajectory">
+          <section className="rect-container">
             <section className="rect-1"></section>
             <section className="rect-2"></section>
-            </section>
-        <Reveal className="upcoming-projects-text-section">
+          </section>
+          <h2>THE TRAJECTORY</h2>
+          <p>
+            On the engineering side, I'm looking for what's next. Roles where I can go deeper on platform security, resilience, and the tooling that keeps critical systems standing. Teams that treat reliability and incident response as craft rather than checkbox work. Problems where the stakes are real and the solutions ship.
+          </p>
+          <p>
+            On the creative side, the work keeps compounding. <i>Heart in Chrome</i> is mid-production; new tattoo work, paintings, and browser games ship in between infrastructure shifts. Collaborators, curators, and clients: the door is open.
+          </p>
+          <div className="trajectory-projects upcoming-projects-column-2">
+            <Reveal className="image-with-description" id="chrome-container">
+              <Link to={chromeId ? `/gallery/${chromeId}` : '/gallery'} className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
+                <video autoPlay muted width="auto" loop playsInline controls={false}>
+                  <source src={getProtectedVideoUrl('HCteaser.mp4', products)} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                <div className='chrome-text'>
+                  <h3>Heart in Chrome</h3>
+                  <p>A psychological neo-noir thriller unfolds in <i>Heart in Chrome</i>, a graphic novel currently in the throes of creation, exploring the nexus of art, technology, identity, and power.</p>
+                </div>
+              </Link>
+            </Reveal>
 
-        <h2>Projects in Progress</h2>
-        <p>* Not limited to the showcased.</p>
+            <Reveal className="image-with-description" id="blacksite">
+              <Link to="/programs/blacksite" className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
+                <div className="tattoo-text">
+                  <h3>BLACKSITE</h3>
+                  <p>A browser-game arcade behind a secure-access terminal. New games added over time. Currently DATA SPIKE and NULL_ESCAPE, built in React and canvas.</p>
+                </div>
+                <div className="tattoo-mini-gallery blacksite-mini-gallery">
+                  <div className='image-column-1'>
+                    <img src="/api/media/image/nullescape.webp" alt="NULL_ESCAPE game" />
+                  </div>
+                  <div className='image-column-2'>
+                    <img src="/api/media/image/dataspike.webp" alt="DATA SPIKE game" />
+                  </div>
+                </div>
+              </Link>
+            </Reveal>
+
+            <Reveal className="image-with-description" id="tats">
+              <Link to={tattooId ? `/gallery/${tattooId}` : '/gallery'} className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
+                <div className="tattoo-mini-gallery">
+                  <div className='image-column-1'>
+                    <img src={getProtectedImageUrl(tattooImages[0], products)} alt={"tat-0"} />
+                  </div>
+                  <div className='image-column-2'>
+                    <img src={getProtectedImageUrl(tattooImages[3], products)} alt={"tat-3"} />
+                  </div>
+                </div>
+                <div className="tattoo-text">
+                  <h3>Tattooing</h3>
+                  <p>Tattooing is the next surface. Same interests, different medium: identity, transformation, permanence rendered in skin instead of pixels or paint.</p>
+                </div>
+              </Link>
+            </Reveal>
+          </div>
         </Reveal>
-        <div className="upcoming-projects-column-2">
-        <Reveal className="image-with-description" id="chrome-container">
-      <Link to={chromeId ? `/gallery/${chromeId}` : '/gallery'} className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
-      <video autoPlay muted width="auto" loop playsInline controls={false}>
-            <source src={getProtectedVideoUrl('HCteaser.mp4', products)} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-      <div className='chrome-text'>
-        <h3>Heart in Chrome</h3>
-        <p>A psychological neo-noir thriller unfolds in <i>Heart in Chrome</i>, a graphic novel currently in the throes of creation, exploring the nexus of art, technology, identity, and power.</p>
-      </div>
-      </Link>
-    </Reveal>
-
-    <Reveal className="image-with-description" id="blacksite">
-    <Link to="/programs/blacksite" className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
-    <div className="tattoo-text">
-      <h3>BLACKSITE</h3>
-      <p>A browser-game arcade behind a secure-access terminal. New games added over time — currently DATA SPIKE and NULL_ESCAPE, built in React and canvas.</p>
-    </div>
-    <div className="tattoo-mini-gallery blacksite-mini-gallery">
-      <div className='image-column-1'>
-        <img src="/api/media/image/nullescape.webp" alt="NULL_ESCAPE game" />
-      </div>
-      <div className='image-column-2'>
-        <img src="/api/media/image/dataspike.webp" alt="DATA SPIKE game" />
-      </div>
-    </div>
-    </Link>
-    </Reveal>
-
-    <Reveal className="image-with-description" id="tats">
-    <Link to={tattooId ? `/gallery/${tattooId}` : '/gallery'} className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
-    <div className="tattoo-mini-gallery">
-      <div className='image-column-1'>
-                  <img src={getProtectedImageUrl(tattooImages[0], products)} alt={"tat-0"} />
-      </div>
-      <div className='image-column-2'>
-      {/* <img src = {`/images/${tattooImages[4]}`} alt= {"tat-4"} /> */}
-                  <img src={getProtectedImageUrl(tattooImages[3], products)} alt={"tat-3"} />
-      </div>
-    </div>
-    <div className="tattoo-text">
-      <h3>Tattooing</h3>
-      <p>Tattooing is the next surface. Same interests, different medium: identity, transformation, permanence rendered in skin instead of pixels or paint.</p>
-    </div>
-    </Link>
-    </Reveal>
-    </div>
-      </section>
       </section>
 
       <Reveal as="section" className="contact-container">

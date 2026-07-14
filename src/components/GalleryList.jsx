@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import GalleryCard from './GalleryCard';
+import GalleryHero from './GalleryHero';
 import SearchBar from './SearchBar';
-import { useNavigate } from 'react-router-dom';
 import GalleryConsole from './GalleryConsole';
 import Loading from './Loading';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -9,11 +9,10 @@ import { useProducts } from '../context/ProductsProvider';
 import { matchesSearch } from '../utils/search';
 import { nextFrame, waitForVisibleMedia } from '../utils/mediaReady';
 import { useGalleryScrollRestore } from '../utils/useScrollRestore';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { getLastPath } from '../utils/navTracker';
 
-const itemsPerPage = 16;
-const maxButtonsToShow = 4;
+const BATCH_SIZE = 16;
+const SHOWN_STORAGE_KEY = 'galleryShownCount';
 
 // Medium keywords used to seed the search autocomplete
 const MEDIUM_TERMS = [
@@ -23,24 +22,35 @@ const MEDIUM_TERMS = [
 
 const GalleryList = () => {
   const { products, loading: productsLoading, error } = useProducts();
-  const navigate = useNavigate();
-  
 
   const [filters, setFilters] = useState({
     date: 'all',
     media: 'all',
   });
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('recent'); // Default sorting by name
-  const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(false); // in-page loader (route entry is covered by the app overlay)
+  const [sortBy, setSortBy] = useState('recent');
+  // Restore how many pieces the visitor had revealed before diving into a
+  // detail page, so the load-more chain doesn't reset on return. Only honor
+  // the stored count on return-from-detail — any other entry (top-nav, direct
+  // load) starts at one batch, matching the scroll-restore hook's contract.
+  const [shownCount, setShownCount] = useState(() => {
+    if (typeof window === 'undefined') return BATCH_SIZE;
+    const cameFromDetail = /^\/gallery\//.test(getLastPath());
+    if (!cameFromDetail) {
+      sessionStorage.removeItem(SHOWN_STORAGE_KEY);
+      return BATCH_SIZE;
+    }
+    const saved = parseInt(sessionStorage.getItem(SHOWN_STORAGE_KEY) || '0', 10);
+    return Math.max(BATCH_SIZE, saved || BATCH_SIZE);
+  });
+  const [loading, setLoading] = useState(false);
   const [showViolentContent, setShowViolentContent] = useState(false);
 
   const loadTokenRef = useRef(0);
 
-  // Full-screen loader for deliberate in-page navigation (pagination / filter /
-  // sort / discretion). Holds until the new page's visible card images have
-  // actually loaded (no pop-in), bounded by a min display + max timeout.
+  // Full-screen loader for deliberate in-page navigation (filter / sort /
+  // discretion toggle). Holds until the new visible card images have actually
+  // loaded (no pop-in), bounded by a min display + max timeout.
   const triggerLoader = () => {
     window.scrollTo(0, 0);
     setLoading(true);
@@ -93,7 +103,8 @@ const GalleryList = () => {
   const clearAll = () => {
     setSearchTerm('');
     setFilters({ date: 'all', media: 'all' });
-    handleFilterChange();
+    setShownCount(BATCH_SIZE);
+    triggerLoader();
   };
 
   const filterProducts = (product) => {
@@ -136,51 +147,39 @@ const GalleryList = () => {
     return sortedProducts;
   };
 
-  const handlePageChange = (pageNumber) => {
-    triggerLoader();
-    setCurrentPage(pageNumber);
-    const newParams = new URLSearchParams(window.location.search);
-    newParams.set('page', pageNumber);
-    navigate(`/gallery?${newParams.toString()}`);
-  };
-
+  // Filter/sort/search always reset to the first batch — the "shown count"
+  // only compounds while the visitor is actively exploring a stable list.
   const handleFilterChange = () => {
+    setShownCount(BATCH_SIZE);
     triggerLoader();
-    setCurrentPage(1);
-    const newParams = new URLSearchParams(window.location.search);
-    newParams.set('page', '1');
-    navigate(`/gallery?${newParams.toString()}`);
   };
 
   const handleSortChange = () => {
+    setShownCount(BATCH_SIZE);
     triggerLoader();
-    setCurrentPage(1);
-    const newParams = new URLSearchParams(window.location.search);
-    newParams.set('page', '1');
-    navigate(`/gallery?${newParams.toString()}`);
   };
 
   const handleSearchChange = (newSearchTerm) => {
     setSearchTerm(newSearchTerm);
-    setCurrentPage(1); // Resets page when search term changes
-    // Update URL parameter based on the new search term
-  const newParams = new URLSearchParams(window.location.search);
-  newParams.set('page', '1');
-  navigate(`/gallery?${newParams.toString()}`);
-  }
-  
-  
+    setShownCount(BATCH_SIZE);
+  };
 
-  useEffect(() => {
-    // Extract query parameters from the location
-    const searchParams = new URLSearchParams(window.location.search);
-    const pageParam = parseInt(searchParams.get('page'), 10) || 1;
-    // Set the state based on query parameters
-    setCurrentPage(pageParam);
-  }, []);
+  const handleLoadMore = () => {
+    setShownCount((n) => n + BATCH_SIZE);
+  };
 
   // Top on fresh entry; restore position when returning from a piece's detail.
   useGalleryScrollRestore('galleryScrollY');
+
+  // Persist the load-more chain so returning from a piece doesn't collapse
+  // the grid back to the first batch — the scroll restore lands on air
+  // otherwise. Fresh entries (any nav that isn't a return-from-detail) reset
+  // to one batch, matching the sibling scroll-to-top behavior above.
+  useEffect(() => {
+    return () => {
+      sessionStorage.setItem(SHOWN_STORAGE_KEY, String(shownCount));
+    };
+  }, [shownCount]);
 
   // Show loading if products are still loading
   if (productsLoading) {
@@ -197,48 +196,21 @@ const GalleryList = () => {
     );
   }
 
-  const totalPages = Math.ceil(applyFiltersAndSort().length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = applyFiltersAndSort().slice(indexOfFirstItem, indexOfLastItem);
+  const filteredSorted = applyFiltersAndSort();
+  const totalCount = filteredSorted.length;
+  const currentItems = filteredSorted.slice(0, shownCount);
+  const hasMore = shownCount < totalCount;
 
-  const renderPaginationButtons = () => {
-    const buttons = [];
-    const totalPages = Math.ceil(applyFiltersAndSort().length / itemsPerPage);
-
-    let startPage = Math.max(1, currentPage - Math.floor(maxButtonsToShow / 2));
-    let endPage = Math.min(totalPages, startPage + maxButtonsToShow - 1);
-
-    if (endPage - startPage + 1 < maxButtonsToShow) {
-      startPage = Math.max(1, endPage - maxButtonsToShow + 1);
-    }
-
-    if (startPage > 1) {
-      buttons.push(
-        <button className="pagination-prev" key="prev" onClick={() => handlePageChange(currentPage - 1)}>
-        <FontAwesomeIcon icon={faChevronLeft}  />
-        </button>
-      );
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      buttons.push(
-        <button key={i} onClick={() => handlePageChange(i)} className={currentPage === i ? 'active' : ''}>
-          {i}
-        </button>
-      );
-    }
-
-    if (endPage < totalPages) {
-      buttons.push(
-        <button className="pagination-next" key="next" onClick={() => handlePageChange(currentPage + 1)}>
-          <FontAwesomeIcon icon={faChevronRight} />
-        </button>
-      );
-    }
-
-    return buttons;
-  };
+  // Context line under GALLERY — orients newcomers before they scroll. Years
+  // derive from the actual product data, so it stays honest as pieces land.
+  const productYears = (products || [])
+    .map((p) => p.date)
+    .filter((y) => typeof y === 'number' && !Number.isNaN(y));
+  const startYear = productYears.length ? Math.min(...productYears) : null;
+  const totalPieces = Array.isArray(products) ? products.length : 0;
+  const subtitle = startYear
+    ? `multimedia work, ${startYear}–present · ${totalPieces} pieces`
+    : `multimedia work · ${totalPieces} pieces`;
 
   return (
     <div className="gallery-list-container">
@@ -261,6 +233,11 @@ const GalleryList = () => {
           />
       </div>
       </div>
+      <p className="gallery-subtitle">{subtitle}</p>
+
+      {/* Hero only shows when the grid is unfiltered — no point orienting
+          around a flagship piece when the visitor's already narrowed the set. */}
+      {!filtersActive && <GalleryHero products={products} />}
 
       {currentItems.length === 0 ? (
         <div className="no-products-message">
@@ -282,13 +259,25 @@ const GalleryList = () => {
         <>
           <div className="gallery-list">
             {currentItems.map((product) => (
-              <GalleryCard key={product.id} product={product} currentPage={currentPage} showViolentContent={showViolentContent} />
+              <GalleryCard key={product.id} product={product} showViolentContent={showViolentContent} />
             ))}
           </div>
 
-          <div className="pagination">
-            {renderPaginationButtons()}
-          </div>
+          {hasMore && (
+            <div className="gallery-load-more-row">
+              <button
+                type="button"
+                className="gallery-load-more"
+                onClick={handleLoadMore}
+                aria-label={`Load ${Math.min(BATCH_SIZE, totalCount - shownCount)} more pieces`}
+              >
+                Load more
+                <span className="gallery-load-more-count">
+                  {shownCount} / {totalCount}
+                </span>
+              </button>
+            </div>
+          )}
         </>
       )}
 
