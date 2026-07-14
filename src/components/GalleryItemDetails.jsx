@@ -167,7 +167,13 @@ const GalleryItemDetails = () => {
   const backWhere = originLabel || 'gallery';
   const backLabel = `Back to ${backWhere}`;
 
-  const currentImageUrl = product.image[currentImageIndex];
+  // The useEffect that resets currentImageIndex to 0 on `id` change fires AFTER
+  // render, so the FIRST render of a new piece still uses the previous piece's
+  // index. If the previous piece had more images than this one, indexing past
+  // the end returns undefined and .includes() throws — blanking the tree.
+  // Clamp defensively so the transition render always has a real image.
+  const safeIndex = Math.min(currentImageIndex, product.image.length - 1);
+  const currentImageUrl = product.image[safeIndex];
   const isVideo = currentImageUrl.includes('.mp4');
   const fullImageUrl = getFullImageUrl(currentImageUrl);
 
@@ -188,14 +194,14 @@ const GalleryItemDetails = () => {
           <div className="strip-rail" aria-label="Angle selector">
             {product.image.length > 1 && (
               <div className="strip-rail-counter">
-                <span className="strip-rail-counter-current">{String(currentImageIndex + 1).padStart(2, '0')}</span>
+                <span className="strip-rail-counter-current">{String(safeIndex + 1).padStart(2, '0')}</span>
                 <span className="strip-rail-counter-sep">/</span>
                 <span className="strip-rail-counter-total">{String(product.image.length).padStart(2, '0')}</span>
               </div>
             )}
             <ul className="strip-rail-list" ref={railListRef}>
               {product.image.map((image, index) => {
-                const active = index === currentImageIndex;
+                const active = index === safeIndex;
                 const thumbIsVideo = image.includes('.mp4');
                 return (
                   <li key={index}>
@@ -239,7 +245,7 @@ const GalleryItemDetails = () => {
           <div className="strip-hero">
             {isVideo ? (
               <video
-                key={currentImageIndex}
+                key={safeIndex}
                 className={`strip-hero-media strip-hero-media--${transitionDir || 'none'}`}
                 autoPlay
                 playsInline
@@ -250,7 +256,7 @@ const GalleryItemDetails = () => {
               </video>
             ) : (
               <img
-                key={currentImageIndex}
+                key={safeIndex}
                 className={`strip-hero-media strip-hero-media--${transitionDir || 'none'}`}
                 src={withImageWidth(fullImageUrl, WIDTHS.HERO)}
                 alt={product.name}
