@@ -9190,17 +9190,20 @@ input:checked + .toggle-slider:before {
   .log-section-nav {
     /* Mobile site nav is a touch shorter — keep the same visual gap below it. */
     top: 60px;
-    padding: var(--spacing-xs) var(--spacing-md) var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-sm);
   }
   .log-section-nav ul {
-    /* Horizontal scroll instead of wrap on narrow — 4 chips + gaps just fit
-       in most phone widths, so this is a safety valve for the smallest. */
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    /* All four chips at their desktop size overflow a 375px viewport; instead
+       of a hidden horizontal scroll (iOS gives no scrollbar hint), let them
+       wrap to two rows and center the group. */
+    justify-content: center;
+    gap: 4px;
   }
   .log-section-nav a {
     white-space: nowrap;
+    font-size: 0.62rem;
+    padding: 4px 8px;
+    letter-spacing: 0.04em;
   }
 }
 
