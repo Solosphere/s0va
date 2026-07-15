@@ -689,10 +689,12 @@ nav #logo span.special-char,
   max-width: min(96vw, 72rem);
   margin: 0.4rem auto 0;
   padding: 0;
-  font-family: var(--font-family-mono);
-  font-size: clamp(0.72rem, min(1.6vw, 1.9vh), 0.95rem);
-  font-weight: 500;
-  letter-spacing: 0.015em;
+  /* Echo the METTAIRE wordmark font, but a step thinner + more letter-spaced
+     so the tagline reads as a soft caption rather than a second logo. */
+  font-family: var(--font-family-wordmark);
+  font-size: clamp(0.78rem, min(1.65vw, 2vh), 1rem);
+  font-weight: 300;
+  letter-spacing: 0.08em;
   line-height: 1.55;
   text-align: center;
   color: rgba(255, 255, 255, 0.95);
@@ -727,7 +729,7 @@ nav #logo span.special-char,
 
 .whoami-name {
   color: #ffffff;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .whoami-sep {
@@ -737,7 +739,7 @@ nav #logo span.special-char,
 
 .whoami-role {
   color: var(--color-club);
-  font-weight: 600;
+  font-weight: 400;
   text-decoration: none;
   padding: 0.05em 0.15em;
   border-radius: 2px;
@@ -815,7 +817,7 @@ nav #logo span.special-char,
   }
   .whoami--rotating .whoami-rot-prompt {
     color: rgba(var(--color-club-rgb), 0.6);
-    font-weight: 500;
+    font-weight: 300;
   }
   .whoami--rotating .whoami-rot-role {
     padding: 0;
