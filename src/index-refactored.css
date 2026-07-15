@@ -8906,6 +8906,40 @@ input:checked + .toggle-slider:before {
   to { opacity: 1; transform: translateY(0); }
 }
 
+.metro-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-family-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-club);
+  margin-bottom: var(--spacing-md);
+  white-space: nowrap;
+}
+
+.metro-tag-dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-club);
+  box-shadow: 0 0 8px rgba(var(--color-club-rgb), 0.8);
+  animation: metro-tag-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes metro-tag-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(var(--color-club-rgb), 0.55); opacity: 0.8; }
+  50% { box-shadow: 0 0 13px rgba(var(--color-club-rgb), 1); opacity: 1; }
+}
+
+.metro-tag-cursor {
+  margin-left: 1px;
+  color: var(--color-club);
+  animation: terminal-blink 1.05s steps(1) infinite;
+}
+
 .metro-line {
   display: flex;
   list-style: none;
@@ -9219,11 +9253,14 @@ input:checked + .toggle-slider:before {
 }
 
 /* Tablet keeps the stations on one row (scrolls if needed). Only on mobile does
-   the timeline stack into a vertical rail — and reversed, so the present role
+   THE JOURNEY stack into a vertical rail — and reversed, so the present role
    (Salesforce) sits on top and Parsons at the bottom. */
 @media (max-width: 767px) {
   .log-timeline {
     overflow-x: visible;
+  }
+  .metro-tag {
+    white-space: normal;
   }
   .metro-line {
     flex-direction: column-reverse;
@@ -9289,8 +9326,10 @@ input:checked + .toggle-slider:before {
   to { background-position: 0 -46px; }
 }
 
-/* Reduced motion: no intro, pulse, or flowing energy */
-[data-motion="reduced"] .log-timeline {
+/* Reduced motion: no intro, pulse, typed cursor, or flowing energy */
+[data-motion="reduced"] .log-timeline,
+[data-motion="reduced"] .metro-tag-dot,
+[data-motion="reduced"] .metro-tag-cursor {
   animation: none !important;
 }
 
