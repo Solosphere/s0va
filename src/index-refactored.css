@@ -1234,44 +1234,6 @@ nav #logo span.special-char,
   filter: none;
 }
 
-/* Rail counter (01 / 03) is shown at every breakpoint now — it echoes the
-   gallery-detail rail's counter. On mobile it syncs with the snap position
-   via the onScroll handler; on tablet/desktop it stays "01" since all 3
-   tiles are visible at once and no "current" concept applies. */
-.home-featured-counter {
-  display: inline-flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 0.3em;
-  font-family: var(--font-family-mono);
-  letter-spacing: 0.16em;
-  color: rgba(255, 255, 255, 0.55);
-  font-size: 0.85rem;
-  margin: 0 auto var(--spacing-md);
-  width: 100%;
-}
-.home-featured-counter-current {
-  color: var(--color-club);
-  font-size: 1.05rem;
-}
-.home-featured-counter-sep {
-  opacity: 0.4;
-}
-/* Above mobile, drop the counter — with all 3 tiles visible simultaneously
-   there's no "which one is current" idea to convey, and the numbered chips
-   inside each tile already communicate their position. */
-@media (min-width: 641px) {
-  .home-featured-counter {
-    display: none;
-  }
-}
-
-/* Pagination dots + swipe hint are strictly a scroll-rail affordance —
-   only shown when the rail actually scrolls (mobile). */
-.home-featured-rail-cues {
-  display: none;
-}
-
 .home-featured-tile-title {
   position: absolute;
   left: 0;
@@ -1340,10 +1302,11 @@ nav #logo span.special-char,
     display: flex;
     grid-template-columns: none;
     flex-direction: row;
+    justify-content: center;
     gap: var(--spacing-sm);
     max-width: 100%;
-    padding: 4px var(--spacing-md);
-    margin-inline: calc(-1 * var(--spacing-md));
+    padding: 4px 0;
+    margin-inline: 0;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
@@ -1355,14 +1318,20 @@ nav #logo span.special-char,
   }
   .home-featured-tile {
     grid-template-columns: 1fr;
-    width: 30vw;
-    max-width: 130px;
+    width: 34vw;
+    max-width: 150px;
     flex-shrink: 0;
     scroll-snap-align: start;
     padding: 4px;
   }
   .home-featured-tile:hover {
     transform: none;
+  }
+  /* Mobile: give the media a tall portrait 2:3 crop so the thumbnails read
+     much taller — the desktop rail can stay square because it lives on a
+     wider canvas, but on a phone every vertical pixel counts. */
+  .home-featured-tile-media {
+    aspect-ratio: 2 / 3;
   }
   .home-featured-tile-index {
     text-align: center;
@@ -1389,84 +1358,6 @@ nav #logo span.special-char,
     text-overflow: ellipsis;
   }
 
-  /* Row of pagination dots + a "swipe →" hint under the rail. Both affordances
-     work together: dots show *where* the user is in the sequence, the hint
-     tells them *what to do* until they've made contact. The hint fades once
-     the rail records any scroll (see .is-engaged below). */
-  .home-featured-rail-cues {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 4px 0;
-    margin: 6px 0 var(--spacing-md);
-  }
-  .home-featured-dots {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex: 1;
-    justify-content: center;
-  }
-  .home-featured-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.22);
-    transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
-  }
-  .home-featured-dot.is-active {
-    background: var(--color-club);
-    transform: scale(1.35);
-    box-shadow: 0 0 8px rgba(var(--color-club-rgb), 0.65);
-  }
-  /* Absolute-position the "swipe →" hint at the right end so it doesn't push
-     the centered dots off-axis. */
-  .home-featured-rail-cues {
-    position: relative;
-  }
-  .home-featured-hint {
-    position: absolute;
-    right: 4px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--font-family-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: rgba(var(--color-club-rgb), 0.85);
-    opacity: 0.9;
-    animation: home-featured-hint-pulse 1.8s ease-in-out infinite;
-    pointer-events: none;
-  }
-  .home-featured-hint-arrow {
-    display: inline-block;
-    animation: home-featured-hint-arrow 1.8s ease-in-out infinite;
-  }
-  @keyframes home-featured-hint-pulse {
-    0%, 100% { opacity: 0.55; }
-    50% { opacity: 1; }
-  }
-  @keyframes home-featured-hint-arrow {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(4px); }
-  }
-  /* Once the rail records any scroll interaction, permanently fade the hint —
-     the user has proven they know how the rail works, no need to keep nagging. */
-  .home-featured-tiles.is-engaged ~ .home-featured-rail-cues .home-featured-hint {
-    opacity: 0;
-    animation: none;
-    transition: opacity 0.4s ease;
-  }
-}
-
-/* Reduced motion honors the site's global preference: no pulse on the hint,
-   no arrow bounce. Still visible, just static. */
-[data-motion="reduced"] .home-featured-hint,
-[data-motion="reduced"] .home-featured-hint-arrow {
-  animation: none !important;
 }
 
 /* ----------------------------------------------------------------------------
@@ -1476,7 +1367,6 @@ nav #logo span.special-char,
    ---------------------------------------------------------------------------- */
 .home-featured-tile--blacksite {
   background: #050807;
-  border-color: rgba(var(--color-club-rgb), 0.35);
   /* Container context for the terminal text inside — inner font-size uses
      cqi (1% of this tile's width) so the copy scales with the tile whether
      it's mobile (~30vw), tablet, or the ~300px desktop cell. */

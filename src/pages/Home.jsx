@@ -180,36 +180,7 @@ return (
           </section>
           <h2>FEATURED</h2>
         </div>
-        {/* Mobile-only counter (01 / 03) styled like the gallery-detail rail;
-            hidden above 640px so the desktop strip stays as a 3-across grid.
-            The visible number updates when the mobile rail is scroll-snapped
-            to a new tile (see the scroll handler below). */}
-        <div className="home-featured-counter" aria-hidden="true">
-          <span className="home-featured-counter-current" id="home-featured-counter-current">01</span>
-          <span className="home-featured-counter-sep">/</span>
-          <span className="home-featured-counter-total">03</span>
-        </div>
-        <div
-          className="home-featured-tiles"
-          onScroll={(e) => {
-            // Mobile snap-rail: when user swipes to a new tile, sync the top
-            // "01 / 03" counter, the pagination dots, and mark the rail as
-            // "engaged" so the "swipe →" hint fades out. Desktop grid never
-            // scrolls this element so the handler is a no-op there.
-            const el = e.currentTarget;
-            if (!el || el.clientWidth === 0) return;
-            const tileWidth = el.firstElementChild?.clientWidth || el.clientWidth;
-            const idx = Math.min(2, Math.round(el.scrollLeft / tileWidth));
-            const target = document.getElementById('home-featured-counter-current');
-            if (target) target.textContent = String(idx + 1).padStart(2, '0');
-            const dots = document.querySelectorAll('.home-featured-dot');
-            dots.forEach((dot, i) => {
-              dot.classList.toggle('is-active', i === idx);
-            });
-            // First interaction fades the hint permanently.
-            el.classList.add('is-engaged');
-          }}
-        >
+        <div className="home-featured-tiles">
           {/* Slot 1 + 2: the first two artwork tiles (HCT-17, kirin). */}
           {baseFeatured.slice(0, 2).map((item, i) => (
             <Link
@@ -267,19 +238,6 @@ return (
             </span>
             <span className="home-featured-tile-title">/programs/blacksite</span>
           </Link>
-        </div>
-        {/* Mobile-only affordances: pagination dots that mirror the current
-            snap position + a "swipe →" hint that pulses until first scroll. */}
-        <div className="home-featured-rail-cues" aria-hidden="true">
-          <div className="home-featured-dots">
-            <span className="home-featured-dot is-active" />
-            <span className="home-featured-dot" />
-            <span className="home-featured-dot" />
-          </div>
-          <div className="home-featured-hint">
-            <span className="home-featured-hint-text">swipe</span>
-            <span className="home-featured-hint-arrow" aria-hidden="true">→</span>
-          </div>
         </div>
         <Link to="/gallery" className="home-featured-viewall">
           view all {products?.length ? `${products.length} ` : ''}works &rarr;
