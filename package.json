@@ -10,7 +10,7 @@
         "dev": "vite",
         "server": "node server/server.js",
         "server:dev": "node --watch server/server.js",
-        "build": "vite build",
+        "build": "node scripts/generate-sitemap.mjs && vite build",
         "start": "vite preview",
         "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
         "preview": "vite preview",

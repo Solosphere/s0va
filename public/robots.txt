@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /programs
+Disallow: /api/
+
+Sitemap: https://www.mettaire.com/sitemap.xml
