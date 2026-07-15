@@ -71,3 +71,4 @@ npm run server:dev
 Questions, feedback, or just want to say hello? Reach out by [email](mailto:lukannelson@gmail.com) or connect on [LinkedIn](https://www.linkedin.com/in/dnelson777/).
 
 Thank you for visiting METTAIRE — where engineering and art share the same machine.
+
