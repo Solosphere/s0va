@@ -1,0 +1,7 @@
+# If you find a security issue on mettaire.com, please report it via the
+# private security advisory workflow on the site's source repository.
+
+Contact: https://github.com/Mettaire/mettaire/security/advisories/new
+Expires: 2027-07-14T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://www.mettaire.com/.well-known/security.txt
