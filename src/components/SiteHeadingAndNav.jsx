@@ -73,7 +73,7 @@ export default function SiteHeadingAndNav() {
               </li>
             ))}
             <li className="desktop-settings"><Settings /></li>
-            <li className="menu-terminal-footer" aria-hidden="true">root@wound.os ~ %</li>
+            <li className="menu-terminal-footer" aria-hidden="true">root@mettaire.os ~ %</li>
           </ul>
         </div>
       </nav>

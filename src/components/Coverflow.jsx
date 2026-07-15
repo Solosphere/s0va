@@ -110,7 +110,7 @@ const Coverflow = ({ items = [], getImageUrl, showCaption = false, onNavigate })
             >
               {item.kind === 'log' ? (
                 <div className="coverflow-log-face">
-                  <span className="cf-log-prompt">root@wound.os</span>
+                  <span className="cf-log-prompt">root@mettaire.os</span>
                   <h3>{item.title}</h3>
                   {item.org && <span className="cf-log-org">{item.org}</span>}
                   {item.summary && <p>{item.summary}</p>}

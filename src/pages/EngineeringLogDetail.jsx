@@ -40,7 +40,7 @@ const EngineeringLogDetail = () => {
       <div className="log-detail log-detail--missing">
         <div className="log-detail-inner">
           <p className="log-prompt-line">
-            <span className="log-prompt-sign" aria-hidden="true">root@wound.os ~ %</span>{' '}
+            <span className="log-prompt-sign" aria-hidden="true">root@mettaire.os ~ %</span>{' '}
             cat {id}: no such entry
           </p>
           <Link to={backTo} className="log-back">← back to {backWhere}</Link>
@@ -53,7 +53,7 @@ const EngineeringLogDetail = () => {
     <div className="log-detail">
       <div className="log-detail-inner">
         <Link to={backTo} className="log-back">
-          <span className="log-prompt-sign" aria-hidden="true">root@wound.os ~ %</span> {backCmd}
+          <span className="log-prompt-sign" aria-hidden="true">root@mettaire.os ~ %</span> {backCmd}
         </Link>
 
         <header className="log-detail-head">

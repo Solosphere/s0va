@@ -180,24 +180,106 @@ return (
           </section>
           <h2>FEATURED</h2>
         </div>
-        <div className="home-featured-tiles">
-          {baseFeatured.slice(0, 3).map((item) => (
+        {/* Mobile-only counter (01 / 03) styled like the gallery-detail rail;
+            hidden above 640px so the desktop strip stays as a 3-across grid.
+            The visible number updates when the mobile rail is scroll-snapped
+            to a new tile (see the scroll handler below). */}
+        <div className="home-featured-counter" aria-hidden="true">
+          <span className="home-featured-counter-current" id="home-featured-counter-current">01</span>
+          <span className="home-featured-counter-sep">/</span>
+          <span className="home-featured-counter-total">03</span>
+        </div>
+        <div
+          className="home-featured-tiles"
+          onScroll={(e) => {
+            // Mobile snap-rail: when user swipes to a new tile, sync the top
+            // "01 / 03" counter, the pagination dots, and mark the rail as
+            // "engaged" so the "swipe →" hint fades out. Desktop grid never
+            // scrolls this element so the handler is a no-op there.
+            const el = e.currentTarget;
+            if (!el || el.clientWidth === 0) return;
+            const tileWidth = el.firstElementChild?.clientWidth || el.clientWidth;
+            const idx = Math.min(2, Math.round(el.scrollLeft / tileWidth));
+            const target = document.getElementById('home-featured-counter-current');
+            if (target) target.textContent = String(idx + 1).padStart(2, '0');
+            const dots = document.querySelectorAll('.home-featured-dot');
+            dots.forEach((dot, i) => {
+              dot.classList.toggle('is-active', i === idx);
+            });
+            // First interaction fades the hint permanently.
+            el.classList.add('is-engaged');
+          }}
+        >
+          {/* Slot 1 + 2: the first two artwork tiles (HCT-17, kirin). */}
+          {baseFeatured.slice(0, 2).map((item, i) => (
             <Link
               key={item.key}
               to={item.to || '/gallery'}
-              className="home-featured-tile"
+              className={`home-featured-tile${i === 0 ? ' home-featured-tile--active' : ''}`}
               aria-label={item.title ? `Open ${item.title}` : 'Open featured work'}
             >
-              <img
-                src={getProtectedImageUrl(item.image)}
-                alt={item.title || ''}
-                loading="lazy"
-              />
+              <span className="home-featured-tile-index" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span className="home-featured-tile-media">
+                <img
+                  src={getProtectedImageUrl(item.image)}
+                  alt={item.title || ''}
+                  loading="lazy"
+                />
+              </span>
               {item.title && (
                 <span className="home-featured-tile-title">{item.title}</span>
               )}
             </Link>
           ))}
+          {/* Slot 3: glitched terminal card that replaces the third artwork
+              across all viewports and links into the restricted /programs
+              gate. Purely decorative text — aria-label is what SRs announce. */}
+          <Link
+            to="/programs"
+            className="home-featured-tile home-featured-tile--blacksite"
+            aria-label="Restricted terminal — enter root@mettaire.os"
+          >
+            <span className="home-featured-tile-index" aria-hidden="true">03</span>
+            <span className="home-featured-tile-media">
+              <div className="blacksite-tile-inner" aria-hidden="true">
+                <div className="blacksite-tile-scanline" />
+                <div className="blacksite-tile-lines">
+                  <div className="blacksite-tile-line">
+                    <span className="blacksite-tile-prompt">root@mettaire.os:~#</span>{' '}
+                    <span className="blacksite-tile-cmd">access /blacksite</span>
+                  </div>
+                  <div className="blacksite-tile-line blacksite-tile-line--warn">
+                    [!] AUTH REQUIRED
+                  </div>
+                  <div
+                    className="blacksite-tile-line blacksite-tile-line--denied"
+                    data-text="ACCESS DENIED"
+                  >
+                    ACCESS DENIED
+                  </div>
+                  <div className="blacksite-tile-line blacksite-tile-line--dim">
+                    &gt; retry with credentials_
+                  </div>
+                </div>
+              </div>
+            </span>
+            <span className="home-featured-tile-title">/programs/blacksite</span>
+          </Link>
+        </div>
+        {/* Mobile-only affordances: pagination dots that mirror the current
+            snap position + a "swipe →" hint that pulses until first scroll. */}
+        <div className="home-featured-rail-cues" aria-hidden="true">
+          <div className="home-featured-dots">
+            <span className="home-featured-dot is-active" />
+            <span className="home-featured-dot" />
+            <span className="home-featured-dot" />
+          </div>
+          <div className="home-featured-hint">
+            <span className="home-featured-hint-text">swipe</span>
+            <span className="home-featured-hint-arrow" aria-hidden="true">→</span>
+          </div>
         </div>
         <Link to="/gallery" className="home-featured-viewall">
           view all {products?.length ? `${products.length} ` : ''}works &rarr;

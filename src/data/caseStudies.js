@@ -298,7 +298,7 @@ VPC Flow Logs → 365-day retention`,
     period: 'Ongoing',
     stack: ['React', 'Canvas', 'Game Loop', 'JavaScript', 'UX'],
     summary:
-      'An immersive "secure terminal" that opens into an arcade — two playable browser games I built from scratch in React and canvas, wrapped in the site’s root@wound.os fiction.',
+      'An immersive "secure terminal" that opens into an arcade — two playable browser games I built from scratch in React and canvas, wrapped in the site’s root@mettaire.os fiction.',
     problem:
       "I wanted the portfolio to *show* front-end skill, not just describe it — something a visitor could actually play, woven into the site's terminal fiction rather than bolted on as a generic demo.",
     constraints:

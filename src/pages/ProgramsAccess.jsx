@@ -25,22 +25,22 @@ export default function ProgramsAccess() {
   }, [currentText]);
 
   const commands = [
-    { command: 'user@wound.os ~ % $ ssh root@127.0.0.1', output: 'ACCESSING ROOT TERMINAL...' },
-    { command: 'root@wound.os ~ % $ ACCESS_PROGRAMS', output: 'INITIALIZING SECURE CONNECTION...' },
-    { command: 'root@wound.os ~ % $ VERIFY_CLEARANCE', output: 'CLEARANCE LEVEL 5 CONFIRMED' },
-    { command: 'root@wound.os ~ % $ SCAN_SYSTEMS', output: 'SCANNING AVAILABLE PROGRAMS...' }, 
-    { command: 'root@wound.os ~ % $ LIST_PROGRAMS', output: 'RETRIEVING PROGRAM DATABASE...' }
+    { command: 'user@mettaire.os ~ % $ ssh root@127.0.0.1', output: 'ACCESSING ROOT TERMINAL...' },
+    { command: 'root@mettaire.os ~ % $ ACCESS_PROGRAMS', output: 'INITIALIZING SECURE CONNECTION...' },
+    { command: 'root@mettaire.os ~ % $ VERIFY_CLEARANCE', output: 'CLEARANCE LEVEL 5 CONFIRMED' },
+    { command: 'root@mettaire.os ~ % $ SCAN_SYSTEMS', output: 'SCANNING AVAILABLE PROGRAMS...' }, 
+    { command: 'root@mettaire.os ~ % $ LIST_PROGRAMS', output: 'RETRIEVING PROGRAM DATABASE...' }
   ];
 
   const programs = [
-    'root@wound.os ~ % $ SYSTEM_01 - Neural Interface Protocol [ACTIVE]',
-    'root@wound.os ~ % $ SECURITY_02 - Firewall Penetration Test [ACTIVE]',
-    'root@wound.os ~ % $ DATA_03 - Encrypted Data Stream [STANDBY]',
-    'root@wound.os ~ % $ PROTOCOL_04 - Quantum Encryption Matrix [LOCKED]',
-    'root@wound.os ~ % $ NEURAL_05 - Cognitive Enhancement Suite [LOCKED]',
-    'root@wound.os ~ % $ CYBER_06 - Digital Warfare Simulator [DEACTIVATED]',
-    'root@wound.os ~ % $ QUANTUM_07 - Entanglement Protocol [DEACTIVATED]',
-    'root@wound.os ~ % $ BIO_08 - Genetic Algorithm Engine [DEACTIVATED]'
+    'root@mettaire.os ~ % $ SYSTEM_01 - Neural Interface Protocol [ACTIVE]',
+    'root@mettaire.os ~ % $ SECURITY_02 - Firewall Penetration Test [ACTIVE]',
+    'root@mettaire.os ~ % $ DATA_03 - Encrypted Data Stream [STANDBY]',
+    'root@mettaire.os ~ % $ PROTOCOL_04 - Quantum Encryption Matrix [LOCKED]',
+    'root@mettaire.os ~ % $ NEURAL_05 - Cognitive Enhancement Suite [LOCKED]',
+    'root@mettaire.os ~ % $ CYBER_06 - Digital Warfare Simulator [DEACTIVATED]',
+    'root@mettaire.os ~ % $ QUANTUM_07 - Entanglement Protocol [DEACTIVATED]',
+    'root@mettaire.os ~ % $ BIO_08 - Genetic Algorithm Engine [DEACTIVATED]'
   ];
 
   useEffect(() => {

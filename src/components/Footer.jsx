@@ -71,7 +71,7 @@ const Footer = () => {
                 <div className="copyright-information">
                     <p>
                         &copy; {currentYear} METTAIRE{' '}
-                        <NavLink to="/programs" className="blacksite-trigger" aria-label="Restricted access" title="root@wound.os">▮</NavLink>
+                        <NavLink to="/programs" className="blacksite-trigger" aria-label="Restricted access" title="root@mettaire.os">▮</NavLink>
                     </p>
                 </div>
             </div>

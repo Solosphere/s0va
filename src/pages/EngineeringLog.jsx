@@ -24,10 +24,10 @@ const EngineeringLog = () => {
       <header className="log-header">
         <h1>ENGINEERING LOG</h1>
         {/* One establishing terminal line for the whole page — subsequent
-            sections no longer repeat the root@wound.os prefix so it reads as
+            sections no longer repeat the root@mettaire.os prefix so it reads as
             hierarchy, not decoration. */}
         <p className="log-prompt-line log-prompt-line--intro">
-          <span className="log-prompt-sign" aria-hidden="true">root@wound.os ~ %</span>{' '}
+          <span className="log-prompt-sign" aria-hidden="true">root@mettaire.os ~ %</span>{' '}
           cat /var/log/career
         </p>
       </header>

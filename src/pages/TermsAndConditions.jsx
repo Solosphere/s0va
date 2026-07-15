@@ -53,7 +53,7 @@ const TermsAndConditions = () => {
       <header className="terms-header">
         <h1 className="terms-title">TERMS &amp; CONDITIONS</h1>
         <p className="terms-prompt">
-          <span className="terms-prompt-sign" aria-hidden="true">root@wound.os ~ %</span>{' '}
+          <span className="terms-prompt-sign" aria-hidden="true">root@mettaire.os ~ %</span>{' '}
           cat /var/legal/terms.txt
         </p>
         <p className="terms-stamp">
