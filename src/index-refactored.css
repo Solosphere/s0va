@@ -2829,11 +2829,24 @@ nav #logo span.special-char,
   object-position: center bottom;
 }
 
-/* Both game screenshots are square-cropped to the same frame. Anchor both to the
-   top-left at every breakpoint so their title bars line up and each game's name
-   (left side) stays visible, even when a narrow column crops the width. */
-.blacksite-mini-gallery .image-column-1 img,
+/* Both game screenshots are square-cropped to the same frame. Anchor them to the
+   top so their title bars line up. DATA SPIKE (col-2) stays left-anchored; the
+   game's names sit on the left side. */
 .blacksite-mini-gallery .image-column-2 img {
+  object-position: left top;
+}
+
+/* NULL_ESCAPE (col-1) ships with its own rounded UI frame baked into the
+   screenshot; its left edge otherwise sits just inside the card and reads as a
+   glowing left border. object-position can't move it — cover crops this image
+   vertically, not horizontally, so there's no side overflow to shift. Instead
+   pan the image: widen it past the column and pull it left so the frame bleeds
+   off the left edge and gets clipped by the column's overflow. Higher
+   specificity (#blacksite) so it wins at every breakpoint. */
+.image-with-description#blacksite .blacksite-mini-gallery .image-column-1 img {
+  width: 108%;
+  max-width: none;
+  margin-left: -6%;
   object-position: left top;
 }
 
