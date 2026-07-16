@@ -684,11 +684,12 @@ nav #logo span.special-char,
    a block that's width-locked to the wordmark's rendered glyph run.
    ---------------------------------------------------------------------------- */
 .whoami-block {
+  position: relative;
   display: block;
   width: fit-content;
   max-width: min(96vw, 72rem);
-  margin: 0.4rem auto 0;
-  padding: 0;
+  margin: 0.9rem auto 0;
+  padding: 1.6rem 1.4rem 1.8rem;
   /* Echo the METTAIRE wordmark font, but a step thinner + more letter-spaced
      so the tagline reads as a soft caption rather than a second logo. */
   font-family: var(--font-family-wordmark);
@@ -696,14 +697,73 @@ nav #logo span.special-char,
   font-weight: 300;
   letter-spacing: 0.08em;
   line-height: 1.55;
-  text-align: center;
+  text-align: left;
   color: rgba(255, 255, 255, 0.95);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+  /* HUD panel: angled clip-path corners (top-right + bottom-left) mirror the
+     Wound HUD readout cards. Neutral grey/white variant per design pick —
+     thin white bottom edge, muted panel bg, no cyan accent. Below the frame
+     an underline draws a slightly brighter white edge along the bottom so
+     the panel feels like it sits on a rail. */
+  background:
+    /* faint scanline overlay so the panel reads as a live HUD surface */
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0) 3px,
+      rgba(255, 255, 255, 0.02) 3px,
+      rgba(255, 255, 255, 0.02) 4px
+    ),
+    linear-gradient(180deg, rgba(18, 22, 26, 0.72) 0%, rgba(10, 12, 14, 0.72) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom-color: rgba(255, 255, 255, 0.55);
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
   opacity: 0;
   transform: translateY(20px);
   filter: blur(3px);
   animation: title-reveal 1.6s ease-out 0.35s forwards;
 }
+
+/* Top-left industrial tag — reads like a HUD asset stamp. Sits INSIDE the
+   panel (parent's clip-path chops anything outside) at the sharp top-left
+   corner of the clip. */
+.whoami-block::before {
+  content: '//PORTFOLIO.01 · IDENT.RUN//';
+  position: absolute;
+  top: 0.4rem;
+  left: 0.9rem;
+  font-family: var(--font-family-mono, "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.55rem;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  color: rgba(255, 255, 255, 0.42);
+  text-shadow: none;
+  pointer-events: none;
+}
+
+/* Bottom-right live status strip — status dot + relative timestamp so the
+   panel feels connected to something rendering right now. Sits inside the
+   sharp bottom-right clip corner. */
+.whoami-block::after {
+  content: '● LIVE · TS/2026.07.15';
+  position: absolute;
+  bottom: 0.4rem;
+  right: 0.9rem;
+  font-family: var(--font-family-mono, "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.55rem;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  color: rgba(var(--color-club-rgb), 0.6);
+  text-shadow: 0 0 4px rgba(var(--color-club-rgb), 0.35);
+  pointer-events: none;
+  animation: whoami-live-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes whoami-live-pulse {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1; }
+}
+
 
 .whoami-output {
   margin: 0;
@@ -739,7 +799,13 @@ nav #logo span.special-char,
 
 .whoami-role {
   color: var(--color-club);
-  font-weight: 400;
+  /* Roles read distinctly from the wordmark-font name — thin mono terminal
+     type sits under the identity line and lets each role feel like a
+     printed field value rather than a second glyph run. */
+  font-family: var(--font-family-mono, "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-weight: 300;
+  font-size: 0.92em;
+  letter-spacing: 0.02em;
   text-decoration: none;
   padding: 0.05em 0.15em;
   border-radius: 2px;
@@ -759,6 +825,34 @@ nav #logo span.special-char,
   vertical-align: bottom;
 }
 
+/* Tablet range — desktop single-line whoami still fits, but the desktop
+   padding + font are proportioned for large screens. Scale the panel down so
+   it doesn't feel oversized on iPad-portrait / small tablets. Font clamp
+   already handles size gracefully; here we tighten padding + clip corners
+   and cap max-width so the frame reads as a compact HUD chip. */
+@media (min-width: 721px) and (max-width: 1024px) {
+  .whoami-block {
+    max-width: min(85vw, 44rem);
+    margin-top: 0.7rem;
+    padding: 1.3rem 0.9rem 1.5rem;
+    font-size: clamp(0.72rem, 1.3vw, 0.88rem);
+    letter-spacing: 0.06em;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  }
+  .whoami-block::before {
+    font-size: 0.5rem;
+    letter-spacing: 0.24em;
+    top: 0.35rem;
+    left: 0.7rem;
+  }
+  .whoami-block::after {
+    font-size: 0.5rem;
+    letter-spacing: 0.22em;
+    bottom: 0.35rem;
+    right: 0.7rem;
+  }
+}
+
 /* Any viewport where the 65-char mono line can't sit on one row: wrap it,
    drop the width-based typing animation (which looks broken over a wrapping
    run), and let the block breathe up to the viewport edges instead of
@@ -767,10 +861,22 @@ nav #logo span.special-char,
 @media (max-width: 720px) {
   .whoami-block {
     width: auto;
-    max-width: 100vw;
+    max-width: calc(100vw - 2rem);
     font-size: clamp(0.72rem, 3vw, 0.95rem);
-    padding: 0 0.6rem;
+    padding: 1.25rem 0.85rem 1.45rem;
     box-sizing: border-box;
+  }
+  .whoami-block::before {
+    font-size: 0.5rem;
+    letter-spacing: 0.22em;
+    top: 0.35rem;
+    left: 0.7rem;
+  }
+  .whoami-block::after {
+    font-size: 0.5rem;
+    letter-spacing: 0.2em;
+    bottom: 0.35rem;
+    right: 0.7rem;
   }
   .whoami-output {
     white-space: normal;
@@ -798,15 +904,13 @@ nav #logo span.special-char,
   }
   .whoami--rotating {
     display: block;
-    text-align: center;
-    max-width: 100vw;
-    padding: 0 0.6rem;
+    text-align: left;
     animation: title-reveal 1.6s ease-out 0.35s forwards;
   }
   .whoami--rotating .whoami-output {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.2em;
     line-height: 1.4;
   }
