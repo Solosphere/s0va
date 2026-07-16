@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from "react-router-dom";
 import { useProducts } from '../context/ProductsProvider';
 import Reveal from '../components/Reveal';
@@ -100,6 +100,57 @@ const getProtectedImageUrl = (filename) => {
   return withImageWidth(base, WIDTHS.GALLERY_CARD);
 };
 
+// Featured rail: the fixed 5-slot order. Blacksite (terminal card) is slot 3,
+// secondwind is slot 5, so the visual arc runs artwork → glitched gate →
+// artwork with a payoff piece on the right.
+const findFeatured = (filename) =>
+  baseFeatured.find((item) => item.key === filename) || {
+    key: filename,
+    image: filename,
+    to: null,
+    title: null,
+  };
+const featuredSlots = [
+  { kind: 'artwork', slot: 1, data: findFeatured('HCT-17.webp') },
+  { kind: 'artwork', slot: 2, data: findFeatured('kirin.webp') },
+  { kind: 'blacksite', slot: 3 },
+  { kind: 'artwork', slot: 4, data: findFeatured('SAP.webp') },
+  { kind: 'artwork', slot: 5, data: findFeatured('secondwind.webp') },
+];
+
+// Which tile is currently under the rail's viewport focus. Drives the
+// "01 / 05" counter chip and the cyan active-tile border. Uses tile centers
+// vs. the rail's center, plus an explicit end-of-scroll clamp — otherwise
+// the last tile can never win because the rail's scroll position clamps
+// before its left edge reaches the container's left edge.
+const railRef = useRef(null);
+const [activeIndex, setActiveIndex] = useState(0);
+const handleRailScroll = () => {
+  const rail = railRef.current;
+  if (!rail) return;
+  const tiles = rail.querySelectorAll('.home-featured-tile');
+  if (!tiles.length) return;
+  const atEnd = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 2;
+  const atStart = rail.scrollLeft <= 2;
+  let next;
+  if (atEnd) {
+    next = tiles.length - 1;
+  } else if (atStart) {
+    next = 0;
+  } else {
+    const railRect = rail.getBoundingClientRect();
+    const railCenter = railRect.left + railRect.width / 2;
+    let best = Infinity;
+    next = 0;
+    tiles.forEach((tile, i) => {
+      const r = tile.getBoundingClientRect();
+      const d = Math.abs((r.left + r.width / 2) - railCenter);
+      if (d < best) { best = d; next = i; }
+    });
+  }
+  if (next !== activeIndex) setActiveIndex(next);
+};
+
 return (
   <div className="home-page">
     <div className='home-row'>
@@ -180,64 +231,92 @@ return (
           </section>
           <h2>FEATURED</h2>
         </div>
-        <div className="home-featured-tiles">
-          {/* Slot 1 + 2: the first two artwork tiles (HCT-17, kirin). */}
-          {baseFeatured.slice(0, 2).map((item, i) => (
-            <Link
-              key={item.key}
-              to={item.to || '/gallery'}
-              className={`home-featured-tile${i === 0 ? ' home-featured-tile--active' : ''}`}
-              aria-label={item.title ? `Open ${item.title}` : 'Open featured work'}
-            >
-              <span className="home-featured-tile-index" aria-hidden="true">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <span className="home-featured-tile-media">
-                <img
-                  src={getProtectedImageUrl(item.image)}
-                  alt={item.title || ''}
-                  loading="lazy"
-                />
-              </span>
-              {item.title && (
-                <span className="home-featured-tile-title">{item.title}</span>
-              )}
-            </Link>
-          ))}
-          {/* Slot 3: glitched terminal card that replaces the third artwork
-              across all viewports and links into the restricted /programs
-              gate. Purely decorative text — aria-label is what SRs announce. */}
-          <Link
-            to="/programs"
-            className="home-featured-tile home-featured-tile--blacksite"
-            aria-label="Restricted terminal — enter root@mettaire.os"
-          >
-            <span className="home-featured-tile-index" aria-hidden="true">03</span>
-            <span className="home-featured-tile-media">
-              <div className="blacksite-tile-inner" aria-hidden="true">
-                <div className="blacksite-tile-scanline" />
-                <div className="blacksite-tile-lines">
-                  <div className="blacksite-tile-line">
-                    <span className="blacksite-tile-prompt">root@mettaire.os:~#</span>{' '}
-                    <span className="blacksite-tile-cmd">access /blacksite</span>
-                  </div>
-                  <div className="blacksite-tile-line blacksite-tile-line--warn">
-                    [!] AUTH REQUIRED
-                  </div>
-                  <div
-                    className="blacksite-tile-line blacksite-tile-line--denied"
-                    data-text="ACCESS DENIED"
-                  >
-                    ACCESS DENIED
-                  </div>
-                  <div className="blacksite-tile-line blacksite-tile-line--dim">
-                    &gt; retry with credentials_
-                  </div>
-                </div>
-              </div>
+        {/* Outer box: mirrors the gallery-detail rail chrome — a thin bordered
+            container with the "01 / 05" active-position counter pinned to the
+            top-left. Same layout ships on mobile / tablet / desktop; the rail
+            inside is horizontally swipeable so tiles can render bigger than
+            "5 across a phone" would allow. */}
+        <div className="home-featured-rail-box">
+          <div className="home-featured-rail-counter" aria-hidden="true">
+            <span className="home-featured-rail-counter-current">
+              {String(activeIndex + 1).padStart(2, '0')}
             </span>
-            <span className="home-featured-tile-title">/programs/blacksite</span>
-          </Link>
+            <span className="home-featured-rail-counter-sep">/</span>
+            <span className="home-featured-rail-counter-total">
+              {String(featuredSlots.length).padStart(2, '0')}
+            </span>
+          </div>
+          <div
+            className="home-featured-tiles"
+            ref={railRef}
+            onScroll={handleRailScroll}
+          >
+            {featuredSlots.map((entry, i) => {
+              const isActive = i === activeIndex;
+              const indexLabel = String(entry.slot).padStart(2, '0');
+              if (entry.kind === 'blacksite') {
+                return (
+                  <Link
+                    key="blacksite"
+                    to="/programs"
+                    className={`home-featured-tile home-featured-tile--blacksite${isActive ? ' home-featured-tile--active' : ''}`}
+                    aria-label="Restricted terminal — enter root@mettaire.os"
+                  >
+                    <span className="home-featured-tile-index" aria-hidden="true">
+                      {indexLabel}
+                    </span>
+                    <span className="home-featured-tile-media">
+                      <div className="blacksite-tile-inner" aria-hidden="true">
+                        <div className="blacksite-tile-scanline" />
+                        <div className="blacksite-tile-lines">
+                          <div className="blacksite-tile-line">
+                            <span className="blacksite-tile-prompt">root@mettaire.os:~#</span>{' '}
+                            <span className="blacksite-tile-cmd">access /blacksite</span>
+                          </div>
+                          <div className="blacksite-tile-line blacksite-tile-line--warn">
+                            [!] AUTH REQUIRED
+                          </div>
+                          <div
+                            className="blacksite-tile-line blacksite-tile-line--denied"
+                            data-text="ACCESS DENIED"
+                          >
+                            ACCESS DENIED
+                          </div>
+                          <div className="blacksite-tile-line blacksite-tile-line--dim">
+                            &gt; retry with credentials_
+                          </div>
+                        </div>
+                      </div>
+                    </span>
+                    <span className="home-featured-tile-title">/programs/blacksite</span>
+                  </Link>
+                );
+              }
+              const item = entry.data;
+              return (
+                <Link
+                  key={item.key}
+                  to={item.to || '/gallery'}
+                  className={`home-featured-tile${isActive ? ' home-featured-tile--active' : ''}`}
+                  aria-label={item.title ? `Open ${item.title}` : 'Open featured work'}
+                >
+                  <span className="home-featured-tile-index" aria-hidden="true">
+                    {indexLabel}
+                  </span>
+                  <span className="home-featured-tile-media">
+                    <img
+                      src={getProtectedImageUrl(item.image)}
+                      alt={item.title || ''}
+                      loading="lazy"
+                    />
+                  </span>
+                  {item.title && (
+                    <span className="home-featured-tile-title">{item.title}</span>
+                  )}
+                </Link>
+              );
+            })}
+          </div>
         </div>
         <Link to="/gallery" className="home-featured-viewall">
           view all {products?.length ? `${products.length} ` : ''}works &rarr;

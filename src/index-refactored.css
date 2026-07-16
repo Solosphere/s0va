@@ -1176,47 +1176,125 @@ nav #logo span.special-char,
   margin-bottom: var(--spacing-lg);
 }
 
-/* Tablet + desktop: mimic the gallery-detail thumbnail rail — each tile is a
-   framed card with a mono index label on the left (28px column) and a
-   contained square media crop on the right, three cards in a row. */
-.home-featured-tiles {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-md);
+/* Outer box wrapping the whole rail — mirrors the gallery-detail rail chrome:
+   thin rounded border, black interior, "01 / 05" counter pinned top-left. Same
+   layout ships across mobile, tablet, and desktop — only the tile size scales
+   down through container queries. */
+.home-featured-rail-box {
+  position: relative;
+  max-width: 1100px;
   margin: 0 auto var(--spacing-lg);
-  max-width: 900px;
+  padding: clamp(20px, 3vw, 32px) clamp(12px, 2vw, 24px) clamp(14px, 2vw, 22px);
+  padding-top: clamp(44px, 5vw, 60px);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.home-featured-rail-counter {
+  position: absolute;
+  top: clamp(10px, 1.6vw, 16px);
+  left: clamp(14px, 2vw, 22px);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.home-featured-rail-counter-current {
+  color: var(--color-club);
+  text-shadow: 0 0 8px rgba(var(--color-club-rgb), 0.5);
+}
+
+.home-featured-rail-counter-sep,
+.home-featured-rail-counter-total {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Unified swipeable rail — same structure on mobile, tablet, and desktop. Each
+   tile is a framed card with the mono index number rendered above its media
+   crop. The rail overflows horizontally with scroll-snap so tiles can render
+   much bigger than "5 across a phone" would allow — a viewer swipes to move
+   through the featured set. Edge-fade mask softens the cut-off on either side
+   so tiles dissolve into the black box interior instead of hard-clipping. */
+.home-featured-tiles {
+  display: flex;
+  flex-direction: row;
+  gap: clamp(10px, 1.6vw, 20px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 24px 8px;
+  margin-inline: -24px;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 24px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 24px,
+    #000 calc(100% - 24px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 24px,
+    #000 calc(100% - 24px),
+    transparent 100%
+  );
+}
+.home-featured-tiles::-webkit-scrollbar {
+  display: none;
 }
 
 .home-featured-tile {
   position: relative;
   display: grid;
-  grid-template-columns: 28px 1fr;
-  gap: var(--spacing-sm);
-  align-items: center;
-  padding: 6px;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
+  gap: 8px;
+  flex: 0 0 auto;
+  width: clamp(210px, 42vw, 340px);
+  padding: clamp(8px, 1.2vw, 14px);
+  scroll-snap-align: start;
   overflow: hidden;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
   background: rgba(0, 0, 0, 0.4);
   text-decoration: none;
   transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Active tile: solid cyan border + soft glow to match the reference. */
+.home-featured-tile--active {
+  border-color: rgba(var(--color-club-rgb), 0.85);
+  box-shadow: 0 0 0 1px rgba(var(--color-club-rgb), 0.35), 0 0 22px rgba(var(--color-club-rgb), 0.18);
+}
+
 .home-featured-tile-index {
   font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-  font-size: var(--font-size-xs);
-  letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.5);
-  text-align: right;
-  padding-right: 2px;
+  font-size: clamp(0.65rem, 1.1vw, 0.85rem);
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+  padding: 2px 0 0;
+}
+
+.home-featured-tile--active .home-featured-tile-index {
+  color: var(--color-club);
+  text-shadow: 0 0 6px rgba(var(--color-club-rgb), 0.45);
 }
 
 .home-featured-tile-media {
   display: block;
   position: relative;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 5;
   overflow: hidden;
-  border-radius: 3px;
+  border-radius: 6px;
   background: #000;
 }
 
@@ -1279,10 +1357,9 @@ nav #logo span.special-char,
 }
 
 @media (max-width: 640px) {
-  /* Mobile: mimic the gallery-detail rail. A leading counter (01 / 03) sits
-     top-left, then tiles stack vertically with a numbered gutter on the left
-     and a bigger, framed image on the right. Each tile fills the viewport
-     width so artwork actually reads. */
+  /* Mobile: same 5-column rail as tablet/desktop — only the outer padding and
+     the hover-caption fallback change. Tiles remain equal-width and share the
+     "number above thumb" structure. */
   .home-featured-strip {
     padding-left: var(--spacing-md);
     padding-right: var(--spacing-md);
@@ -1294,49 +1371,8 @@ nav #logo span.special-char,
   .home-featured-strip-header h2 {
     text-align: center;
   }
-  /* Mobile: mirror the gallery-detail rail exactly — flip the desktop grid
-     of framed cards into a horizontal snap-scroll row. Each card stays as
-     the "index-on-top / media-below" (1fr column) mini-thumb the detail
-     rail uses on mobile. Fits ~3–4 cards across a phone with clear peek. */
-  .home-featured-tiles {
-    display: flex;
-    grid-template-columns: none;
-    flex-direction: row;
-    justify-content: center;
-    gap: var(--spacing-sm);
-    max-width: 100%;
-    padding: 4px 0;
-    margin-inline: 0;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .home-featured-tiles::-webkit-scrollbar {
-    display: none;
-  }
-  .home-featured-tile {
-    grid-template-columns: 1fr;
-    width: 34vw;
-    max-width: 150px;
-    flex-shrink: 0;
-    scroll-snap-align: start;
-    padding: 4px;
-  }
   .home-featured-tile:hover {
     transform: none;
-  }
-  /* Mobile: give the media a tall portrait 2:3 crop so the thumbnails read
-     much taller — the desktop rail can stay square because it lives on a
-     wider canvas, but on a phone every vertical pixel counts. */
-  .home-featured-tile-media {
-    aspect-ratio: 2 / 3;
-  }
-  .home-featured-tile-index {
-    text-align: center;
-    padding-right: 0;
-    font-size: 0.68rem;
   }
   .home-featured-tile-title {
     /* No hover state on touch — surface the label inline under each card. */
@@ -1348,7 +1384,7 @@ nav #logo span.special-char,
     opacity: 1;
     transform: none;
     padding: 4px 2px 0;
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     letter-spacing: 0.03em;
     color: rgba(255, 255, 255, 0.7);
     text-align: center;
@@ -1357,7 +1393,6 @@ nav #logo span.special-char,
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
 }
 
 /* ----------------------------------------------------------------------------
