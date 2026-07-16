@@ -135,7 +135,7 @@ const AboutPage = () => {
               At Salesforce I build and secure infrastructure in FedRAMP environments: automating CI/CD and patching pipelines, leading security incident response, keeping critical systems reliable at scale. That same intent shaped projects like Second Wind and CareerSpring's Interest Finder, software built to help people move through hard moments with clarity. Full case studies live in the <Link to="/engineering" className="log-inline-link">engineering log</Link>.
             </p>
             <p>
-              The influences don't shift with the medium. Dostoevsky, Camus, Musashi. Individualism, transformation, the human condition. Cloud infrastructure or a multimedia painting, the craft is the same: merge technology with fine art, put the result out to be encountered on its own terms.
+              The influences don't shift with the medium. Individualism, transformation, the human condition. Cloud infrastructure or a multimedia painting, the craft is the same: merge technology with fine art, put the result out to be encountered on its own terms.
             </p>
           </section>
         </Reveal>
@@ -153,7 +153,7 @@ const AboutPage = () => {
             On the engineering side, I'm looking for what's next. Roles where I can go deeper on platform security, resilience, and the tooling that keeps critical systems standing. Teams that treat reliability and incident response as craft rather than checkbox work. Problems where the stakes are real and the solutions ship.
           </p>
           <p>
-            On the creative side, the work keeps compounding. <i>Heart in Chrome</i> is mid-production; new tattoo work, paintings, and browser games ship in between infrastructure shifts. Collaborators, curators, and clients: the door is open.
+            On the creative side, the work keeps compounding. <i>Heart in Chrome</i> is mid-production; new tattoo work, paintings, and browser games ship in between infrastructure shifts.
           </p>
           <div className="trajectory-projects upcoming-projects-column-2">
             <Reveal className="image-with-description" id="chrome-container">

@@ -306,7 +306,7 @@ const GalleryList = () => {
             <div className="gallery-load-more-row">
               <button
                 type="button"
-                className="gallery-load-more"
+                className="gallery-load-more home-about-button home-cta"
                 onClick={handleLoadMore}
                 aria-label={`Load ${Math.min(BATCH_SIZE, totalCount - shownCount)} more pieces`}
               >

@@ -319,7 +319,9 @@ return (
           </div>
         </div>
         <Link to="/gallery" className="home-featured-viewall">
-          view all {products?.length ? `${products.length} ` : ''}works &rarr;
+          <button className="home-about-button home-cta">
+            <span className="btn-prompt">LS</span>all {products?.length ? `${products.length} ` : ''}works &rarr;
+          </button>
         </Link>
       </Reveal>
     </div>
