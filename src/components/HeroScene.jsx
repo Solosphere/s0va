@@ -15,7 +15,12 @@ const MODEL_YAW = 0; // rotate so the front faces the camera at rest
 // Fraction of the SMALLER viewport dimension the model's diameter fills. Using
 // the smaller dimension + the bounding sphere keeps the model fully in-frame on
 // every viewport/aspect ratio and at every rotation angle. Lower = smaller.
-const MODEL_FILL = 0.72;
+// Portrait / narrow viewports get a bigger fill because the SMALLER dimension
+// (width on a phone) is the constraint — 0.72 of a phone's width made the
+// model read tiny even though vertical space was going unused. On landscape /
+// desktop the smaller dimension is height, and 0.72 already sits well.
+const MODEL_FILL_LANDSCAPE = 0.72;
+const MODEL_FILL_PORTRAIT = 0.95;
 
 const prefersReducedMotion =
   typeof window !== 'undefined' &&
@@ -37,9 +42,13 @@ function Model() {
   }, [scene]);
 
   // Scale responsively to the current viewport (re-runs on resize), fitting the
-  // model's diameter into the smaller of the visible width/height.
+  // model's diameter into the smaller of the visible width/height. Portrait
+  // (phone) viewports use a larger fill fraction so the model doesn't read
+  // small against wasted vertical space.
   const limiting = Math.min(viewport.width, viewport.height);
-  const scale = (limiting * MODEL_FILL) / (2 * radius);
+  const isPortrait = viewport.height > viewport.width;
+  const fill = isPortrait ? MODEL_FILL_PORTRAIT : MODEL_FILL_LANDSCAPE;
+  const scale = (limiting * fill) / (2 * radius);
 
   return (
     <group rotation={[0, MODEL_YAW, 0]} scale={scale}>

@@ -732,6 +732,7 @@ nav #logo span.special-char,
   position: absolute;
   top: 0.4rem;
   left: 0.9rem;
+  right: 0.9rem;
   font-family: var(--font-family-mono, "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace);
   font-size: 0.55rem;
   font-weight: 400;
@@ -739,6 +740,9 @@ nav #logo span.special-char,
   color: rgba(255, 255, 255, 0.42);
   text-shadow: none;
   pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
 }
 
 /* Bottom-right live status strip — status dot + relative timestamp so the
@@ -867,14 +871,15 @@ nav #logo span.special-char,
     box-sizing: border-box;
   }
   .whoami-block::before {
-    font-size: 0.5rem;
-    letter-spacing: 0.22em;
+    font-size: 0.45rem;
+    letter-spacing: 0.14em;
     top: 0.35rem;
     left: 0.7rem;
+    right: 0.7rem;
   }
   .whoami-block::after {
-    font-size: 0.5rem;
-    letter-spacing: 0.2em;
+    font-size: 0.45rem;
+    letter-spacing: 0.14em;
     bottom: 0.35rem;
     right: 0.7rem;
   }
