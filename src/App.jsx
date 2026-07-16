@@ -9,6 +9,7 @@ import BlackSite from './pages/BlackSite';
 import ProgramsAccess from './pages/ProgramsAccess';
 import EngineeringLog from './pages/EngineeringLog';
 import EngineeringLogDetail from './pages/EngineeringLogDetail';
+import WoundHUD from './pages/WoundHUD';
 import SiteHeadingAndNav from './components/SiteHeadingAndNav';
 import Footer from './components/Footer';
 import NotFoundPage from './pages/NotFound';
@@ -162,6 +163,7 @@ export default function App() {
           <Route path="/terms" element={<TermsAndConditions />} />
           <Route path="/programs" element={<ProgramsAccess />} />
           <Route path="/programs/blacksite" element={<BlackSite />} />
+          <Route path="/wound" element={<WoundHUD />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

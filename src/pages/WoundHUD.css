@@ -1,0 +1,1785 @@
+/* ============================================================================
+   Wound HUD — Cyberpunk 2077 vocabulary tuned to mettaire.com's own visual
+   grammar: club-teal (#5ce1e6) as the electric primary, wound-arterial red as
+   the tension color, changeling-neo display + Space Mono for data. Aggressive
+   angled clip-paths, hard beveled bracket corners, holographic scan gradients,
+   ambient grid drift. Divine-machinery mood held by liturgical italic subtitles
+   over otherwise crisp technical UI.
+   ========================================================================== */
+:root {
+  --whud-void: #04070a;
+  --whud-void-2: #080d12;
+  --whud-panel: rgba(8, 14, 20, 0.72);
+  --whud-panel-2: rgba(14, 22, 30, 0.85);
+  --whud-line: rgba(92, 225, 230, 0.22);
+  --whud-line-hot: rgba(92, 225, 230, 0.6);
+  --whud-club: #5ce1e6;
+  --whud-club-rgb: 92, 225, 230;
+  --whud-bone: #dfe8ec;
+  --whud-ash: #7d8891;
+  --whud-oxide: #4a5560;
+  --whud-arterial: #ff2f4b;
+  --whud-arterial-rgb: 255, 47, 75;
+  --whud-arterial-hot: #ff4c6a;
+  --whud-cathedral: #f0c064;
+}
+
+.wound-hud {
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(92, 225, 230, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse at 90% 90%, rgba(255, 47, 75, 0.06) 0%, transparent 55%),
+    linear-gradient(180deg, #04070a 0%, #06090d 100%);
+  color: var(--whud-bone);
+  font-family: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  overflow: hidden;
+  isolation: isolate;
+  padding: clamp(18px, 3vw, 44px);
+  /* Clear the fixed site nav so the top strip / observer line isn't hidden. */
+  margin-top: 100px;
+}
+.wound-frame { top: calc(100px + clamp(10px, 1.5vw, 20px)); }
+
+/* Ambient grid — the whole render layer floats above a slowly drifting cyan
+   graticule. Very low opacity so it reads as air, not as UI. */
+.wound-hud::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  background-image:
+    linear-gradient(to right, rgba(92, 225, 230, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(92, 225, 230, 0.045) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: whud-grid-drift 30s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
+}
+@keyframes whud-grid-drift {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(48px, 48px); }
+}
+
+/* Scanline sweep — a slow single band moves from top to bottom, the way the
+   perception window recalibrates. Above the grid, below everything else. */
+.wound-hud::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 140px;
+  top: 0;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    rgba(92, 225, 230, 0.06) 45%,
+    rgba(92, 225, 230, 0.12) 50%,
+    rgba(92, 225, 230, 0.06) 55%,
+    transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+  animation: whud-scan 6s linear infinite;
+  mix-blend-mode: screen;
+}
+@keyframes whud-scan {
+  from { transform: translateY(-140px); }
+  to   { transform: translateY(120vh); }
+}
+
+/* Fine-grain SVG noise laid on top for the analog-decay feel — cheap and
+   organic. */
+.wound-hud .whud-grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.88 0 0 0 0 0.9 0 0 0 0.28 0'/></filter><rect width='100%25' height='100%25' filter='url(%23g)'/></svg>");
+  opacity: 0.14;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 100;
+  animation: whud-grain-shift 0.7s steps(2) infinite;
+}
+@keyframes whud-grain-shift {
+  0%   { transform: translate(0, 0); }
+  50%  { transform: translate(-2px, 2px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Perception window bracket at each viewport corner — bold angular, filled
+   corner cutout. */
+.wound-frame {
+  position: fixed;
+  inset: clamp(10px, 1.5vw, 20px);
+  pointer-events: none;
+  z-index: 90;
+}
+.wound-frame-corner {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--whud-club);
+  box-shadow: 0 0 12px rgba(var(--whud-club-rgb), 0.6);
+}
+.wound-frame-corner--tl { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+.wound-frame-corner--tr { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+.wound-frame-corner--bl { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+.wound-frame-corner--br { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+
+/* --- Top strip: sitrep + Levy gauge ------------------------------------- */
+.wound-top {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 14px 20px;
+  margin-bottom: clamp(16px, 2vw, 28px);
+  border: 1px solid var(--whud-line);
+  background: var(--whud-panel);
+  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
+}
+.wound-idline { display: flex; flex-direction: column; gap: 4px; }
+.wound-idline-l1 {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: clamp(15px, 1.6vw, 20px);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--whud-club);
+  text-shadow: 0 0 8px rgba(var(--whud-club-rgb), 0.55);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.wound-idline-l1 .whud-glyph-mark {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: var(--whud-club);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  box-shadow: 0 0 10px var(--whud-club);
+  animation: whud-mark-pulse 1.6s ease-in-out infinite;
+}
+@keyframes whud-mark-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+.wound-idline-l1-italic {
+  font-family: "changeling-neo", serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 0.6em;
+  letter-spacing: 0.2em;
+  color: var(--whud-ash);
+  text-shadow: none;
+  text-transform: none;
+}
+.wound-idline-l2 {
+  font-size: 11px;
+  color: var(--whud-ash);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.wound-idline-l2 .whud-kv { display: inline-flex; gap: 6px; }
+.wound-idline-l2 .whud-kv-key { color: var(--whud-oxide); }
+.wound-idline-l2 .whud-kv-val { color: var(--whud-bone); }
+.wound-idline-l2 .whud-kv-val--warn { color: var(--whud-arterial); text-shadow: 0 0 6px rgba(var(--whud-arterial-rgb), 0.5); }
+
+.wound-levy {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  font-size: 10px;
+  min-width: 260px;
+}
+.wound-levy-label {
+  display: flex;
+  justify-content: space-between;
+  letter-spacing: 0.22em;
+  color: var(--whud-ash);
+  text-transform: uppercase;
+}
+.wound-levy-label span { color: var(--whud-arterial); text-shadow: 0 0 6px rgba(var(--whud-arterial-rgb), 0.5); }
+.wound-levy-bar {
+  position: relative;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--whud-line);
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 100%, 6px 100%);
+  overflow: hidden;
+}
+.wound-levy-bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(90deg,
+    rgba(92, 225, 230, 0.14) 0 1px,
+    transparent 1px 8px);
+  pointer-events: none;
+}
+.wound-levy-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(90deg,
+    rgba(var(--whud-arterial-rgb), 0.7) 0%,
+    var(--whud-arterial-hot) 60%,
+    #ffb5c1 100%);
+  box-shadow: 0 0 10px rgba(var(--whud-arterial-rgb), 0.7);
+  transition: width 0.9s ease;
+}
+.wound-levy-fill::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #fff;
+  box-shadow: 0 0 8px #fff, 0 0 14px var(--whud-arterial-hot);
+}
+.wound-levy-nums {
+  display: flex;
+  justify-content: space-between;
+  font-family: "Space Mono", monospace;
+  color: var(--whud-bone);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+.wound-levy-nums b { color: var(--whud-arterial); font-weight: 400; font-size: 13px; text-shadow: 0 0 6px rgba(var(--whud-arterial-rgb), 0.55); }
+
+/* --- Variant switcher (angled tabs, cyan halo on selected) -------------- */
+.wound-variants {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  gap: 6px;
+  margin-bottom: clamp(18px, 2vw, 28px);
+}
+.wound-variant {
+  flex: 1;
+  padding: 14px 18px 14px 30px;
+  background: var(--whud-panel);
+  border: 1px solid var(--whud-line);
+  color: var(--whud-ash);
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 600;
+  font-size: clamp(13px, 1.4vw, 16px);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  cursor: pointer;
+  clip-path: polygon(18px 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
+  transition: color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  text-align: left;
+}
+.wound-variant:hover { color: var(--whud-bone); background: var(--whud-panel-2); }
+.wound-variant[aria-selected="true"] {
+  color: var(--whud-void);
+  background: var(--whud-club);
+  border-color: var(--whud-club);
+  box-shadow: 0 0 20px rgba(var(--whud-club-rgb), 0.55), 0 0 40px rgba(var(--whud-club-rgb), 0.25);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+}
+.wound-variant-num {
+  font-family: "Space Mono", monospace;
+  font-size: 0.7em;
+  opacity: 0.6;
+  margin-right: 12px;
+  letter-spacing: 0.14em;
+}
+.wound-variant[aria-selected="true"] .wound-variant-num { opacity: 1; }
+
+/* --- Main HUD grid: anchors | canvas | telemetry ------------------------- */
+.wound-body {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 240px 1fr 260px;
+  gap: clamp(18px, 2vw, 28px);
+  align-items: stretch;
+}
+
+/* --- Anchor rail --------------------------------------------------------- */
+.wound-anchors {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--whud-panel);
+  border: 1px solid var(--whud-line);
+  padding: 14px;
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+}
+.wound-anchors-head {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--whud-club);
+  border-bottom: 1px solid var(--whud-line);
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-shadow: 0 0 6px rgba(var(--whud-club-rgb), 0.45);
+}
+.wound-anchors-head-count { color: var(--whud-ash); font-family: "Space Mono", monospace; font-weight: 400; font-size: 10px; }
+
+.wound-anchor {
+  display: grid;
+  grid-template-columns: 26px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: all 0.25s ease;
+  position: relative;
+}
+.wound-anchor svg { width: 22px; height: 22px; }
+.wound-anchor svg .glyph { fill: none; stroke: var(--whud-oxide); stroke-width: 1.2; }
+.wound-anchor-name {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--whud-oxide);
+}
+.wound-anchor-mode { font-size: 9.5px; color: var(--whud-oxide); letter-spacing: 0.14em; text-transform: uppercase; }
+.wound-anchor--lit {
+  background: linear-gradient(90deg, rgba(var(--whud-club-rgb), 0.14) 0%, rgba(var(--whud-club-rgb), 0) 100%);
+  border-color: var(--whud-line-hot);
+  box-shadow: inset 0 0 20px rgba(var(--whud-club-rgb), 0.08);
+}
+.wound-anchor--lit svg .glyph { stroke: var(--whud-club); filter: drop-shadow(0 0 3px rgba(var(--whud-club-rgb), 0.7)); }
+.wound-anchor--lit .wound-anchor-name { color: var(--whud-bone); }
+.wound-anchor--lit .wound-anchor-mode { color: var(--whud-club); text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.45); }
+.wound-anchor--lit::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--whud-club);
+  box-shadow: 0 0 8px var(--whud-club);
+}
+
+/* --- Canvas: variant-specific center panel ------------------------------ */
+.wound-canvas {
+  position: relative;
+  min-height: 520px;
+  border: 1px solid var(--whud-line);
+  background:
+    linear-gradient(135deg, rgba(var(--whud-club-rgb), 0.04) 0%, transparent 40%),
+    var(--whud-panel);
+  overflow: hidden;
+  padding: clamp(20px, 2.5vw, 32px);
+  clip-path: polygon(24px 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%, 0 24px);
+}
+.wound-canvas::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--whud-club) 20%, var(--whud-club) 80%, transparent 100%);
+  box-shadow: 0 0 8px var(--whud-club);
+}
+.wound-canvas::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--whud-arterial) 20%, var(--whud-arterial) 80%, transparent 100%);
+  box-shadow: 0 0 8px rgba(var(--whud-arterial-rgb), 0.6);
+}
+.wound-canvas-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: clamp(18px, 2vw, 28px);
+  gap: 20px;
+}
+.wound-canvas-title {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: clamp(22px, 3vw, 34px);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--whud-bone);
+  line-height: 1;
+  text-shadow:
+    -1.2px 0 rgba(var(--whud-arterial-rgb), 0.55),
+    1.2px 0 rgba(var(--whud-club-rgb), 0.55),
+    0 0 22px rgba(var(--whud-club-rgb), 0.35);
+  animation: whud-chroma 4s ease-in-out infinite;
+}
+@keyframes whud-chroma {
+  0%, 100% { text-shadow: -1.2px 0 rgba(var(--whud-arterial-rgb), 0.55), 1.2px 0 rgba(var(--whud-club-rgb), 0.55), 0 0 22px rgba(var(--whud-club-rgb), 0.35); }
+  50%      { text-shadow: -0.5px 0 rgba(var(--whud-arterial-rgb), 0.7),  0.5px 0 rgba(var(--whud-club-rgb), 0.7),  0 0 30px rgba(var(--whud-club-rgb), 0.55); }
+}
+.wound-canvas-subtitle {
+  font-family: "changeling-neo", serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 12px;
+  color: var(--whud-ash);
+  letter-spacing: 0.24em;
+  margin-top: 8px;
+  text-transform: lowercase;
+}
+.wound-canvas-status {
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  color: var(--whud-club);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border: 1px solid var(--whud-club);
+  background: rgba(var(--whud-club-rgb), 0.08);
+  text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.5);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.wound-canvas-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--whud-club);
+  box-shadow: 0 0 6px var(--whud-club);
+  animation: whud-mark-pulse 1s ease-in-out infinite;
+}
+.wound-canvas-status--warn { color: var(--whud-arterial); border-color: var(--whud-arterial); background: rgba(var(--whud-arterial-rgb), 0.08); text-shadow: 0 0 5px rgba(var(--whud-arterial-rgb), 0.5); }
+.wound-canvas-status--warn::before { background: var(--whud-arterial); box-shadow: 0 0 6px var(--whud-arterial); }
+
+/* ---- CALLS variant ------------------------------------------------------ */
+.wound-calls-body {
+  display: grid;
+  grid-template-columns: minmax(0, 320px) 1fr;
+  gap: 28px;
+  align-items: center;
+}
+.wound-face {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.15;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--whud-line);
+  padding: 12px;
+}
+.wound-face-scan {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  height: 30px;
+  top: 12px;
+  background: linear-gradient(180deg, transparent 0%, rgba(var(--whud-club-rgb), 0.35) 50%, transparent 100%);
+  animation: whud-face-scan 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 3;
+}
+@keyframes whud-face-scan {
+  0%   { top: 12px; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: calc(100% - 42px); opacity: 0; }
+}
+.wound-face svg { width: 100%; height: 100%; display: block; }
+.wound-face svg .face-line { fill: none; stroke: var(--whud-club); stroke-width: 0.7; stroke-linecap: round; opacity: 0.9; filter: drop-shadow(0 0 2px rgba(var(--whud-club-rgb), 0.65)); }
+.wound-face-ghost-r,
+.wound-face-ghost-c {
+  position: absolute;
+  inset: 12px;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.wound-face-ghost-r svg .face-line { stroke: var(--whud-arterial); stroke-width: 0.5; opacity: 0.75; filter: drop-shadow(0 0 3px rgba(var(--whud-arterial-rgb), 0.7)); }
+.wound-face-ghost-c svg .face-line { stroke: #fff; stroke-width: 0.4; opacity: 0.6; }
+.wound-face-ghost-r { animation: whud-jitter-r 2.6s ease-in-out infinite; }
+.wound-face-ghost-c { animation: whud-jitter-c 2.6s ease-in-out infinite; }
+@keyframes whud-jitter-r {
+  0%, 100% { transform: translate(0, 0); }
+  25%      { transform: translate(-2px, 1px); }
+  55%      { transform: translate(-3px, -1px); }
+  80%      { transform: translate(-1px, 1.5px); }
+}
+@keyframes whud-jitter-c {
+  0%, 100% { transform: translate(0, 0); }
+  25%      { transform: translate(2px, -1px); }
+  55%      { transform: translate(3px, 1px); }
+  80%      { transform: translate(1px, -1.5px); }
+}
+.wound-face-corner {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--whud-club);
+  box-shadow: 0 0 6px rgba(var(--whud-club-rgb), 0.5);
+}
+.wound-face-corner--tl { top: 4px; left: 4px; border-right: 0; border-bottom: 0; }
+.wound-face-corner--tr { top: 4px; right: 4px; border-left: 0; border-bottom: 0; }
+.wound-face-corner--bl { bottom: 4px; left: 4px; border-right: 0; border-top: 0; }
+.wound-face-corner--br { bottom: 4px; right: 4px; border-left: 0; border-top: 0; }
+.wound-face-label {
+  position: absolute;
+  bottom: 4px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  color: var(--whud-club);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 4px 6px;
+  z-index: 4;
+}
+.wound-face-label span:last-child { color: var(--whud-arterial); }
+
+/* Caller details column beside the face frame */
+.wound-calls-details {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.wound-calls-name {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: clamp(20px, 2.4vw, 28px);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--whud-bone);
+  line-height: 1.1;
+}
+.wound-calls-name-sub {
+  font-family: "changeling-neo", serif;
+  font-style: italic;
+  color: var(--whud-club);
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-shadow: 0 0 6px rgba(var(--whud-club-rgb), 0.4);
+  margin-top: 4px;
+}
+.wound-calls-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.wound-calls-tag {
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  padding: 4px 10px;
+  border: 1px solid var(--whud-line);
+  background: rgba(var(--whud-club-rgb), 0.06);
+  color: var(--whud-ash);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.wound-calls-tag--hot { color: var(--whud-arterial); border-color: rgba(var(--whud-arterial-rgb), 0.4); background: rgba(var(--whud-arterial-rgb), 0.08); }
+.wound-calls-rows { display: flex; flex-direction: column; gap: 4px; border-top: 1px solid var(--whud-line); padding-top: 10px; }
+.wound-calls-row { display: flex; justify-content: space-between; font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: 0.14em; color: var(--whud-ash); text-transform: uppercase; }
+.wound-calls-row b { color: var(--whud-bone); font-weight: 400; }
+.wound-calls-row.is-hot b { color: var(--whud-arterial); text-shadow: 0 0 5px rgba(var(--whud-arterial-rgb), 0.5); }
+.wound-calls-actions { display: flex; gap: 8px; margin-top: 8px; }
+.wound-calls-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--whud-club);
+  background: rgba(var(--whud-club-rgb), 0.08);
+  color: var(--whud-club);
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  cursor: pointer;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.4);
+  transition: all 0.2s ease;
+}
+.wound-calls-btn:hover { background: var(--whud-club); color: var(--whud-void); text-shadow: none; }
+.wound-calls-btn--danger { border-color: var(--whud-arterial); color: var(--whud-arterial); background: rgba(var(--whud-arterial-rgb), 0.08); text-shadow: 0 0 5px rgba(var(--whud-arterial-rgb), 0.4); }
+.wound-calls-btn--danger:hover { background: var(--whud-arterial); color: #fff; text-shadow: none; }
+
+/* ---- TRANSACTIONS variant ---------------------------------------------- */
+.wound-tx-veins {
+  position: relative;
+  height: 220px;
+  margin: 8px 0 22px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--whud-line);
+  padding: 12px;
+}
+.wound-tx-veins svg { width: 100%; height: 100%; display: block; }
+.wound-tx-veins .vein {
+  fill: none;
+  stroke: var(--whud-arterial);
+  stroke-width: 1.4;
+  stroke-dasharray: 4 8;
+  filter: drop-shadow(0 0 5px rgba(var(--whud-arterial-rgb), 0.85));
+  animation: whud-vein-flow 2.4s linear infinite;
+}
+.wound-tx-veins .vein--dim { stroke: rgba(var(--whud-arterial-rgb), 0.4); stroke-dasharray: 2 10; filter: none; }
+.wound-tx-veins .node {
+  fill: var(--whud-arterial);
+  filter: drop-shadow(0 0 6px var(--whud-arterial));
+  animation: whud-node-pulse 1.6s ease-in-out infinite;
+}
+@keyframes whud-vein-flow {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -48; }
+}
+@keyframes whud-node-pulse {
+  0%, 100% { r: 3; }
+  50%      { r: 4.5; }
+}
+.wound-tx-nodelabels {
+  position: absolute;
+  inset: 12px;
+  pointer-events: none;
+}
+.wound-tx-nodelabel {
+  position: absolute;
+  font-family: "Space Mono", monospace;
+  font-size: 9.5px;
+  color: var(--whud-bone);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  background: rgba(0, 0, 0, 0.85);
+  border-left: 2px solid var(--whud-arterial);
+  box-shadow: 0 0 8px rgba(var(--whud-arterial-rgb), 0.35);
+}
+.wound-tx-nodelabel b { color: var(--whud-arterial); font-weight: 400; }
+
+.wound-tx-receipt {
+  display: grid;
+  grid-template-columns: 74px 1fr auto;
+  gap: 18px;
+  align-items: stretch;
+  border: 1px solid var(--whud-line);
+  background: var(--whud-panel-2);
+  padding: 14px 18px;
+  position: relative;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+.wound-tx-receipt::before {
+  content: 'CHAIN-OF-CUSTODY';
+  position: absolute;
+  top: -8px;
+  left: 20px;
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  color: var(--whud-club);
+  background: var(--whud-void-2);
+  padding: 0 8px;
+  letter-spacing: 0.22em;
+  text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.45);
+}
+.wound-tx-seal {
+  width: 74px;
+  height: 74px;
+  border: 2px solid var(--whud-club);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  color: var(--whud-club);
+  background: rgba(var(--whud-club-rgb), 0.08);
+  text-shadow: 0 0 8px rgba(var(--whud-club-rgb), 0.7);
+  box-shadow: 0 0 20px rgba(var(--whud-club-rgb), 0.35);
+}
+.wound-tx-receipt-meta { display: flex; flex-direction: column; gap: 4px; justify-content: center; }
+.wound-tx-receipt-meta b {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--whud-bone);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.wound-tx-receipt-meta span { color: var(--whud-ash); font-family: "Space Mono", monospace; font-size: 10.5px; letter-spacing: 0.14em; }
+.wound-tx-receipt-meta span code { color: var(--whud-club); }
+.wound-tx-receipt-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 4px;
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  color: var(--whud-ash);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.wound-tx-receipt-state b { color: var(--whud-club); font-weight: 400; text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.5); }
+
+.wound-tx-ledger {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.wound-tx-ledger-cell {
+  padding: 12px 14px;
+  border: 1px solid var(--whud-line);
+  background: rgba(0, 0, 0, 0.4);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+.wound-tx-ledger-cell .k {
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  color: var(--whud-ash);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+.wound-tx-ledger-cell .v {
+  display: block;
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--whud-bone);
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+.wound-tx-ledger-cell--hot .v { color: var(--whud-arterial); text-shadow: 0 0 8px rgba(var(--whud-arterial-rgb), 0.55); }
+.wound-tx-ledger-cell--cyan .v { color: var(--whud-club); text-shadow: 0 0 8px rgba(var(--whud-club-rgb), 0.55); }
+
+/* ---- OPERATING variant -------------------------------------------------- */
+.wound-op-scene {
+  position: relative;
+  height: 260px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid var(--whud-line);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.wound-op-scene::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(var(--whud-club-rgb), 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--whud-club-rgb), 0.15) 1px, transparent 1px);
+  background-size: 28px 28px;
+  animation: whud-op-drift 8s linear infinite;
+  mask-image: linear-gradient(180deg, transparent 0%, black 30%, black 100%);
+}
+@keyframes whud-op-drift {
+  from { background-position: 0 0; }
+  to   { background-position: 28px 28px; }
+}
+.wound-op-horizon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 55%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--whud-club) 15%, var(--whud-club) 85%, transparent 100%);
+  box-shadow: 0 0 8px var(--whud-club);
+}
+.wound-op-bloom {
+  position: absolute;
+  top: 40%;
+  right: 22%;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--whud-arterial-rgb), 0.5) 0%, rgba(var(--whud-arterial-rgb), 0.15) 40%, transparent 70%);
+  animation: whud-bloom-pulse 2.4s ease-in-out infinite;
+}
+@keyframes whud-bloom-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50%      { transform: scale(1.18); opacity: 1; }
+}
+.wound-op-target {
+  position: absolute;
+  top: 40%;
+  right: 22%;
+  transform: translate(50%, -50%);
+  width: 90px;
+  height: 90px;
+  pointer-events: none;
+}
+.wound-op-target-ring {
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid var(--whud-arterial);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(var(--whud-arterial-rgb), 0.6), inset 0 0 10px rgba(var(--whud-arterial-rgb), 0.3);
+  animation: whud-target-spin 6s linear infinite;
+}
+.wound-op-target-ring::before,
+.wound-op-target-ring::after {
+  content: '';
+  position: absolute;
+  background: var(--whud-arterial);
+  box-shadow: 0 0 4px var(--whud-arterial);
+}
+.wound-op-target-ring::before { left: -6px; right: -6px; top: 50%; height: 1px; }
+.wound-op-target-ring::after  { top: -6px; bottom: -6px; left: 50%; width: 1px; }
+@keyframes whud-target-spin { to { transform: rotate(360deg); } }
+.wound-op-target-tag {
+  position: absolute;
+  top: -22px;
+  left: calc(100% + 6px);
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  color: var(--whud-arterial);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 0 5px rgba(var(--whud-arterial-rgb), 0.5);
+}
+.wound-op-target-tag::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--whud-arterial);
+  vertical-align: middle;
+  margin-right: 6px;
+  box-shadow: 0 0 4px var(--whud-arterial);
+}
+.wound-op-hud-corners {
+  position: absolute;
+  inset: 10px;
+  pointer-events: none;
+}
+.wound-op-hud-corners span {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--whud-club);
+  box-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.5);
+}
+.wound-op-hud-corners span:nth-child(1) { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+.wound-op-hud-corners span:nth-child(2) { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+.wound-op-hud-corners span:nth-child(3) { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+.wound-op-hud-corners span:nth-child(4) { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+.wound-op-hud-coord {
+  position: absolute;
+  bottom: 8px;
+  left: 14px;
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  color: var(--whud-club);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.5);
+}
+.wound-op-hud-coord b { color: var(--whud-bone); font-weight: 400; }
+.wound-op-hud-strata {
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  color: var(--whud-ash);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.wound-op-hud-strata b { color: var(--whud-club); font-weight: 400; text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.5); }
+
+.wound-op-flags {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.wound-op-flag {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px 10px 18px;
+  border: 1px solid rgba(var(--whud-arterial-rgb), 0.5);
+  background: linear-gradient(90deg, rgba(var(--whud-arterial-rgb), 0.18) 0%, rgba(var(--whud-arterial-rgb), 0.03) 100%);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  position: relative;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+}
+.wound-op-flag::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--whud-arterial);
+  box-shadow: 0 0 8px var(--whud-arterial);
+}
+.wound-op-flag--warn { border-color: rgba(var(--whud-club-rgb), 0.45); background: linear-gradient(90deg, rgba(var(--whud-club-rgb), 0.15) 0%, rgba(var(--whud-club-rgb), 0.03) 100%); }
+.wound-op-flag--warn::before { background: var(--whud-club); box-shadow: 0 0 8px var(--whud-club); }
+.wound-op-flag--info { border-color: rgba(125, 136, 145, 0.5); background: linear-gradient(90deg, rgba(125, 136, 145, 0.12) 0%, transparent 100%); }
+.wound-op-flag--info::before { background: var(--whud-ash); box-shadow: none; }
+.wound-op-flag-tag {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--whud-arterial);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-shadow: 0 0 5px rgba(var(--whud-arterial-rgb), 0.5);
+  min-width: 80px;
+}
+.wound-op-flag--warn .wound-op-flag-tag { color: var(--whud-club); text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.5); }
+.wound-op-flag--info .wound-op-flag-tag { color: var(--whud-ash); text-shadow: none; }
+.wound-op-flag-msg { color: var(--whud-bone); text-transform: uppercase; }
+.wound-op-flag-ts { color: var(--whud-oxide); font-family: "Space Mono", monospace; font-size: 10px; }
+.wound-op-flag-id { color: var(--whud-club); font-family: "Space Mono", monospace; font-size: 10px; letter-spacing: 0.1em; }
+
+/* ---- QUICKHACK panel (Operating) --------------------------------------
+   A CP2077-style quickhack menu tuned for the Wound: entries deny or grant
+   access to weapons and cyberware that route through the render layer.
+   Split view: entity block (target readout) on the left, hack list on the
+   right. Each entry has a RAM cost, uplink duration, and effect tag. */
+.wound-qh {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 18px;
+  border: 1px solid var(--whud-line);
+  background: var(--whud-panel-2);
+  padding: 16px;
+  position: relative;
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+}
+.wound-qh::before {
+  content: 'QUICKHACK · WOUND-BONDED';
+  position: absolute;
+  top: -8px;
+  left: 20px;
+  padding: 0 8px;
+  background: var(--whud-void-2);
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: var(--whud-club);
+  text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.45);
+}
+.wound-qh-entity {
+  border: 1px solid var(--whud-line);
+  background: rgba(0, 0, 0, 0.45);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.wound-qh-entity-head {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  color: var(--whud-arterial);
+  text-transform: uppercase;
+  text-shadow: 0 0 5px rgba(var(--whud-arterial-rgb), 0.5);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.wound-qh-entity-head::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--whud-arterial);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  box-shadow: 0 0 6px var(--whud-arterial);
+}
+.wound-qh-entity-id {
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  color: var(--whud-ash);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.wound-qh-entity-name {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--whud-bone);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.15;
+}
+.wound-qh-entity-sub {
+  font-family: "changeling-neo", serif;
+  font-style: italic;
+  color: var(--whud-club);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-shadow: 0 0 4px rgba(var(--whud-club-rgb), 0.35);
+}
+.wound-qh-entity-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--whud-line);
+}
+.wound-qh-entity-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: "Space Mono", monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--whud-ash);
+  text-transform: uppercase;
+}
+.wound-qh-entity-row b { color: var(--whud-bone); font-weight: 400; }
+.wound-qh-entity-row.is-hot b { color: var(--whud-arterial); text-shadow: 0 0 5px rgba(var(--whud-arterial-rgb), 0.5); }
+.wound-qh-entity-row.is-cyan b { color: var(--whud-club); text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.4); }
+.wound-qh-ram {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--whud-line);
+}
+.wound-qh-ram-head {
+  display: flex;
+  justify-content: space-between;
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  color: var(--whud-ash);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.wound-qh-ram-head b { color: var(--whud-club); font-weight: 400; }
+.wound-qh-ram-cells {
+  display: flex;
+  gap: 2px;
+}
+.wound-qh-ram-cell {
+  flex: 1;
+  height: 12px;
+  border: 1px solid var(--whud-line);
+  background: rgba(0, 0, 0, 0.35);
+}
+.wound-qh-ram-cell.is-on {
+  background: linear-gradient(180deg, var(--whud-club) 0%, rgba(var(--whud-club-rgb), 0.4) 100%);
+  border-color: var(--whud-club);
+  box-shadow: 0 0 4px rgba(var(--whud-club-rgb), 0.55);
+}
+.wound-qh-ram-cell.is-queued {
+  background: linear-gradient(180deg, rgba(var(--whud-club-rgb), 0.4) 0%, rgba(var(--whud-club-rgb), 0.1) 100%);
+  border-color: var(--whud-line-hot);
+}
+
+.wound-qh-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.wound-qh-list-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px 8px;
+  border-bottom: 1px solid var(--whud-line);
+  margin-bottom: 6px;
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  color: var(--whud-ash);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.wound-qh-list-head b { color: var(--whud-club); font-weight: 400; text-shadow: 0 0 4px rgba(var(--whud-club-rgb), 0.4); }
+.wound-qh-item {
+  display: grid;
+  grid-template-columns: 26px 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: none;
+  border: 1px solid var(--whud-line);
+  color: var(--whud-bone);
+  font-family: "Space Mono", monospace;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  position: relative;
+  clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+}
+.wound-qh-item:hover {
+  background: rgba(var(--whud-club-rgb), 0.08);
+  border-color: var(--whud-club);
+  transform: translateX(2px);
+}
+.wound-qh-item[data-locked="true"] {
+  color: var(--whud-oxide);
+  cursor: not-allowed;
+}
+.wound-qh-item[data-locked="true"]:hover {
+  background: rgba(0, 0, 0, 0.35);
+  border-color: rgba(var(--whud-arterial-rgb), 0.4);
+  transform: none;
+}
+.wound-qh-item[data-active="true"] {
+  border-color: var(--whud-arterial);
+  background: rgba(var(--whud-arterial-rgb), 0.1);
+  box-shadow: 0 0 12px rgba(var(--whud-arterial-rgb), 0.35);
+}
+.wound-qh-item[data-active="true"] .wound-qh-item-name { color: var(--whud-arterial); text-shadow: 0 0 5px rgba(var(--whud-arterial-rgb), 0.5); }
+
+.wound-qh-item-glyph {
+  width: 22px;
+  height: 22px;
+  color: var(--whud-club);
+  filter: drop-shadow(0 0 3px rgba(var(--whud-club-rgb), 0.55));
+}
+.wound-qh-item[data-locked="true"] .wound-qh-item-glyph { color: var(--whud-oxide); filter: none; }
+.wound-qh-item[data-active="true"] .wound-qh-item-glyph { color: var(--whud-arterial); filter: drop-shadow(0 0 3px rgba(var(--whud-arterial-rgb), 0.6)); }
+.wound-qh-item-glyph svg { width: 100%; height: 100%; }
+.wound-qh-item-glyph svg path,
+.wound-qh-item-glyph svg circle,
+.wound-qh-item-glyph svg line { stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.wound-qh-item-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.wound-qh-item-name {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--whud-bone);
+}
+.wound-qh-item-desc {
+  font-family: "changeling-neo", serif;
+  font-style: italic;
+  font-size: 11px;
+  color: var(--whud-ash);
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+}
+.wound-qh-item[data-locked="true"] .wound-qh-item-name { color: var(--whud-oxide); }
+.wound-qh-item[data-locked="true"] .wound-qh-item-desc { color: var(--whud-oxide); }
+.wound-qh-item-cost {
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  color: var(--whud-club);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border: 1px solid var(--whud-line);
+  background: rgba(var(--whud-club-rgb), 0.08);
+  min-width: 38px;
+  text-align: center;
+  text-shadow: 0 0 4px rgba(var(--whud-club-rgb), 0.4);
+}
+.wound-qh-item[data-locked="true"] .wound-qh-item-cost { color: var(--whud-oxide); border-color: rgba(var(--whud-arterial-rgb), 0.35); background: rgba(var(--whud-arterial-rgb), 0.05); text-shadow: none; }
+.wound-qh-item-state {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--whud-ash);
+  min-width: 76px;
+  text-align: right;
+}
+.wound-qh-item[data-state="uploading"] .wound-qh-item-state { color: var(--whud-arterial); text-shadow: 0 0 4px rgba(var(--whud-arterial-rgb), 0.5); }
+.wound-qh-item[data-state="ready"] .wound-qh-item-state { color: var(--whud-club); text-shadow: 0 0 4px rgba(var(--whud-club-rgb), 0.5); }
+.wound-qh-item[data-state="locked"] .wound-qh-item-state { color: var(--whud-arterial); }
+.wound-qh-item[data-state="applied"] .wound-qh-item-state { color: var(--whud-cathedral); }
+
+/* Uplink progress bar under an active hack */
+.wound-qh-item-progress {
+  grid-column: 1 / -1;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  margin-top: 6px;
+  position: relative;
+  overflow: hidden;
+}
+.wound-qh-item-progress::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: linear-gradient(90deg, var(--whud-arterial), var(--whud-arterial-hot));
+  box-shadow: 0 0 6px var(--whud-arterial);
+  animation: whud-uplink 2.4s linear forwards;
+}
+@keyframes whud-uplink {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+/* ---- WOUND PURCHASE panel (Transactions) ------------------------------
+   Everyday buys made through the Wound: coffee, transit, rent-a-body.
+   Renders as a POS-terminal card wired through the veins. */
+.wound-buy {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  border: 1px solid var(--whud-line);
+  background: var(--whud-panel-2);
+  padding: 16px;
+  position: relative;
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+}
+.wound-buy::before {
+  content: 'WOUND · POINT-OF-SALE';
+  position: absolute;
+  top: -8px;
+  left: 20px;
+  padding: 0 8px;
+  background: var(--whud-void-2);
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: var(--whud-club);
+  text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.45);
+}
+.wound-buy-recent {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.wound-buy-head {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  color: var(--whud-club);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--whud-line);
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+  text-shadow: 0 0 4px rgba(var(--whud-club-rgb), 0.4);
+  display: flex;
+  justify-content: space-between;
+}
+.wound-buy-head b { color: var(--whud-ash); font-family: "Space Mono", monospace; font-weight: 400; font-size: 10px; text-shadow: none; }
+.wound-buy-row {
+  display: grid;
+  grid-template-columns: 28px 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-left: 2px solid var(--whud-line);
+  background: linear-gradient(90deg, rgba(var(--whud-club-rgb), 0.06) 0%, transparent 100%);
+  font-family: "Space Mono", monospace;
+  font-size: 10.5px;
+}
+.wound-buy-row.is-declined { border-left-color: var(--whud-arterial); background: linear-gradient(90deg, rgba(var(--whud-arterial-rgb), 0.1) 0%, transparent 100%); }
+.wound-buy-row.is-pending { border-left-color: var(--whud-cathedral); background: linear-gradient(90deg, rgba(240, 192, 100, 0.08) 0%, transparent 100%); }
+.wound-buy-row-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--whud-club);
+  filter: drop-shadow(0 0 2px rgba(var(--whud-club-rgb), 0.5));
+}
+.wound-buy-row-icon svg { width: 100%; height: 100%; }
+.wound-buy-row-icon svg path,
+.wound-buy-row-icon svg circle,
+.wound-buy-row-icon svg line,
+.wound-buy-row-icon svg rect {
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.wound-buy-row.is-declined .wound-buy-row-icon { color: var(--whud-arterial); }
+.wound-buy-row.is-pending .wound-buy-row-icon { color: var(--whud-cathedral); filter: drop-shadow(0 0 2px rgba(240, 192, 100, 0.5)); }
+.wound-buy-row-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.wound-buy-row-name {
+  color: var(--whud-bone);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+.wound-buy-row-meta { color: var(--whud-ash); font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; }
+.wound-buy-row-amt {
+  color: var(--whud-bone);
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  min-width: 66px;
+  text-align: right;
+}
+.wound-buy-row.is-declined .wound-buy-row-amt { color: var(--whud-arterial); text-shadow: 0 0 5px rgba(var(--whud-arterial-rgb), 0.5); }
+.wound-buy-row-state {
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  padding: 3px 7px;
+  border: 1px solid var(--whud-line);
+  color: var(--whud-club);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  min-width: 62px;
+  text-align: center;
+}
+.wound-buy-row.is-declined .wound-buy-row-state { color: var(--whud-arterial); border-color: rgba(var(--whud-arterial-rgb), 0.5); }
+.wound-buy-row.is-pending .wound-buy-row-state { color: var(--whud-cathedral); border-color: rgba(240, 192, 100, 0.5); }
+
+.wound-buy-pending {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.wound-buy-pending-card {
+  border: 1px solid var(--whud-line-hot);
+  background: linear-gradient(180deg, rgba(var(--whud-club-rgb), 0.08) 0%, rgba(0, 0, 0, 0.4) 100%);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  position: relative;
+}
+.wound-buy-vendor {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+.wound-buy-vendor-name {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.2em;
+  color: var(--whud-bone);
+  text-transform: uppercase;
+  line-height: 1.15;
+}
+.wound-buy-vendor-sub {
+  font-family: "changeling-neo", serif;
+  font-style: italic;
+  font-size: 11px;
+  color: var(--whud-club);
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.4);
+  margin-top: 2px;
+}
+.wound-buy-vendor-tier {
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  color: var(--whud-ash);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border: 1px solid var(--whud-line);
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+.wound-buy-line {
+  display: flex;
+  justify-content: space-between;
+  font-family: "Space Mono", monospace;
+  font-size: 10.5px;
+  color: var(--whud-ash);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 3px 0;
+  border-top: 1px dashed var(--whud-line);
+}
+.wound-buy-line b { color: var(--whud-bone); font-weight: 400; }
+.wound-buy-line.is-total { border-top: 1px solid var(--whud-line-hot); padding-top: 8px; margin-top: 4px; }
+.wound-buy-line.is-total b { color: var(--whud-club); font-size: 15px; font-family: "changeling-neo", "Space Mono", sans-serif; font-weight: 700; text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.5); }
+.wound-buy-line.is-levy b { color: var(--whud-arterial); text-shadow: 0 0 5px rgba(var(--whud-arterial-rgb), 0.5); }
+
+.wound-buy-actions { display: flex; gap: 8px; margin-top: 4px; }
+.wound-buy-btn {
+  flex: 1;
+  padding: 9px 12px;
+  border: 1px solid var(--whud-club);
+  background: rgba(var(--whud-club-rgb), 0.1);
+  color: var(--whud-club);
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: pointer;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.4);
+  transition: all 0.15s ease;
+}
+.wound-buy-btn:hover { background: var(--whud-club); color: var(--whud-void); text-shadow: none; }
+.wound-buy-btn--danger { border-color: var(--whud-arterial); color: var(--whud-arterial); background: rgba(var(--whud-arterial-rgb), 0.08); text-shadow: 0 0 5px rgba(var(--whud-arterial-rgb), 0.4); }
+.wound-buy-btn--danger:hover { background: var(--whud-arterial); color: #fff; text-shadow: none; }
+
+/* --- Telemetry rail (right) --------------------------------------------- */
+.wound-telemetry {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.wound-tm-block {
+  border: 1px solid var(--whud-line);
+  padding: 14px;
+  background: var(--whud-panel);
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+.wound-tm-head {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--whud-club);
+  border-bottom: 1px solid var(--whud-line);
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.wound-tm-head-sub { color: var(--whud-ash); font-family: "Space Mono", monospace; font-weight: 400; font-size: 9px; text-shadow: none; }
+.wound-tm-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: "Space Mono", monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  padding: 4px 0;
+  color: var(--whud-ash);
+  text-transform: uppercase;
+}
+.wound-tm-row b { color: var(--whud-bone); font-weight: 400; }
+.wound-tm-row.wound-tm-row--red b { color: var(--whud-arterial); text-shadow: 0 0 5px rgba(var(--whud-arterial-rgb), 0.5); }
+.wound-tm-row.wound-tm-row--cyan b { color: var(--whud-club); text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.5); }
+
+.wound-tm-tiers {
+  display: flex;
+  gap: 3px;
+  margin-top: 8px;
+}
+.wound-tm-tier {
+  flex: 1;
+  height: 20px;
+  border: 1px solid var(--whud-line);
+  position: relative;
+  background: rgba(0, 0, 0, 0.4);
+  clip-path: polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%);
+}
+.wound-tm-tier.is-on {
+  background: linear-gradient(180deg, rgba(var(--whud-club-rgb), 0.9) 0%, rgba(var(--whud-club-rgb), 0.4) 100%);
+  border-color: var(--whud-club);
+  box-shadow: 0 0 6px rgba(var(--whud-club-rgb), 0.6);
+}
+.wound-tm-tier.is-hot {
+  background: linear-gradient(180deg, var(--whud-arterial) 0%, rgba(var(--whud-arterial-rgb), 0.4) 100%);
+  border-color: var(--whud-arterial);
+  box-shadow: 0 0 8px rgba(var(--whud-arterial-rgb), 0.7);
+}
+.wound-tm-tiers-legend {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  color: var(--whud-oxide);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.wound-tm-tiers-legend b { color: var(--whud-club); font-weight: 400; }
+
+/* Waveform / sparkline for the ghostline block */
+.wound-tm-wave {
+  height: 40px;
+  margin: 6px 0 4px;
+  position: relative;
+}
+.wound-tm-wave svg { width: 100%; height: 100%; display: block; }
+.wound-tm-wave .wave-line {
+  fill: none;
+  stroke: var(--whud-club);
+  stroke-width: 1.3;
+  filter: drop-shadow(0 0 3px rgba(var(--whud-club-rgb), 0.7));
+}
+.wound-tm-wave .wave-line--red { stroke: var(--whud-arterial); filter: drop-shadow(0 0 3px rgba(var(--whud-arterial-rgb), 0.7)); }
+
+/* ---- Handshake state toggle (Calls: PENDING ↔ SEALED) ------------------ */
+.wound-calls-state-toggle {
+  position: absolute;
+  top: 24px;
+  right: 128px;
+  display: flex;
+  border: 1px solid var(--whud-line);
+  background: rgba(0, 0, 0, 0.6);
+  clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  z-index: 3;
+}
+.wound-calls-state-toggle button {
+  padding: 5px 12px;
+  background: none;
+  border: 0;
+  color: var(--whud-ash);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.wound-calls-state-toggle button + button { border-left: 1px solid var(--whud-line); }
+.wound-calls-state-toggle button:hover { color: var(--whud-bone); }
+.wound-calls-state-toggle button.is-on { color: var(--whud-void); background: var(--whud-club); text-shadow: 0 0 4px rgba(255, 255, 255, 0.5); }
+.wound-calls-state-toggle button.is-on[data-state="sealed"] { color: var(--whud-void); background: var(--whud-cathedral); }
+
+/* Sealed variant: face freezes, ghosts realign, membrane locks gold. */
+.wound-face[data-state="sealed"] .wound-face-ghost-r,
+.wound-face[data-state="sealed"] .wound-face-ghost-c {
+  animation: none;
+  transform: translate(0, 0);
+  opacity: 0.15;
+}
+.wound-face[data-state="sealed"] .wound-face-scan { animation: none; opacity: 0; }
+.wound-face[data-state="sealed"] .wound-face-corner {
+  border-color: var(--whud-cathedral);
+  box-shadow: 0 0 6px rgba(240, 192, 100, 0.6);
+}
+.wound-face[data-state="sealed"] .wound-face-label { color: var(--whud-cathedral); border-top: 1px solid rgba(240, 192, 100, 0.5); }
+.wound-face[data-state="sealed"] .wound-face-label span:last-child { color: var(--whud-cathedral); }
+.wound-face-membrane {
+  position: absolute;
+  inset: 20px;
+  border: 1px solid transparent;
+  pointer-events: none;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+.wound-face[data-state="sealed"] .wound-face-membrane {
+  border-color: var(--whud-cathedral);
+  box-shadow: 0 0 14px rgba(240, 192, 100, 0.4), inset 0 0 20px rgba(240, 192, 100, 0.12);
+}
+
+/* Sealed stamp overlay — appears when the handshake is accepted */
+.wound-face-stamp {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-8deg);
+  border: 2px solid var(--whud-cathedral);
+  padding: 10px 22px;
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.24em;
+  color: var(--whud-cathedral);
+  background: rgba(240, 192, 100, 0.08);
+  text-shadow: 0 0 8px rgba(240, 192, 100, 0.6);
+  box-shadow: 0 0 20px rgba(240, 192, 100, 0.35);
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  z-index: 5;
+  pointer-events: none;
+}
+.wound-face-stamp small {
+  display: block;
+  font-family: "Space Mono", monospace;
+  font-size: 8.5px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  color: var(--whud-cathedral);
+  margin-top: 4px;
+  opacity: 0.85;
+}
+
+/* --- Bottom footnote ---------------------------------------------------- */
+.wound-foot {
+  position: relative;
+  z-index: 10;
+  margin-top: clamp(20px, 3vw, 32px);
+  padding: 12px 20px;
+  border: 1px solid var(--whud-line);
+  background: var(--whud-panel);
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  color: var(--whud-oxide);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0 calc(100% - 18px));
+}
+.wound-foot span b { color: var(--whud-club); font-weight: 400; text-shadow: 0 0 5px rgba(var(--whud-club-rgb), 0.4); }
+.wound-foot span.is-warn b { color: var(--whud-arterial); text-shadow: 0 0 5px rgba(var(--whud-arterial-rgb), 0.4); }
+
+/* ---- Degradation chips row (below the top strip) ----------------------- */
+.wound-degrade {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(14px, 2vw, 22px);
+  align-items: center;
+}
+.wound-degrade-label {
+  font-family: "Space Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--whud-ash);
+  margin-right: 4px;
+}
+.wound-degrade-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--whud-line);
+  background: rgba(0, 0, 0, 0.4);
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--whud-ash);
+  clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
+}
+.wound-degrade-chip b { color: var(--whud-bone); font-weight: 400; }
+.wound-degrade-chip::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--whud-oxide);
+}
+.wound-degrade-chip.is-cyan { border-color: rgba(var(--whud-club-rgb), 0.5); color: var(--whud-club); }
+.wound-degrade-chip.is-cyan::before { background: var(--whud-club); box-shadow: 0 0 5px var(--whud-club); }
+.wound-degrade-chip.is-cyan b { color: var(--whud-club); text-shadow: 0 0 4px rgba(var(--whud-club-rgb), 0.5); }
+.wound-degrade-chip.is-red { border-color: rgba(var(--whud-arterial-rgb), 0.5); color: var(--whud-arterial); }
+.wound-degrade-chip.is-red::before { background: var(--whud-arterial); box-shadow: 0 0 5px var(--whud-arterial); }
+.wound-degrade-chip.is-red b { color: var(--whud-arterial); text-shadow: 0 0 4px rgba(var(--whud-arterial-rgb), 0.5); }
+.wound-degrade-chip.is-gold { border-color: rgba(240, 192, 100, 0.5); color: var(--whud-cathedral); }
+.wound-degrade-chip.is-gold::before { background: var(--whud-cathedral); box-shadow: 0 0 5px var(--whud-cathedral); }
+.wound-degrade-chip.is-gold b { color: var(--whud-cathedral); text-shadow: 0 0 4px rgba(240, 192, 100, 0.5); }
+
+/* ---- CODEX / LEGEND section ------------------------------------------- */
+.wound-codex {
+  position: relative;
+  z-index: 10;
+  margin-top: clamp(24px, 3vw, 44px);
+  padding: 24px;
+  border: 1px solid var(--whud-line);
+  background: var(--whud-panel);
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+}
+.wound-codex-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--whud-line);
+}
+.wound-codex-head-title {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 2vw, 22px);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--whud-club);
+  text-shadow: 0 0 8px rgba(var(--whud-club-rgb), 0.4);
+}
+.wound-codex-head-sub {
+  font-family: "changeling-neo", serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--whud-ash);
+}
+.wound-codex-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+.wound-codex-col-title {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--whud-club);
+  margin-bottom: 10px;
+  border-bottom: 1px dashed var(--whud-line);
+  padding-bottom: 6px;
+  text-shadow: 0 0 4px rgba(var(--whud-club-rgb), 0.35);
+}
+.wound-codex-entry {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 10px;
+  padding: 6px 0;
+  font-family: "Space Mono", monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  align-items: baseline;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+.wound-codex-entry:first-of-type { border-top: 0; }
+.wound-codex-entry dt {
+  font-family: "changeling-neo", "Space Mono", sans-serif;
+  font-weight: 700;
+  color: var(--whud-bone);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+.wound-codex-entry dt.is-cyan { color: var(--whud-club); text-shadow: 0 0 4px rgba(var(--whud-club-rgb), 0.35); }
+.wound-codex-entry dt.is-red { color: var(--whud-arterial); text-shadow: 0 0 4px rgba(var(--whud-arterial-rgb), 0.35); }
+.wound-codex-entry dt.is-gold { color: var(--whud-cathedral); text-shadow: 0 0 4px rgba(240, 192, 100, 0.35); }
+.wound-codex-entry dd {
+  color: var(--whud-ash);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* --- Responsive: collapse to a single column ---------------------------- */
+@media (max-width: 1000px) {
+  .wound-body { grid-template-columns: 1fr; }
+  .wound-anchors { flex-direction: row; flex-wrap: wrap; }
+  .wound-anchors-head { flex-basis: 100%; }
+  .wound-anchor { flex: 1 1 30%; grid-template-columns: 22px 1fr; gap: 8px; }
+  .wound-anchor .wound-anchor-mode { grid-column: 1 / -1; padding-left: 30px; }
+  .wound-top { flex-direction: column; align-items: stretch; }
+  .wound-calls-body { grid-template-columns: 1fr; }
+  .wound-face { max-width: 320px; margin: 0 auto; }
+  .wound-tx-ledger { grid-template-columns: repeat(2, 1fr); }
+  .wound-variants { flex-wrap: wrap; }
+  .wound-variant { flex: 1 1 45%; font-size: 12px; letter-spacing: 0.18em; }
+  .wound-op-flag { grid-template-columns: 1fr; gap: 4px; }
+  .wound-op-flag > * { grid-column: 1 / -1; }
+  .wound-qh { grid-template-columns: 1fr; }
+  .wound-buy { grid-template-columns: 1fr; }
+  .wound-qh-item { grid-template-columns: 22px 1fr auto; }
+  .wound-qh-item-state { display: none; }
+}
+
+/* --- Reduced motion ---------------------------------------------------- */
+[data-motion="reduced"] .wound-hud *,
+[data-motion="reduced"] .wound-hud *::before,
+[data-motion="reduced"] .wound-hud *::after {
+  animation: none !important;
+}
