@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unknown-property -- three.js/R3F elements use props (position, rotation, intensity, …) that eslint-plugin-react flags as unknown DOM attributes. */
-import { Suspense, useMemo } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import {
   useGLTF,
@@ -20,7 +20,10 @@ const MODEL_YAW = 0; // rotate so the front faces the camera at rest
 // model read tiny even though vertical space was going unused. On landscape /
 // desktop the smaller dimension is height, and 0.72 already sits well.
 const MODEL_FILL_LANDSCAPE = 0.72;
-const MODEL_FILL_PORTRAIT = 0.95;
+const MODEL_FILL_PORTRAIT = 1.15;
+// Breakpoint under which we treat the viewport as mobile / tablet — matches
+// the CSS tablet ceiling. Above this we lock zoom off (desktop stays hands-off).
+const MOBILE_TABLET_MAX = 1024;
 
 const prefersReducedMotion =
   typeof window !== 'undefined' &&
@@ -58,6 +61,21 @@ function Model() {
 }
 
 export default function HeroScene() {
+  // Track whether we're in a mobile/tablet viewport so pinch/wheel zoom is only
+  // enabled where the user asked for it. Re-evaluate on resize so a rotation
+  // between portrait tablet and landscape desktop flips the flag correctly.
+  const [zoomEnabled, setZoomEnabled] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return undefined;
+    const mq = window.matchMedia(`(max-width: ${MOBILE_TABLET_MAX}px)`);
+    const update = () => setZoomEnabled(mq.matches);
+    update();
+    mq.addEventListener?.('change', update) ?? mq.addListener?.(update);
+    return () => {
+      mq.removeEventListener?.('change', update) ?? mq.removeListener?.(update);
+    };
+  }, []);
+
   // The camera is raised on Y so the view looks down ~15°, revealing the deck's
   // keyboard rather than a dead-on front view. Auto-rotate keeps this elevation
   // constant, so the keyboard stays visible from every angle as it spins.
@@ -88,13 +106,15 @@ export default function HeroScene() {
       <OrbitControls
         makeDefault
         enablePan={false}
-        enableZoom={false}
+        enableZoom={zoomEnabled}
         enableDamping
         dampingFactor={0.08}
         autoRotate={!prefersReducedMotion}
         autoRotateSpeed={3.2}
         minPolarAngle={Math.PI / 3.2}
         maxPolarAngle={Math.PI / 1.9}
+        minDistance={1.6}
+        maxDistance={5.5}
       />
     </Canvas>
   );

@@ -2864,6 +2864,40 @@ nav #logo span.special-char,
   object-position: left top;
 }
 
+/* Blacksite card on mobile + tablet (≤1024px): the game screenshots should
+   bleed edge-to-edge across the full card frame, with the text stacked below
+   the media instead of split into a 70/30 side column. Overrides the desktop
+   flex-row layout for #blacksite only — tablets get the same media-forward
+   treatment as phones while chrome + tattoo cards keep their 70/30 rows. */
+@media (max-width: 1024px) {
+  .image-with-description#blacksite .upcoming-project-link {
+    flex-direction: column;
+    min-height: 0;
+  }
+  .image-with-description#blacksite .tattoo-mini-gallery {
+    flex: 1 1 auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 1;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .image-with-description#blacksite .image-column-1,
+  .image-with-description#blacksite .image-column-2 {
+    border-radius: 0;
+  }
+  .image-with-description#blacksite .image-column-1 img,
+  .image-with-description#blacksite .image-column-2 img {
+    width: 100%;
+    height: 100%;
+  }
+  .image-with-description#blacksite .tattoo-text {
+    flex: 0 0 auto;
+    width: 100%;
+    padding: var(--spacing-md);
+  }
+}
+
 /* ── Projects-in-Progress layout ────────────────────────────────────────────
    Mobile + tablet (<748px): media-forward overlay cards (title + blurb in a
    gradient over the media). Desktop (>=748px): alternating editorial rows with
