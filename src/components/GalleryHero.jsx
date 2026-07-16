@@ -4,7 +4,7 @@ import { useReducedMotionPref } from '../utils/useReducedMotionPref';
 import { withImageWidth, WIDTHS } from '../utils/imageService';
 
 const FEATURED_FILES = [
-  'HCT-17.webp',
+  'HCT-12.webp',
   'kirin.webp',
   'secondwind.webp',
   'SAP.webp',
@@ -22,14 +22,10 @@ const GalleryHero = ({ products }) => {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
-  const findProductByImage = (filename) => {
-    if (filename === 'HCT-17.webp') {
-      return (products || []).find((p) => p.id === 103) || { id: 103 };
-    }
-    return (products || []).find(
+  const findProductByImage = (filename) =>
+    (products || []).find(
       (p) => p.image && p.image.some((img) => img.includes(filename))
     );
-  };
 
   const items = useMemo(
     () =>
@@ -88,6 +84,7 @@ const GalleryHero = ({ products }) => {
             src={withImageWidth(`/api/media/image/${item.file}`, WIDTHS.HERO)}
             alt={item.title || ''}
             className={`gallery-hero-image ${i === index ? 'active' : ''}`}
+            data-slot={item.file.replace(/\.[^.]+$/, '')}
             loading={i === 0 ? 'eager' : 'lazy'}
             aria-hidden={i !== index}
           />

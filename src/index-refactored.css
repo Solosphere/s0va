@@ -1446,23 +1446,44 @@ nav #logo span.special-char,
   transform: translateY(0);
 }
 
+/* HUD-styled view-all pill — mirrors the SEAM/cyan readout panel: cyan-tinted
+   surface, angled clip-path corners (top-right + bottom-left chamfered), thin
+   cyan side/top border and a bright cyan bottom edge so it reads as sitting
+   on a rail. */
 .home-featured-viewall {
+  position: relative;
   display: inline-block;
+  margin-top: 0.6rem;
+  padding: 0.7rem 1.4rem;
   font-family: var(--font-family-mono);
   font-size: 0.9rem;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   color: var(--color-club);
   text-decoration: none;
-  padding: 0.35em 0.6em;
-  border-bottom: 1px solid transparent;
-  transition: color 0.2s ease, border-color 0.2s ease, text-shadow 0.2s ease;
+  text-shadow: 0 0 6px rgba(var(--color-club-rgb), 0.35);
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(var(--color-club-rgb), 0) 0,
+      rgba(var(--color-club-rgb), 0) 3px,
+      rgba(var(--color-club-rgb), 0.03) 3px,
+      rgba(var(--color-club-rgb), 0.03) 4px
+    ),
+    linear-gradient(180deg, rgba(8, 24, 28, 0.72) 0%, rgba(4, 14, 16, 0.72) 100%);
+  border: 1px solid rgba(var(--color-club-rgb), 0.3);
+  border-bottom-color: rgba(var(--color-club-rgb), 0.9);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  transition: color 0.2s ease, background 0.25s ease, border-color 0.25s ease, text-shadow 0.25s ease, box-shadow 0.25s ease;
 }
 
 .home-featured-viewall:hover,
 .home-featured-viewall:focus-visible {
   color: #ffffff;
-  border-bottom-color: rgba(var(--color-club-rgb), 0.7);
-  text-shadow: 0 0 10px rgba(var(--color-club-rgb), 0.55);
+  border-color: rgba(var(--color-club-rgb), 0.65);
+  border-bottom-color: rgba(var(--color-club-rgb), 1);
+  text-shadow: 0 0 12px rgba(var(--color-club-rgb), 0.75);
+  box-shadow: 0 0 0 1px rgba(var(--color-club-rgb), 0.3), 0 0 22px rgba(var(--color-club-rgb), 0.22);
 }
 
 @media (max-width: 640px) {
@@ -3685,9 +3706,29 @@ nav #logo span.special-char,
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: 50% 50%;
   opacity: 0;
   transition: opacity 0.9s ease-in-out;
   pointer-events: none;
+}
+
+/* Per-slot crop tuning: default cover crops to the image center, but a few of
+   these pieces have their subject / title area off-center and get chopped
+   awkwardly. Pin the crop so the important content stays in-frame. */
+.gallery-hero-image[data-slot="metvoyager"] {
+  /* Show the TOP of the image so the piece's title text (which sits below
+     center in the source) doesn't get cut off. */
+  object-position: 50% 0%;
+}
+.gallery-hero-image[data-slot="secondwind"] {
+  /* Mostly top, but shifted a touch down so more of the bottom peeks in. */
+  object-position: 50% 25%;
+}
+.gallery-hero-image[data-slot="angel"] {
+  /* Fortis Fortuna Adiuvat (angel.webp): dead-center crop so the middle of
+     the source (upper body + jacket) is in-frame without fully pulling to
+     the bottom. */
+  object-position: 50% 50%;
 }
 
 .gallery-hero-image.active {
@@ -3765,34 +3806,53 @@ nav #logo span.special-char,
   margin: var(--spacing-3xl) 0 var(--spacing-2xl);
 }
 
+/* HUD-styled load-more pill — same cyan readout language as the featured
+   view-all: cyan-tinted surface with scanline overlay, angled clip-path
+   corners (top-right + bottom-left chamfered), thin cyan side/top border and
+   a bright cyan bottom edge so it reads as sitting on a rail. */
 .gallery-load-more {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.85rem 1.75rem;
+  padding: 0.7rem 1.75rem;
   font-family: var(--font-family-mono);
   font-size: 0.85rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-text);
-  background: transparent;
-  border: 1px solid rgba(var(--color-club-rgb), 0.4);
+  color: var(--color-club);
+  text-shadow: 0 0 6px rgba(var(--color-club-rgb), 0.35);
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(var(--color-club-rgb), 0) 0,
+      rgba(var(--color-club-rgb), 0) 3px,
+      rgba(var(--color-club-rgb), 0.03) 3px,
+      rgba(var(--color-club-rgb), 0.03) 4px
+    ),
+    linear-gradient(180deg, rgba(8, 24, 28, 0.72) 0%, rgba(4, 14, 16, 0.72) 100%);
+  border: 1px solid rgba(var(--color-club-rgb), 0.3);
+  border-bottom-color: rgba(var(--color-club-rgb), 0.9);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
   cursor: pointer;
-  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+  transition: color 0.2s ease, background 0.25s ease, border-color 0.25s ease, text-shadow 0.25s ease, box-shadow 0.25s ease;
 }
 
-.gallery-load-more:hover {
-  color: #fff;
-  border-color: var(--color-club);
-  background: rgba(var(--color-club-rgb), 0.08);
-  box-shadow: 0 0 12px rgba(var(--color-club-rgb), 0.25);
+.gallery-load-more:hover,
+.gallery-load-more:focus-visible {
+  color: #ffffff;
+  border-color: rgba(var(--color-club-rgb), 0.65);
+  border-bottom-color: rgba(var(--color-club-rgb), 1);
+  text-shadow: 0 0 12px rgba(var(--color-club-rgb), 0.75);
+  box-shadow: 0 0 0 1px rgba(var(--color-club-rgb), 0.3), 0 0 22px rgba(var(--color-club-rgb), 0.22);
 }
 
 .gallery-load-more-count {
   font-family: var(--font-family-mono);
   font-size: 0.72rem;
-  opacity: 0.65;
+  opacity: 0.75;
   letter-spacing: 0.05em;
+  color: rgba(var(--color-club-rgb), 0.85);
 }
 
 /* Pagination */
