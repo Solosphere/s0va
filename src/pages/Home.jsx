@@ -224,19 +224,16 @@ return (
       </Reveal>
 
       <Reveal as="section" className="home-featured-strip" aria-label="Featured works">
-        <div className="home-featured-strip-header">
-          <section className="rect-home-container">
-            <section className="rect-1"></section>
-            <section className="rect-2"></section>
-          </section>
-          <h2>FEATURED</h2>
-        </div>
         {/* Outer box: mirrors the gallery-detail rail chrome — a thin bordered
             container with the "01 / 05" active-position counter pinned to the
-            top-left. Same layout ships on mobile / tablet / desktop; the rail
-            inside is horizontally swipeable so tiles can render bigger than
-            "5 across a phone" would allow. */}
+            top-left. A vertical "FEATURED" spine sits on the outer-left edge
+            (rotated bottom-to-top) in place of the old horizontal header +
+            rect divider. Same layout ships on mobile / tablet / desktop; the
+            rail inside is horizontally swipeable so tiles can render bigger
+            than "5 across a phone" would allow. */}
         <div className="home-featured-rail-box">
+          <h2 className="home-featured-rail-spine">FEATURED</h2>
+          <span className="home-featured-rail-chip" aria-hidden="true">FEATURED</span>
           <div className="home-featured-rail-counter" aria-hidden="true">
             <span className="home-featured-rail-counter-current">
               {String(activeIndex + 1).padStart(2, '0')}
@@ -287,8 +284,8 @@ return (
                           </div>
                         </div>
                       </div>
+                      <span className="home-featured-tile-title">/programs/blacksite</span>
                     </span>
-                    <span className="home-featured-tile-title">/programs/blacksite</span>
                   </Link>
                 );
               }
@@ -309,10 +306,10 @@ return (
                       alt={item.title || ''}
                       loading="lazy"
                     />
+                    {item.title && (
+                      <span className="home-featured-tile-title">{item.title}</span>
+                    )}
                   </span>
-                  {item.title && (
-                    <span className="home-featured-tile-title">{item.title}</span>
-                  )}
                 </Link>
               );
             })}

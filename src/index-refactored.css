@@ -1281,23 +1281,92 @@ nav #logo span.special-char,
   text-align: center;
 }
 
-.home-featured-strip-header {
-  margin-bottom: var(--spacing-lg);
-}
-
 /* Outer box wrapping the whole rail — mirrors the gallery-detail rail chrome:
-   thin rounded border, black interior, "01 / 05" counter pinned top-left. Same
-   layout ships across mobile, tablet, and desktop — only the tile size scales
-   down through container queries. */
+   thin rounded border, black interior, "01 / 05" counter pinned top-left, and
+   a rotated "FEATURED" spine sitting on the outer-left margin (desktop/tablet)
+   or as a small chip in the top-right corner (mobile). Same layout ships
+   across all breakpoints — only the tile size scales down. */
 .home-featured-rail-box {
   position: relative;
   max-width: 1100px;
-  margin: 0 auto var(--spacing-lg);
-  padding: clamp(20px, 3vw, 32px) clamp(12px, 2vw, 24px) clamp(14px, 2vw, 22px);
-  padding-top: clamp(44px, 5vw, 60px);
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(0, 0, 0, 0.35);
+  margin: var(--spacing-3xl) auto var(--spacing-lg);
+  /* Left padding is larger than the other edges to reserve space for the
+     rotated FEATURED spine sitting inside the box. Mobile drops it back down
+     via the max-width: 640px override below. */
+  padding:
+    clamp(44px, 5vw, 60px)
+    clamp(12px, 2vw, 24px)
+    clamp(14px, 2vw, 22px)
+    clamp(48px, 5vw, 68px);
+  border-radius: 12px;
+  /* Same shimmering brushed-metal chrome as the .strip-rail on the gallery
+     item detail page — animated diagonal gradient + soft cyan-adjacent
+     interior sheen + subtle top inset highlight, so the featured box reads
+     as the same HUD surface language. */
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(18, 18, 18, 0.9) 50%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
+  background-size: 200% 200%;
+  animation: liquid-shimmer 8s ease-in-out infinite;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Vertical FEATURED spine — reads top-to-bottom starting right under the
+   01/05 counter on the LEFT edge INSIDE the box, so the label sits at the
+   "top of its column" and hugs the counter above it. Real <h2> in the DOM so
+   it stays in the heading outline. Same face + size + color as the on-page
+   h2 (THE VISION). On mobile the spine is hidden and a horizontal FEATURED
+   reappears in the top-left corner. */
+.home-featured-rail-spine {
+  position: absolute;
+  /* Sits just below the counter — counter uses the same top clamp so this
+     tucks right under it. Uses line-height:1 + the counter's font-size so
+     the offset stays proportional at every breakpoint. */
+  top: calc(clamp(10px, 1.6vw, 16px) + clamp(0.85rem, 1.5vw, 1rem) + 8px);
+  left: clamp(10px, 1.6vw, 18px);
+  /* Reads bottom-to-top: writing-mode stacks glyphs vertically, rotate(180)
+     flips the whole run so "F" ends up at the bottom of the column and "D"
+     sits closest to the 01/05 counter above. */
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-3xl);
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  line-height: 1;
+  color: var(--color-text);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Mobile FEATURED — swaps in for the vertical spine below 640px. Lives in the
+   TOP-LEFT of the box (mirroring the h2 face + size scale used elsewhere on
+   the page), with the "01/05" counter pushed to the top-right. Aria-hidden
+   because the <h2> spine still ships to assistive tech. */
+.home-featured-rail-chip {
+  display: none;
+  position: absolute;
+  top: clamp(10px, 1.6vw, 16px);
+  left: clamp(14px, 2vw, 22px);
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-2xl);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  color: var(--color-text);
+  pointer-events: none;
 }
 
 .home-featured-rail-counter {
@@ -1421,29 +1490,30 @@ nav #logo span.special-char,
   filter: none;
 }
 
+/* Title lives at the bottom-left of the thumb — always visible so each tile
+   is self-identifying (replaces the old horizontal FEATURED divider above the
+   rail). Mono face + all-caps to sit inside the HUD language. */
 .home-featured-tile-title {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-md) var(--spacing-sm);
   font-family: var(--font-family-mono);
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.03em;
-  color: #ffffff;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
   text-align: left;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 100%);
-  opacity: 0;
-  transform: translateY(4px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.5) 45%, rgba(0, 0, 0, 0) 100%);
   pointer-events: none;
+  transition: color 0.2s ease;
 }
 
-.home-featured-tile:hover .home-featured-tile-title,
-.home-featured-tile:focus-visible .home-featured-tile-title {
-  opacity: 1;
-  transform: translateY(0);
+.home-featured-tile--active .home-featured-tile-title {
+  color: var(--color-club);
+  text-shadow: 0 0 6px rgba(var(--color-club-rgb), 0.4);
 }
 
 /* HUD-styled view-all pill — mirrors the SEAM/cyan readout panel: cyan-tinted
@@ -1468,30 +1538,35 @@ nav #logo span.special-char,
     padding-right: var(--spacing-md);
     text-align: center;
   }
-  .home-featured-strip-header {
-    text-align: center;
+  .home-featured-rail-box {
+    /* On mobile the spine is swapped for a horizontal FEATURED chip in the
+       top-left, so we can drop the extra left padding and use the same edge
+       gutter as the other three sides. Top stays roomy for the chip + counter. */
+    padding-left: clamp(12px, 3vw, 20px);
+    padding-right: clamp(12px, 3vw, 20px);
   }
-  .home-featured-strip-header h2 {
-    text-align: center;
+  .home-featured-rail-spine {
+    /* Vertical spine reserves too much horizontal space on a phone — swap for
+       the horizontal FEATURED chip below. */
+    display: none;
+  }
+  .home-featured-rail-chip {
+    display: inline-block;
+  }
+  .home-featured-rail-counter {
+    /* Counter swaps to the right on mobile so FEATURED can take the left. */
+    left: auto;
+    right: clamp(14px, 2vw, 22px);
   }
   .home-featured-tile:hover {
     transform: none;
   }
   .home-featured-tile-title {
-    /* No hover state on touch — surface the label inline under each card. */
-    position: static;
-    left: auto;
-    right: auto;
-    bottom: auto;
-    background: none;
-    opacity: 1;
-    transform: none;
-    padding: 4px 2px 0;
-    font-size: 0.55rem;
-    letter-spacing: 0.03em;
-    color: rgba(255, 255, 255, 0.7);
-    text-align: center;
-    font-weight: 500;
+    /* On a small tile the title still sits inside the thumb, but tighter
+       leading + smaller face keeps it from crowding the image. */
+    padding: var(--spacing-md) var(--spacing-sm) 6px;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
