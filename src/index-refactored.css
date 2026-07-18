@@ -8706,8 +8706,40 @@ input:checked + .toggle-slider:before {
    ============================================================ */
 
 .log-page {
+  position: relative;
   min-height: 60vh;
   padding-top: 40px;
+  /* Section counter — each .log-section-label increments this so the H2 chip
+     can render SEC.01 / SEC.02 / … without hard-coding numbers. */
+  counter-reset: logsec;
+}
+
+/* Perception-window brackets — four cyan L-corners pinned to the viewport, so
+   they hold the HUD identity while everything else scrolls. Cleared under the
+   fixed site nav (~72px). */
+.log-frame {
+  position: fixed;
+  top: calc(72px + clamp(10px, 1.5vw, 20px));
+  right: clamp(10px, 1.5vw, 20px);
+  bottom: clamp(10px, 1.5vw, 20px);
+  left: clamp(10px, 1.5vw, 20px);
+  pointer-events: none;
+  z-index: 90;
+}
+.log-frame-corner {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--color-club);
+  box-shadow: 0 0 10px rgba(var(--color-club-rgb), 0.5);
+  opacity: 0.7;
+}
+.log-frame-corner--tl { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+.log-frame-corner--tr { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+.log-frame-corner--bl { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+.log-frame-corner--br { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+@media (max-width: 640px) {
+  .log-frame-corner { width: 20px; height: 20px; }
 }
 
 /* ---- Index header --------------------------------------- */
@@ -8750,6 +8782,69 @@ input:checked + .toggle-slider:before {
   color: var(--color-text-light);
   font-size: 0.9rem;
   margin-bottom: var(--spacing-md);
+}
+
+/* ---- Snapshot ledger ------------------------------------
+   Four chamfered cells above WORK EXPERIENCE — quick recruiter-readable
+   telemetry. Same clip-path vocabulary as the section labels + cards so the
+   whole page reads as one HUD surface. */
+.log-ledger {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-sm) var(--spacing-lg) 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.log-ledger-cell {
+  position: relative;
+  padding: var(--spacing-md) var(--spacing-md);
+  border: 1px solid rgba(var(--color-club-rgb), 0.22);
+  background: rgba(0, 0, 0, 0.4);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.log-ledger-cell-k {
+  font-family: var(--font-family-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.log-ledger-cell-v {
+  font-family: var(--font-family-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+  letter-spacing: 0.06em;
+  color: var(--color-club);
+  text-shadow: 0 0 8px rgba(var(--color-club-rgb), 0.4);
+  line-height: 1.1;
+}
+
+.log-ledger-cell--hot .log-ledger-cell-v {
+  color: #ff4c6a;
+  text-shadow: 0 0 8px rgba(255, 47, 75, 0.5);
+}
+
+@media (max-width: 640px) {
+  .log-ledger {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .log-ledger-cell-v {
+    font-size: 1.2rem;
+  }
 }
 
 /* ---- Chips (cyan, always-on) ---------------------------- */
@@ -8799,14 +8894,16 @@ input:checked + .toggle-slider:before {
   display: flex;
 }
 
-/* Dark-glass "terminal card" in both themes, to anchor the log identity */
+/* Dark-glass "terminal card" in both themes, to anchor the log identity. Now
+   rendered as a chamfered HUD panel — same clip-path vocabulary as the section
+   labels, cyan hairline running across the top edge, and an arterial-red
+   hairline at the bottom that intensifies on hover. */
 .log-card-link {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
   width: 100%;
   padding: var(--spacing-lg);
-  border-radius: 12px;
   text-decoration: none;
   color: #ffffff;
   position: relative;
@@ -8819,11 +8916,39 @@ input:checked + .toggle-slider:before {
   );
   background-size: 200% 200%;
   animation: liquid-shimmer 6s ease-in-out infinite;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(var(--color-club-rgb), 0.18);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  clip-path: polygon(
+    16px 0,
+    100% 0,
+    100% calc(100% - 16px),
+    calc(100% - 16px) 100%,
+    0 100%,
+    0 16px
+  );
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* Cyan hairline riding the top edge — starts just past the top-left chamfer
+   so it hugs the flat portion of the border. */
+.log-card-link::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-club) 15%,
+    var(--color-club) 85%,
+    transparent 100%
+  );
+  box-shadow: 0 0 6px rgba(var(--color-club-rgb), 0.55);
+  pointer-events: none;
 }
 
 .log-card-link::before {
@@ -9382,11 +9507,77 @@ input:checked + .toggle-slider:before {
   text-shadow: 0 0 8px rgba(var(--color-club-rgb), 0.6);
 }
 
-/* Log page section labels (CASE STUDIES / EDUCATION) + per-school headers */
+/* Log page section labels (WORK EXPERIENCE / INTERNSHIPS / PERSONAL PROJECTS /
+   EDUCATION / SKILLS) now render inside a chamfered HUD panel — cyan hairline
+   top edge, red hairline bottom edge (arterial accent), and a floating SEC.0N
+   micro-tag pinned to the panel's top-left corner. Wraps the H2 without any
+   markup changes. */
+/* The outer wrapper is unclipped — it hosts the floating SEC.0N tag which
+   needs to overhang the panel's top edge. All chamfering, border, and
+   background move onto the inner .log-section-panel so clip-path can't trim
+   the chip. */
 .log-section-label {
+  counter-increment: logsec;
+  position: relative;
   max-width: 1200px;
-  margin: 0 auto;
-  padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-md);
+  margin: var(--spacing-2xl) auto var(--spacing-md);
+  padding: 0 var(--spacing-lg);
+}
+
+/* Floating SEC.0N tag — sits above the panel's top border with a
+   background-color pill so the border reads as if broken around the label,
+   just like the Wound HUD's "CHAIN-OF-CUSTODY" floater. */
+.log-section-label::before {
+  content: 'SEC.' counter(logsec, decimal-leading-zero);
+  position: absolute;
+  top: -8px;
+  left: calc(var(--spacing-lg) + 26px);
+  padding: 0 8px;
+  background: var(--color-background);
+  font-family: var(--font-family-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  color: var(--color-club);
+  text-shadow: 0 0 6px rgba(var(--color-club-rgb), 0.45);
+  z-index: 2;
+}
+
+/* The clipped/bordered panel — chamfered top-right + bottom-left corners,
+   cyan tinted border, red arterial hairline pinned to the bottom edge. */
+.log-section-panel {
+  position: relative;
+  padding: var(--spacing-lg);
+  border: 1px solid rgba(var(--color-club-rgb), 0.22);
+  background:
+    linear-gradient(135deg, rgba(var(--color-club-rgb), 0.045) 0%, transparent 45%),
+    rgba(8, 14, 20, 0.55);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 18px) 0,
+    100% 18px,
+    100% 100%,
+    18px 100%,
+    0 calc(100% - 18px)
+  );
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.log-section-panel::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 18px;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 47, 75, 0.55) 15%,
+    rgba(255, 47, 75, 0.55) 85%,
+    transparent 100%
+  );
+  box-shadow: 0 0 6px rgba(255, 47, 75, 0.35);
 }
 
 /* When a section label (EDUCATION / INTERNSHIP) is immediately followed by

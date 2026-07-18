@@ -23,15 +23,18 @@ const EngineeringLog = () => {
 
   return (
     <div className="log-page">
+      {/* Perception-window brackets — pinned to the viewport corners so they
+          hold the HUD identity while everything else scrolls. Decorative
+          only, so aria-hidden. */}
+      <div className="log-frame" aria-hidden="true">
+        <span className="log-frame-corner log-frame-corner--tl" />
+        <span className="log-frame-corner log-frame-corner--tr" />
+        <span className="log-frame-corner log-frame-corner--bl" />
+        <span className="log-frame-corner log-frame-corner--br" />
+      </div>
+
       <header className="log-header">
         <h1>ENGINEERING LOG</h1>
-        {/* One establishing terminal line for the whole page — subsequent
-            sections no longer repeat the root@mettaire.os prefix so it reads as
-            hierarchy, not decoration. */}
-        <p className="log-prompt-line log-prompt-line--intro">
-          <span className="log-prompt-sign" aria-hidden="true">root@mettaire.os ~ %</span>{' '}
-          cat /var/log/career
-        </p>
       </header>
 
       <LogTimeline />
@@ -39,7 +42,9 @@ const EngineeringLog = () => {
 
       <section className="log-case-studies" id="sec-case-studies">
         <div className="log-section-label">
-          <h2>WORK EXPERIENCE</h2>
+          <div className="log-section-panel">
+            <h2>WORK EXPERIENCE</h2>
+          </div>
         </div>
         <div className="log-school">
           <div className="log-school-head log-work-head">
@@ -77,7 +82,9 @@ const EngineeringLog = () => {
 
       <section className="log-internship" id="sec-internship">
         <div className="log-section-label">
-          <h2>INTERNSHIPS</h2>
+          <div className="log-section-panel">
+            <h2>INTERNSHIPS</h2>
+          </div>
         </div>
 
         {internshipGroups.map((group) => (
@@ -133,7 +140,9 @@ const EngineeringLog = () => {
 
       <section className="log-personal" id="sec-personal">
         <div className="log-section-label">
-          <h2>PERSONAL PROJECTS</h2>
+          <div className="log-section-panel">
+            <h2>PERSONAL PROJECTS</h2>
+          </div>
         </div>
 
         {personalProjects.map((group) => (
@@ -175,7 +184,9 @@ const EngineeringLog = () => {
 
       <section className="log-education" id="sec-education">
         <div className="log-section-label">
-          <h2>EDUCATION</h2>
+          <div className="log-section-panel">
+            <h2>EDUCATION</h2>
+          </div>
         </div>
 
         {schools.map((school) => (
@@ -213,7 +224,9 @@ const EngineeringLog = () => {
 
       <section className="log-skills" id="sec-skills">
         <div className="log-section-label">
-          <h2>SKILLS</h2>
+          <div className="log-section-panel">
+            <h2>SKILLS</h2>
+          </div>
         </div>
         <div className="log-skill-groups">
           {skills.map((s) => (
