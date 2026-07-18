@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DataSpike from '../games/DataSpike';
 import NullEscape from '../games/NullEscape';
+import NodeRunner from '../games/NodeRunner';
 
 export default function BlackSite() {
   const [selectedProgram, setSelectedProgram] = useState(null);
@@ -79,20 +80,20 @@ export default function BlackSite() {
       icon: 'SYS.02'
     },
     {
-      id: 'security-03',
-      name: 'SECURITY_03',
+      id: 'data-03',
+      name: 'DATA_03',
+      description: 'Terminal Sprint Protocol',
+      status: 'ACTIVE',
+      clearance: 'LEVEL_5',
+      icon: 'DAT.03'
+    },
+    {
+      id: 'security-04',
+      name: 'SECURITY_04',
       description: 'Firewall Penetration Test',
       status: 'LOCKED',
       clearance: 'LEVEL_4',
-      icon: 'SEC.03'
-    },
-    {
-      id: 'data-04',
-      name: 'DATA_04',
-      description: 'Encrypted Data Stream',
-      status: 'LOCKED',
-      clearance: 'LEVEL_6',
-      icon: 'DAT.04'
+      icon: 'SEC.04'
     },
     {
       id: 'protocol-05',
@@ -115,6 +116,8 @@ export default function BlackSite() {
       setActiveGame('dataSpike');
     } else if (program.id === 'system-02') {
       setActiveGame('nullEscape');
+    } else if (program.id === 'data-03') {
+      setActiveGame('nodeRunner');
     }
     setSelectedProgram(null);
   };
@@ -288,6 +291,9 @@ export default function BlackSite() {
         )}
         {activeGame === 'nullEscape' && (
           <NullEscape onClose={() => setActiveGame(null)} />
+        )}
+        {activeGame === 'nodeRunner' && (
+          <NodeRunner onClose={() => setActiveGame(null)} />
         )}
     </div>
   );

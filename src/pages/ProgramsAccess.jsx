@@ -11,8 +11,8 @@ const COMMANDS = [
 
 const PROGRAMS = [
   'SYSTEM_01   - Neural Interface Protocol       [ACTIVE]',
-  'SECURITY_02 - Firewall Penetration Test       [ACTIVE]',
-  'DATA_03     - Encrypted Data Stream           [STANDBY]',
+  'SECURITY_02 - Neural Network Infiltration     [ACTIVE]',
+  'DATA_03     - Terminal Sprint Protocol        [ACTIVE]',
   'PROTOCOL_04 - Quantum Encryption Matrix       [LOCKED]',
   'NEURAL_05   - Cognitive Enhancement Suite     [LOCKED]',
   'CYBER_06    - Digital Warfare Simulator       [DEACTIVATED]',
