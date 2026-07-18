@@ -1548,10 +1548,20 @@ nav #logo span.special-char,
     padding-right: clamp(12px, 3vw, 20px);
   }
   .home-featured-viewall {
-    /* Right-aligned looks unmoored on a narrow box — center the button below
-       the rail so it reads as a clean footer action clear of the top-left
-       counter and left-edge spine. */
-    justify-content: center;
+    /* Compact and right-aligned so it echoes the tablet/desktop bottom-right
+       placement while staying clear of the left-edge FEATURED spine. */
+    justify-content: flex-end;
+  }
+  /* Tighten the LS-works CTA on mobile so it reads as a compact footer action
+     instead of stretching to the full 300px hero-CTA width. */
+  .home-featured-viewall .home-about-button {
+    width: auto;
+    max-width: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-md);
+  }
+  .home-featured-viewall .btn-prompt {
+    margin-right: 0.5em;
   }
   /* Mobile keeps the tablet/desktop arrangement: vertical FEATURED spine on the
      left edge with the 01/05 counter pinned above it at top-left. The horizontal

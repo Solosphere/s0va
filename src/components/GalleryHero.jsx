@@ -46,6 +46,48 @@ const GalleryHero = ({ products }) => {
 
   const n = items.length;
   const preloadRef = useRef(new Set());
+  const touchStartRef = useRef(null);
+  const swipedRef = useRef(false);
+
+  const goTo = (i) => setIndex(((i % n) + n) % n);
+
+  const onTouchStart = (e) => {
+    const t = e.touches[0];
+    touchStartRef.current = { x: t.clientX, y: t.clientY, t: e.timeStamp };
+    swipedRef.current = false;
+    setPaused(true);
+  };
+  const onTouchMove = (e) => {
+    const start = touchStartRef.current;
+    if (!start) return;
+    const t = e.touches[0];
+    const dx = t.clientX - start.x;
+    const dy = t.clientY - start.y;
+    if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
+      swipedRef.current = true;
+    }
+  };
+  const onTouchEnd = (e) => {
+    const start = touchStartRef.current;
+    touchStartRef.current = null;
+    setPaused(false);
+    if (!start) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - start.x;
+    const dy = t.clientY - start.y;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      swipedRef.current = true;
+      goTo(index + (dx < 0 ? 1 : -1));
+    }
+  };
+  // Suppress the click that follows a swipe so the Link doesn't navigate.
+  const onClickCapture = (e) => {
+    if (swipedRef.current) {
+      e.preventDefault();
+      e.stopPropagation();
+      swipedRef.current = false;
+    }
+  };
 
   useEffect(() => {
     if (reduced || paused || n <= 1) return;
@@ -72,11 +114,15 @@ const GalleryHero = ({ products }) => {
       aria-label="Featured work"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
     >
       <Link
         to={active.to}
         className="gallery-hero-frame"
         aria-label={active.title ? `Open ${active.title}` : 'Open featured work'}
+        onClickCapture={onClickCapture}
       >
         {items.map((item, i) => (
           <img
