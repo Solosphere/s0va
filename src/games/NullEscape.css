@@ -1270,13 +1270,20 @@
   color: var(--hud-cyan);
   text-shadow: 0 0 8px rgba(var(--hud-cyan-rgb), 0.9);
 }
+/* Drones — solid arterial red so the "hostile" read is unmistakable at
+   a glance. The rgba(var(--hud-red-rgb), a) form silently fails in some
+   browsers because --hud-red-rgb is space-separated, so we lean on the
+   hex var directly for the base color and only use rgba() where the alpha
+   channel actually varies (the glow). */
 .hud-skin .map-cell.drone {
-  color: rgba(var(--hud-red-rgb), 0.9);
-  text-shadow: 0 0 6px rgba(var(--hud-red-rgb), 0.6);
+  color: var(--hud-red);
+  text-shadow: 0 0 8px rgba(219, 47, 47, 0.7);
+  font-weight: bold;
 }
 .hud-skin .map-cell.drone-chasing {
-  color: rgba(var(--hud-red-rgb), 1);
-  text-shadow: 0 0 12px rgba(var(--hud-red-rgb), 0.95);
+  color: var(--hud-red);
+  text-shadow: 0 0 14px rgba(219, 47, 47, 0.95), 0 0 22px rgba(219, 47, 47, 0.55);
+  font-weight: bold;
   animation: hud-drone-chase 0.5s infinite alternate;
 }
 @keyframes hud-drone-chase {
