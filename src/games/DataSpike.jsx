@@ -480,11 +480,20 @@ export default function DataSpike({ onClose }) {
   );
 
   return (
-    <div className="data-spike-container">
+    <div className="data-spike-container hud-skin">
       <div className="data-spike-modal">
+        {/* Perception-window brackets — same HUD vocabulary as the log page,
+            so the arcade reads as a deeper layer of the cockpit. */}
+        <div className="ds-frame" aria-hidden="true">
+          <span className="ds-frame-corner ds-frame-corner--tl" />
+          <span className="ds-frame-corner ds-frame-corner--tr" />
+          <span className="ds-frame-corner ds-frame-corner--bl" />
+          <span className="ds-frame-corner ds-frame-corner--br" />
+        </div>
         <div className="modal-header">
-          <h2>DATA SPIKE - Neural Interface Protocol</h2>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <span className="ds-header-tag" aria-hidden="true">SYS.01</span>
+          <h2>DATA SPIKE — Neural Interface Protocol</h2>
+          <button className="close-btn" onClick={onClose} aria-label="Close">×</button>
         </div>
         
         <div className="modal-body">

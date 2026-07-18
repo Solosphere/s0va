@@ -170,7 +170,7 @@ const AboutPage = () => {
             </Reveal>
 
             <Reveal className="image-with-description" id="blacksite">
-              <Link to="/programs/blacksite" className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
+              <Link to="/programs" className="upcoming-project-link" onClick={() => sessionStorage.setItem('aboutReturn', 'projects')}>
                 <div className="tattoo-text">
                   <h3>BLACKSITE</h3>
                   <p>A browser-game arcade behind a secure-access terminal. New games added over time. Currently DATA SPIKE and NULL_ESCAPE, built in React and canvas.</p>

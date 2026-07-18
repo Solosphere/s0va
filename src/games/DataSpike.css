@@ -665,4 +665,438 @@
     font-size: 0.8em;
     gap: 10px;
   }
-} 
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   DataSpike HUD skin
+   ────────────────────────────────────────────────────────────────────────
+   Wound-HUD-style overrides scoped to .hud-skin so the base game keeps
+   working if we ever want a non-HUD variant. Repaints the modal shell,
+   HUD chips, overload bar, and spikes in the mettaire cockpit vocabulary
+   — cyan hairlines, chamfered clip-paths, arterial red for critical
+   states, mono SYS.NN tag on the modal header. Gameplay unchanged. */
+
+.data-spike-container.hud-skin {
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(6px);
+  padding: 24px;
+  --hud-cyan: var(--color-club, #14e5ff);
+  --hud-cyan-rgb: var(--color-club-rgb, 20 229 255);
+  --hud-red: #db2f2f;
+  --hud-red-rgb: 219 47 47;
+}
+
+.hud-skin .data-spike-modal {
+  border: 1px solid rgba(var(--hud-cyan-rgb), 0.32);
+  border-radius: 0;
+  background:
+    linear-gradient(135deg, rgba(var(--hud-cyan-rgb), 0.055) 0%, transparent 45%),
+    rgba(8, 14, 20, 0.86);
+  box-shadow:
+    0 0 32px rgba(var(--hud-cyan-rgb), 0.15),
+    inset 0 0 60px rgba(0, 0, 0, 0.35);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 22px) 0,
+    100% 22px,
+    100% 100%,
+    22px 100%,
+    0 calc(100% - 22px)
+  );
+  overflow: hidden;
+  position: relative;
+}
+
+.hud-skin .data-spike-modal::before {
+  display: none;
+}
+
+/* Perception-window corner brackets pinned to the modal corners. */
+.hud-skin .ds-frame {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.hud-skin .ds-frame-corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--hud-cyan);
+  box-shadow: 0 0 10px rgba(var(--hud-cyan-rgb), 0.4);
+}
+.hud-skin .ds-frame-corner--tl { top: 10px;    left: 10px;    border-right: none; border-bottom: none; }
+.hud-skin .ds-frame-corner--tr { top: 10px;    right: 10px;   border-left:  none; border-bottom: none; }
+.hud-skin .ds-frame-corner--bl { bottom: 10px; left: 10px;    border-right: none; border-top:    none; }
+.hud-skin .ds-frame-corner--br { bottom: 10px; right: 10px;   border-left:  none; border-top:    none; }
+
+/* Modal header — brushed-metal shimmer + cyan hairline + SYS.01 tag. */
+.hud-skin .modal-header {
+  border-bottom: 1px solid rgba(var(--hud-cyan-rgb), 0.32);
+  border-left: none; border-right: none; border-top: none;
+  box-shadow: 0 0 12px rgba(var(--hud-cyan-rgb), 0.18);
+  position: relative;
+  padding: 18px 28px 16px;
+}
+.hud-skin .modal-header h2 {
+  color: var(--hud-cyan);
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  letter-spacing: 0.16em;
+  font-size: 1.15rem;
+  text-shadow: 0 0 8px rgba(var(--hud-cyan-rgb), 0.35);
+}
+.hud-skin .ds-header-tag {
+  position: absolute;
+  top: -1px;
+  left: 22px;
+  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(var(--hud-cyan-rgb), 0.5);
+  border-top: none;
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  color: var(--hud-cyan);
+  text-shadow: 0 0 6px rgba(var(--hud-cyan-rgb), 0.5);
+  z-index: 5;
+  pointer-events: none;
+}
+.hud-skin .close-btn {
+  color: var(--hud-cyan);
+  border: 1px solid rgba(var(--hud-cyan-rgb), 0.4);
+  width: 28px;
+  height: 28px;
+  font-size: 1.3em;
+  transition: all 0.2s ease;
+}
+.hud-skin .close-btn:hover {
+  background: rgba(var(--hud-cyan-rgb), 0.14);
+  box-shadow: 0 0 12px rgba(var(--hud-cyan-rgb), 0.4);
+}
+
+.hud-skin .modal-body {
+  padding: 24px;
+}
+
+/* Menu — cyan headings, boxed description panel with chamfered edges. */
+.hud-skin .menu-header h2 {
+  color: var(--hud-cyan);
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  letter-spacing: 0.28em;
+  text-shadow: 0 0 12px rgba(var(--hud-cyan-rgb), 0.4);
+}
+.hud-skin .menu-subtitle {
+  color: rgba(var(--hud-cyan-rgb), 0.75);
+  font-style: normal;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+}
+.hud-skin .game-description {
+  background: rgba(var(--hud-cyan-rgb), 0.045) !important;
+  border: 1px solid rgba(var(--hud-cyan-rgb), 0.22) !important;
+  border-radius: 0;
+  clip-path: polygon(
+    12px 0,
+    100% 0,
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%,
+    0 100%,
+    0 12px
+  );
+}
+.hud-skin .game-description p {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.hud-skin .start-btn,
+.hud-skin .resume-btn,
+.hud-skin .retry-btn,
+.hud-skin .menu-btn {
+  background: transparent;
+  border: 1px solid rgba(var(--hud-cyan-rgb), 0.55);
+  color: var(--hud-cyan);
+  border-radius: 0;
+  letter-spacing: 0.28em;
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  text-shadow: 0 0 6px rgba(var(--hud-cyan-rgb), 0.35);
+  box-shadow: none;
+  animation: none;
+  transition: all 0.2s ease;
+}
+.hud-skin .start-btn:hover,
+.hud-skin .resume-btn:hover,
+.hud-skin .retry-btn:hover,
+.hud-skin .menu-btn:hover {
+  background: rgba(var(--hud-cyan-rgb), 0.14);
+  box-shadow: 0 0 18px rgba(var(--hud-cyan-rgb), 0.4);
+  color: var(--hud-cyan);
+  border-color: rgba(var(--hud-cyan-rgb), 0.85);
+  transform: translateY(-1px);
+}
+
+/* High-score panel — same chamfered card. */
+.hud-skin .high-scores {
+  background: rgba(8, 14, 20, 0.72) !important;
+  border: 1px solid rgba(var(--hud-cyan-rgb), 0.22) !important;
+  border-radius: 0;
+  clip-path: polygon(
+    12px 0,
+    100% 0,
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%,
+    0 100%,
+    0 12px
+  );
+}
+.hud-skin .high-scores h3 {
+  color: var(--hud-cyan) !important;
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  letter-spacing: 0.22em;
+  font-size: 0.85rem;
+}
+.hud-skin .score-entry {
+  background: rgba(var(--hud-cyan-rgb), 0.045) !important;
+  border-left: 2px solid rgba(var(--hud-cyan-rgb), 0.35);
+}
+.hud-skin .score-rank { color: var(--hud-cyan) !important; }
+
+/* Game header — HUD stat panel with cyan hairline top. */
+.hud-skin .game-header {
+  background: rgba(8, 14, 20, 0.72) !important;
+  border: 1px solid rgba(var(--hud-cyan-rgb), 0.22) !important;
+  border-radius: 0;
+  clip-path: polygon(
+    12px 0,
+    100% 0,
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%,
+    0 100%,
+    0 12px
+  );
+  position: relative;
+}
+.hud-skin .game-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(var(--hud-cyan-rgb), 0.85),
+    transparent);
+  box-shadow: 0 0 6px rgba(var(--hud-cyan-rgb), 0.55);
+}
+.hud-skin .stat-label {
+  color: rgba(var(--hud-cyan-rgb), 0.7) !important;
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  letter-spacing: 0.22em;
+  font-size: 0.68rem;
+}
+.hud-skin .stat-value {
+  color: var(--hud-cyan);
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  text-shadow: 0 0 6px rgba(var(--hud-cyan-rgb), 0.4);
+}
+.hud-skin .stat-value.critical {
+  color: rgba(255, 155, 155, 0.98);
+  text-shadow: 0 0 10px rgba(var(--hud-red-rgb), 0.7);
+  animation: hud-critical-flash 0.5s infinite;
+}
+@keyframes hud-critical-flash {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.55; }
+}
+.hud-skin .pause-btn {
+  border: 1px solid rgba(var(--hud-cyan-rgb), 0.45);
+  color: var(--hud-cyan);
+  border-radius: 0;
+  background: transparent;
+}
+.hud-skin .pause-btn:hover {
+  background: rgba(var(--hud-cyan-rgb), 0.14);
+  box-shadow: 0 0 10px rgba(var(--hud-cyan-rgb), 0.4);
+}
+
+/* Game area — reticle crosshair via radial-gradient corner marks. */
+.hud-skin .game-area {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(var(--hud-cyan-rgb), 0.035) 0%, transparent 60%),
+    rgba(4, 8, 12, 0.9) !important;
+  border: 1px solid rgba(var(--hud-cyan-rgb), 0.22) !important;
+  border-radius: 0;
+  clip-path: polygon(
+    12px 0,
+    100% 0,
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%,
+    0 100%,
+    0 12px
+  );
+  cursor: crosshair;
+  position: relative;
+}
+/* Faint grid overlay to sell the "targeting field" read. */
+.hud-skin .game-area::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(var(--hud-cyan-rgb), 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--hud-cyan-rgb), 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Data-spike targets — cyan reticle rings for normal, arterial red for critical. */
+.hud-skin .data-spike {
+  border-radius: 0;
+  transition: transform 0.1s ease;
+}
+.hud-skin .data-spike.normal {
+  background: radial-gradient(circle,
+    rgba(var(--hud-cyan-rgb), 0.55) 0%,
+    rgba(var(--hud-cyan-rgb), 0.15) 60%,
+    transparent 100%);
+  border: 1.5px solid var(--hud-cyan);
+  box-shadow:
+    0 0 12px rgba(var(--hud-cyan-rgb), 0.55),
+    inset 0 0 8px rgba(var(--hud-cyan-rgb), 0.35);
+  clip-path: polygon(
+    50% 0%,
+    100% 25%,
+    100% 75%,
+    50% 100%,
+    0% 75%,
+    0% 25%
+  );
+}
+.hud-skin .data-spike.critical {
+  background: radial-gradient(circle,
+    rgba(var(--hud-red-rgb), 0.6) 0%,
+    rgba(var(--hud-red-rgb), 0.15) 60%,
+    transparent 100%);
+  border: 1.5px solid rgba(var(--hud-red-rgb));
+  box-shadow:
+    0 0 16px rgba(var(--hud-red-rgb), 0.7),
+    inset 0 0 8px rgba(var(--hud-red-rgb), 0.4);
+  clip-path: polygon(
+    50% 0%,
+    100% 25%,
+    100% 75%,
+    50% 100%,
+    0% 75%,
+    0% 25%
+  );
+  animation: hud-critical-pulse 0.6s infinite alternate;
+}
+@keyframes hud-critical-pulse {
+  from {
+    box-shadow: 0 0 12px rgba(var(--hud-red-rgb), 0.55), inset 0 0 8px rgba(var(--hud-red-rgb), 0.4);
+  }
+  to {
+    box-shadow: 0 0 22px rgba(var(--hud-red-rgb), 0.95), inset 0 0 10px rgba(var(--hud-red-rgb), 0.55);
+  }
+}
+.hud-skin .spike-content {
+  color: #fff;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+}
+
+/* Overload bar — cyan → arterial red gradient with segmented tick pattern
+   overlaid so it reads as a HUD gauge, not a health bar. */
+.hud-skin .overload-bar {
+  border: 1px solid rgba(var(--hud-cyan-rgb), 0.35);
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 0;
+  height: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.hud-skin .overload-bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(90deg,
+    transparent 0,
+    transparent 9%,
+    rgba(0, 0, 0, 0.7) 9%,
+    rgba(0, 0, 0, 0.7) 10%);
+  background-size: 10% 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+.hud-skin .overload-fill {
+  background: linear-gradient(90deg,
+    var(--hud-cyan) 0%,
+    rgba(var(--hud-cyan-rgb), 0.9) 45%,
+    #ffd25a 70%,
+    #db2f2f 100%);
+  box-shadow: 0 0 12px rgba(var(--hud-cyan-rgb), 0.4);
+}
+
+/* Paused / game-over panels — same chamfered chrome. */
+.hud-skin .paused-stats,
+.hud-skin .flickering-log {
+  background: rgba(8, 14, 20, 0.78) !important;
+  border: 1px solid rgba(var(--hud-cyan-rgb), 0.22) !important;
+  border-radius: 0;
+  clip-path: polygon(
+    12px 0,
+    100% 0,
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%,
+    0 100%,
+    0 12px
+  );
+}
+.hud-skin .paused-stats p,
+.hud-skin .flickering-log p {
+  color: rgba(255, 255, 255, 0.78);
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+}
+.hud-skin .paused-header h2,
+.hud-skin .gameover-header h2 {
+  color: var(--hud-cyan);
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  letter-spacing: 0.28em;
+  text-shadow: 0 0 12px rgba(var(--hud-cyan-rgb), 0.4);
+}
+.hud-skin .gameover-header h2.critical {
+  color: rgba(255, 155, 155, 0.98);
+  text-shadow: 0 0 14px rgba(var(--hud-red-rgb), 0.7);
+}
+.hud-skin .glitch-text::before {
+  color: rgba(var(--hud-red-rgb), 0.85);
+}
+.hud-skin .glitch-text::after {
+  color: rgba(var(--hud-cyan-rgb), 0.85);
+}
+
+/* Motion-reduced accommodation. */
+[data-motion="reduced"] .hud-skin .data-spike.critical,
+[data-motion="reduced"] .hud-skin .stat-value.critical,
+[data-motion="reduced"] .hud-skin .glitch-text {
+  animation: none;
+}
+
+/* Font parity — every heading inside the game modal uses the branded
+   display font (changeling-neo) that renders the SYSTEM_01 program name on
+   the BlackSite cards. Nested overrides inside .hud-skin were leaking a
+   different family into game menu titles; force the display family so the
+   game reads as part of the same cockpit chrome. */
+.hud-skin h1,
+.hud-skin h2,
+.hud-skin h3,
+.hud-skin .glitch-text,
+.hud-skin .modal-header h2,
+.hud-skin .menu-header h2,
+.hud-skin .paused-header h2,
+.hud-skin .gameover-header h2,
+.hud-skin .high-scores h3 {
+  font-family: var(--font-family-display, 'changeling-neo', 'Inter', system-ui, sans-serif) !important;
+}

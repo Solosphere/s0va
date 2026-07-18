@@ -9,6 +9,14 @@ export default function BlackSite() {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
 
+  // Route entry: always land at the top. React Router keeps whatever scroll
+  // position the previous page had, so an entry from a scrolled-down page
+  // (Home's featured rail, About's blacksite card, or the /programs terminal)
+  // would otherwise drop the user at the bottom of this page.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Set data-text attributes for glitch effect
   useEffect(() => {
     const headers = document.querySelectorAll('.blacksite-container h1, .blacksite-container h2, .blacksite-container h3');
@@ -49,7 +57,10 @@ export default function BlackSite() {
     });
   }, []);
 
-  // Sample programs/games - you can expand this
+  // Sample programs/games - you can expand this. The `icon` field is now a
+  // mono program-code chip (SYS.01, SEC.03, …) rendered as HUD text — matches
+  // the site-wide SEC.0N chip pattern from the engineering log so the arcade
+  // reads as part of the same cockpit, not a stock cyberpunk kit.
   const programs = [
     {
       id: 'system-01',
@@ -57,7 +68,7 @@ export default function BlackSite() {
       description: 'Neural Interface Protocol',
       status: 'ACTIVE',
       clearance: 'LEVEL_5',
-      icon: '⚡'
+      icon: 'SYS.01'
     },
     {
       id: 'system-02',
@@ -65,7 +76,7 @@ export default function BlackSite() {
       description: 'Neural Network Infiltration',
       status: 'ACTIVE',
       clearance: 'LEVEL_5',
-      icon: '∅␛'
+      icon: 'SYS.02'
     },
     {
       id: 'security-03',
@@ -73,7 +84,7 @@ export default function BlackSite() {
       description: 'Firewall Penetration Test',
       status: 'LOCKED',
       clearance: 'LEVEL_4',
-      icon: '🔒'
+      icon: 'SEC.03'
     },
     {
       id: 'data-04',
@@ -81,7 +92,7 @@ export default function BlackSite() {
       description: 'Encrypted Data Stream',
       status: 'LOCKED',
       clearance: 'LEVEL_6',
-      icon: '💾'
+      icon: 'DAT.04'
     },
     {
       id: 'protocol-05',
@@ -89,7 +100,7 @@ export default function BlackSite() {
       description: 'Quantum Encryption Matrix',
       status: 'LOCKED',
       clearance: 'LEVEL_7',
-      icon: '🌐'
+      icon: 'PRT.05'
     }
   ];
 
@@ -124,7 +135,16 @@ export default function BlackSite() {
   };
 
   return (
-    <div className="blacksite-container">
+    <div className="blacksite-container blacksite-hud">
+      {/* Perception-window brackets — pinned to the container corners so the
+          BlackSite reads as part of the same HUD family as the engineering
+          log. Decorative only. */}
+      <div className="blacksite-frame" aria-hidden="true">
+        <span className="blacksite-frame-corner blacksite-frame-corner--tl" />
+        <span className="blacksite-frame-corner blacksite-frame-corner--tr" />
+        <span className="blacksite-frame-corner blacksite-frame-corner--bl" />
+        <span className="blacksite-frame-corner blacksite-frame-corner--br" />
+      </div>
       <div className="blacksite-header">
         <div className={`access-terminal ${isMinimized ? 'minimized' : ''} ${isMaximized ? 'maximized' : ''}`}>
           <div className="terminal-header">

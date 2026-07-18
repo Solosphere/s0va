@@ -8714,17 +8714,18 @@ input:checked + .toggle-slider:before {
   counter-reset: logsec;
 }
 
-/* Perception-window brackets — four cyan L-corners pinned to the viewport, so
-   they hold the HUD identity while everything else scrolls. Cleared under the
-   fixed site nav (~72px). */
+/* Perception-window brackets — four cyan L-corners bound to the page body
+   (not the viewport) so they mark the extents of the log content and don't
+   float over the site nav or footer. Absolute-positioned inside .log-page:
+   they scroll with the page and terminate cleanly at the page edges. */
 .log-frame {
-  position: fixed;
-  top: calc(72px + clamp(10px, 1.5vw, 20px));
-  right: clamp(10px, 1.5vw, 20px);
-  bottom: clamp(10px, 1.5vw, 20px);
-  left: clamp(10px, 1.5vw, 20px);
+  position: absolute;
+  top: clamp(12px, 1.5vw, 22px);
+  right: clamp(12px, 1.5vw, 22px);
+  bottom: clamp(12px, 1.5vw, 22px);
+  left: clamp(12px, 1.5vw, 22px);
   pointer-events: none;
-  z-index: 90;
+  z-index: 1;
 }
 .log-frame-corner {
   position: absolute;
@@ -9177,6 +9178,171 @@ input:checked + .toggle-slider:before {
 .log-detail--missing {
   text-align: center;
   padding-top: var(--spacing-4xl);
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   Log-detail HUD skin — used on /engineering/:id via .log-detail-hud
+   ────────────────────────────────────────────────────────────────────────
+   Applies the same chamfered-panel + cyan-hairline + SEC.NN chip vocabulary
+   the log index uses, so navigating into an entry stays within the HUD
+   family instead of dropping into a plain terminal write-up. The terminal
+   "$ cat problem" command headers survive as an accent line inside each
+   panel — the terminal read is what makes these entries feel like ops
+   logs, so we keep it. */
+.log-detail-hud {
+  position: relative;
+  padding-top: var(--spacing-2xl);
+}
+
+.log-detail-hud .log-detail-head {
+  position: relative;
+  max-width: 760px;
+  margin: 0 auto var(--spacing-2xl);
+  padding: 0 var(--spacing-lg);
+  border-bottom: 0;
+}
+.log-detail-hud .log-detail-head-inner {
+  position: relative;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  border: 1px solid rgba(var(--color-club-rgb), 0.22);
+  background:
+    linear-gradient(135deg, rgba(var(--color-club-rgb), 0.055) 0%, transparent 45%),
+    rgba(8, 14, 20, 0.55);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 18px) 0,
+    100% 18px,
+    100% 100%,
+    18px 100%,
+    0 calc(100% - 18px)
+  );
+  backdrop-filter: blur(6px);
+}
+/* Cyan hairline hugging the top of the head panel — matches the log-card
+   glowing top edge so the detail-head reads as a "card-elevated" version. */
+.log-detail-hud .log-detail-head-inner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 18px;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(var(--color-club-rgb), 0.85) 10%,
+    rgba(var(--color-club-rgb), 0.85) 90%,
+    transparent 100%);
+  box-shadow: 0 0 8px rgba(var(--color-club-rgb), 0.55);
+}
+/* Floating ENTRY chip in the top-left, matching SEC.0N on the index. */
+.log-detail-hud .log-detail-head-tag {
+  position: absolute;
+  top: -8px;
+  left: 44px;
+  padding: 0 8px;
+  background: var(--color-background);
+  font-family: var(--font-family-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  color: var(--color-club);
+  text-shadow: 0 0 6px rgba(var(--color-club-rgb), 0.45);
+  z-index: 2;
+}
+.log-detail-hud .log-detail-head h1 {
+  font-weight: 500;
+  margin-bottom: var(--spacing-md);
+}
+.log-detail-hud .log-detail-org {
+  color: var(--color-club);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  text-shadow: 0 0 6px rgba(var(--color-club-rgb), 0.4);
+}
+
+/* Each STAR section is a chamfered mini-panel with a floating SEC.NN chip
+   in the top-left and the "$ cat problem" command header as an accent. */
+.log-detail-hud .log-detail-section {
+  position: relative;
+  max-width: 760px;
+  margin: 0 auto var(--spacing-xl);
+  padding: 0 var(--spacing-lg);
+}
+.log-detail-hud .log-detail-section-inner {
+  position: relative;
+  padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-lg);
+  border: 1px solid rgba(var(--color-club-rgb), 0.18);
+  background:
+    linear-gradient(135deg, rgba(var(--color-club-rgb), 0.035) 0%, transparent 45%),
+    rgba(8, 14, 20, 0.45);
+  clip-path: polygon(
+    18px 0,
+    100% 0,
+    100% calc(100% - 18px),
+    calc(100% - 18px) 100%,
+    0 100%,
+    0 18px
+  );
+  backdrop-filter: blur(4px);
+}
+/* Faint arterial-red hairline on the bottom edge, echoing the log-section-
+   panel treatment on the index — HUD "closed circuit" cue. */
+.log-detail-hud .log-detail-section-inner::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 18px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(219, 47, 47, 0.35) 30%,
+    rgba(219, 47, 47, 0.35) 70%,
+    transparent 100%);
+}
+/* SEC.NN chip — same treatment as .log-section-label::before on the index. */
+.log-detail-hud .log-detail-section-tag {
+  position: absolute;
+  top: -8px;
+  left: 26px;
+  padding: 0 8px;
+  background: var(--color-background);
+  font-family: var(--font-family-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  color: var(--color-club);
+  text-shadow: 0 0 6px rgba(var(--color-club-rgb), 0.45);
+  z-index: 2;
+}
+/* Reset the section head — no longer needs its own margin above the panel
+   edge; the panel padding handles spacing. Keep it as the accent command
+   line. */
+.log-detail-hud .log-detail-section .log-section-head {
+  margin-bottom: var(--spacing-md);
+  font-size: 0.85rem;
+  color: rgba(var(--color-club-rgb), 0.85);
+}
+.log-detail-hud .log-detail-section .log-section-head .log-cmd {
+  color: rgba(var(--color-club-rgb), 0.85);
+}
+.log-detail-hud .log-detail-section .log-section--reflection blockquote,
+.log-detail-hud .log-detail-section > blockquote {
+  margin: 0;
+}
+.log-detail-hud .log-detail-section .log-arch {
+  border: 1px solid rgba(var(--color-club-rgb), 0.28);
+}
+
+@media (max-width: 640px) {
+  .log-detail-hud .log-detail-head,
+  .log-detail-hud .log-detail-section {
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+  }
+  .log-detail-hud .log-detail-head-inner,
+  .log-detail-hud .log-detail-section-inner {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
 }
 
 @media (max-width: 600px) {

@@ -1,97 +1,121 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const COMMANDS = [
+  { command: 'user@mettaire.os ~ % ssh root@127.0.0.1',    output: 'ACCESSING ROOT TERMINAL...' },
+  { command: 'root@mettaire.os ~ # access_programs',       output: 'INITIALIZING SECURE CONNECTION...' },
+  { command: 'root@mettaire.os ~ # verify_clearance',      output: 'CLEARANCE LEVEL 5 CONFIRMED' },
+  { command: 'root@mettaire.os ~ # scan_systems',          output: 'SCANNING AVAILABLE PROGRAMS...' },
+  { command: 'root@mettaire.os ~ # list_programs',         output: 'RETRIEVING PROGRAM DATABASE...' },
+];
+
+const PROGRAMS = [
+  'SYSTEM_01   - Neural Interface Protocol       [ACTIVE]',
+  'SECURITY_02 - Firewall Penetration Test       [ACTIVE]',
+  'DATA_03     - Encrypted Data Stream           [STANDBY]',
+  'PROTOCOL_04 - Quantum Encryption Matrix       [LOCKED]',
+  'NEURAL_05   - Cognitive Enhancement Suite     [LOCKED]',
+  'CYBER_06    - Digital Warfare Simulator       [DEACTIVATED]',
+  'QUANTUM_07  - Entanglement Protocol           [DEACTIVATED]',
+  'BIO_08      - Genetic Algorithm Engine        [DEACTIVATED]',
+];
+
+const TYPE_MS = 55;      // per-character delay while a command types out
+const AFTER_CMD_MS = 220; // pause between the finished command and its output
+const AFTER_OUT_MS = 520; // pause between an output line and the next command
+
 export default function ProgramsAccess() {
-  const [currentText, setCurrentText] = useState('');
-  const [currentCommand, setCurrentCommand] = useState(0);
+  // Terminal scrollback: `lines` is the finalized, immutable history (commands
+  // + their outputs, one per array slot). `typing` is the single in-progress
+  // line whose characters are streaming in. Rendering these two separately —
+  // instead of one big string that we mutate — is what keeps the previous
+  // commands stable while the newest one streams.
+  const [lines, setLines] = useState([]);
+  const [typing, setTyping] = useState('');
   const [showButtons, setShowButtons] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
   const navigate = useNavigate();
   const terminalContentRef = useRef(null);
 
-  // Jenkins-like auto-scroll function - follows each character
-  const scrollToBottom = () => {
-    if (terminalContentRef.current) {
-      const element = terminalContentRef.current;
-      // Immediate scroll to bottom for real-time console feel
-      element.scrollTop = element.scrollHeight;
-    }
-  };
-
-  // Auto-scroll whenever text updates (Jenkins-like behavior)
+  // Route entry: always land at the top. Without this, coming in from a
+  // scrolled-down page (Home's featured rail, About's blacksite card) leaves
+  // the user parked at the previous page's scroll position.
   useEffect(() => {
-    scrollToBottom();
-  }, [currentText]);
+    window.scrollTo(0, 0);
+  }, []);
 
-  const commands = [
-    { command: 'user@mettaire.os ~ % $ ssh root@127.0.0.1', output: 'ACCESSING ROOT TERMINAL...' },
-    { command: 'root@mettaire.os ~ % $ ACCESS_PROGRAMS', output: 'INITIALIZING SECURE CONNECTION...' },
-    { command: 'root@mettaire.os ~ % $ VERIFY_CLEARANCE', output: 'CLEARANCE LEVEL 5 CONFIRMED' },
-    { command: 'root@mettaire.os ~ % $ SCAN_SYSTEMS', output: 'SCANNING AVAILABLE PROGRAMS...' }, 
-    { command: 'root@mettaire.os ~ % $ LIST_PROGRAMS', output: 'RETRIEVING PROGRAM DATABASE...' }
-  ];
-
-  const programs = [
-    'root@mettaire.os ~ % $ SYSTEM_01 - Neural Interface Protocol [ACTIVE]',
-    'root@mettaire.os ~ % $ SECURITY_02 - Firewall Penetration Test [ACTIVE]',
-    'root@mettaire.os ~ % $ DATA_03 - Encrypted Data Stream [STANDBY]',
-    'root@mettaire.os ~ % $ PROTOCOL_04 - Quantum Encryption Matrix [LOCKED]',
-    'root@mettaire.os ~ % $ NEURAL_05 - Cognitive Enhancement Suite [LOCKED]',
-    'root@mettaire.os ~ % $ CYBER_06 - Digital Warfare Simulator [DEACTIVATED]',
-    'root@mettaire.os ~ % $ QUANTUM_07 - Entanglement Protocol [DEACTIVATED]',
-    'root@mettaire.os ~ % $ BIO_08 - Genetic Algorithm Engine [DEACTIVATED]'
-  ];
-
+  // Follow the freshest character to the bottom of the pane while the terminal
+  // scrolls past its own height.
   useEffect(() => {
-    if (currentCommand < commands.length) {
-      typeCommand(commands[currentCommand]);
-    } else if (currentCommand === commands.length) {
-      typePrograms();
-    }
-  }, [currentCommand]);
+    const el = terminalContentRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [lines, typing]);
 
-  const typeCommand = (commandObj) => {
-    let index = 0;
-    const fullText = `${commandObj.command}`;
-    
-    const typeInterval = setInterval(() => {
-      if (index <= fullText.length) {
-        setCurrentText(fullText.substring(0, index));
-        index++;
-      } else {
-        clearInterval(typeInterval);
-        setTimeout(() => {
-          setCurrentText(fullText + '\n' + commandObj.output);
-          setTimeout(() => {
-            setCurrentCommand(currentCommand + 1);
-          }, 1000);
-        }, 500);
-      }
-    }, 100);
-  };
+  // Drive the sequence — type each command char-by-char, drop it into the
+  // scrollback, print its output on the next line, then move on. When commands
+  // are exhausted, list programs one line at a time and reveal the CTA.
+  useEffect(() => {
+    let cancelled = false;
+    const timers = new Set();
 
-  const typePrograms = () => {
-    let index = 0;
-    const programsText = programs.join('\n');
-    
-    const typeInterval = setInterval(() => {
-      if (index <= programsText.length) {
-        setCurrentText(prev => {
-          const lines = prev.split('\n');
-          lines[lines.length - 1] = programsText.substring(0, index);
-          return lines.join('\n');
-        });
-        index++;
-      } else {
-        clearInterval(typeInterval);
-        setTimeout(() => {
-          setCurrentText(prev => prev + '\n\nACCESS GRANTED - SELECT OPTION:');
-          setShowButtons(true);
-        }, 1000);
+    const wait = (ms) => new Promise((resolve) => {
+      const t = setTimeout(() => { timers.delete(t); resolve(); }, ms);
+      timers.add(t);
+    });
+
+    const typeLine = (text) => new Promise((resolve) => {
+      let i = 0;
+      const step = () => {
+        if (cancelled) return resolve();
+        i += 1;
+        setTyping(text.slice(0, i));
+        if (i >= text.length) return resolve();
+        const t = setTimeout(() => { timers.delete(t); step(); }, TYPE_MS);
+        timers.add(t);
+      };
+      if (!text.length) return resolve();
+      setTyping('');
+      step();
+    });
+
+    const commit = (text) =>
+      setLines((prev) => (text === undefined ? prev : [...prev, text]));
+
+    const run = async () => {
+      for (const c of COMMANDS) {
+        if (cancelled) return;
+        await typeLine(c.command);
+        if (cancelled) return;
+        commit(c.command);
+        setTyping('');
+        await wait(AFTER_CMD_MS);
+        if (cancelled) return;
+        commit(c.output);
+        await wait(AFTER_OUT_MS);
       }
-    }, 50);
-  };
+      for (const p of PROGRAMS) {
+        if (cancelled) return;
+        await typeLine(`  ${p}`);
+        if (cancelled) return;
+        commit(`  ${p}`);
+        setTyping('');
+        await wait(120);
+      }
+      if (cancelled) return;
+      commit('');
+      commit('ACCESS GRANTED - SELECT OPTION:');
+      setShowButtons(true);
+    };
+
+    run();
+
+    return () => {
+      cancelled = true;
+      timers.forEach(clearTimeout);
+      timers.clear();
+    };
+  }, []);
 
   const handleAccess = () => {
     navigate('/programs/blacksite');
@@ -149,7 +173,13 @@ export default function ProgramsAccess() {
   }, [showButtons]); // Re-run when showButtons changes
 
   return (
-    <div className="programs-access-container">
+    <div className="programs-access-container programs-hud">
+      <div className="programs-frame" aria-hidden="true">
+        <span className="programs-frame-corner programs-frame-corner--tl" />
+        <span className="programs-frame-corner programs-frame-corner--tr" />
+        <span className="programs-frame-corner programs-frame-corner--bl" />
+        <span className="programs-frame-corner programs-frame-corner--br" />
+      </div>
       <div className={`access-terminal ${isMinimized ? 'minimized' : ''} ${isMaximized ? 'maximized' : ''}`}>
         <div className="terminal-header">
           <div className="terminal-controls">
@@ -162,7 +192,17 @@ export default function ProgramsAccess() {
         
         <div className="terminal-body">
           <div className="terminal-content" ref={terminalContentRef}>
-            <pre className="terminal-text">{currentText}</pre>
+            <pre className="terminal-text">
+              {lines.map((l, i) => (
+                <span key={i} className="terminal-row">{l || ' '}{'\n'}</span>
+              ))}
+              {typing.length > 0 && (
+                <span className="terminal-row terminal-row--typing">
+                  {typing}
+                  <span className="terminal-caret" aria-hidden="true">▍</span>
+                </span>
+              )}
+            </pre>
             {showButtons && (
               <div className="access-buttons">
                 <button className="access-btn primary" onClick={handleAccess}>

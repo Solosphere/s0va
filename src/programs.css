@@ -203,10 +203,25 @@
   flex: 1;
 }
 
-.terminal-text::after {
-  content: '█';
-  animation: blink 1s infinite;
+.terminal-caret {
+  display: inline-block;
+  margin-left: 2px;
   color: #e0e0e0;
+  animation: blink 1s infinite;
+}
+
+/* Terminal scrollback rows — plain inline text inside <pre>. Distinct from
+   .terminal-line (used elsewhere on the BlackSite page with flex layout) so
+   the row's whitespace is preserved verbatim. */
+.terminal-row {
+  color: #e0e0e0;
+  font-family: 'Space Mono', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.terminal-row--typing {
+  color: #ffffff;
 }
 
 @keyframes blink {
@@ -1896,4 +1911,538 @@
   .program-card.locked .clearance {
     color: #666666 !important;
   }
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   BlackSite HUD overrides
+   ────────────────────────────────────────────────────────────────────────
+   Scoped to .blacksite-hud so the /programs terminal-gate is untouched.
+   Repaints the /programs/blacksite shell + program cards in the mettaire
+   HUD vocabulary (chamfered clip-path, cyan hairlines, corner brackets,
+   mono chip codes) so the arcade reads as part of the same cockpit as
+   the engineering log. Glitch effects on .program-icon and .program-
+   description are preserved — only the surrounding chrome is updated. */
+
+.blacksite-hud {
+  padding: var(--spacing-xl, 32px) var(--spacing-lg, 24px);
+  gap: var(--spacing-xl, 32px);
+}
+
+.blacksite-hud .blacksite-frame {
+  position: absolute;
+  top: clamp(12px, 1.5vw, 22px);
+  right: clamp(12px, 1.5vw, 22px);
+  bottom: clamp(12px, 1.5vw, 22px);
+  left: clamp(12px, 1.5vw, 22px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.blacksite-hud .blacksite-frame-corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--color-club, #14e5ff);
+  box-shadow: 0 0 12px rgba(var(--color-club-rgb, 20 229 255), 0.35);
+}
+.blacksite-hud .blacksite-frame-corner--tl {
+  top: 0; left: 0; border-right: none; border-bottom: none;
+}
+.blacksite-hud .blacksite-frame-corner--tr {
+  top: 0; right: 0; border-left: none; border-bottom: none;
+}
+.blacksite-hud .blacksite-frame-corner--bl {
+  bottom: 0; left: 0; border-right: none; border-top: none;
+}
+.blacksite-hud .blacksite-frame-corner--br {
+  bottom: 0; right: 0; border-left: none; border-top: none;
+}
+@media (max-width: 640px) {
+  .blacksite-hud .blacksite-frame-corner { width: 20px; height: 20px; }
+}
+
+/* Terminal shell — brushed-metal chrome shared with the engineering log
+   panel family. Chamfer the outer terminal with a clip-path so it echoes
+   the .log-section-panel corners; the terminal header sits above with a
+   cyan hairline instead of the old white glow. */
+.blacksite-hud .access-terminal {
+  border: 1px solid rgba(var(--color-club-rgb, 20 229 255), 0.28);
+  border-radius: 0;
+  background:
+    linear-gradient(135deg, rgba(var(--color-club-rgb, 20 229 255), 0.045) 0%, transparent 45%),
+    rgba(8, 14, 20, 0.72);
+  box-shadow:
+    0 0 24px rgba(var(--color-club-rgb, 20 229 255), 0.12),
+    inset 0 0 40px rgba(0, 0, 0, 0.35);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 22px) 0,
+    100% 22px,
+    100% 100%,
+    22px 100%,
+    0 calc(100% - 22px)
+  );
+  backdrop-filter: blur(6px);
+}
+
+.blacksite-hud .terminal-header {
+  border-bottom: 1px solid rgba(var(--color-club-rgb, 20 229 255), 0.28);
+  border-left: none; border-right: none; border-top: none;
+  box-shadow: 0 0 12px rgba(var(--color-club-rgb, 20 229 255), 0.18);
+  position: relative;
+}
+
+.blacksite-hud .terminal-title {
+  color: var(--color-club, #14e5ff);
+  letter-spacing: 0.22em;
+  text-shadow: 0 0 8px rgba(var(--color-club-rgb, 20 229 255), 0.35);
+}
+
+.blacksite-hud .terminal-body {
+  background: transparent;
+}
+
+/* Prompt-line cyan (was pure white) so the terminal reads like the rest of
+   the HUD instead of a stock console. */
+.blacksite-hud .terminal-line .prompt {
+  color: var(--color-club, #14e5ff);
+  text-shadow: 0 0 6px rgba(var(--color-club-rgb, 20 229 255), 0.35);
+}
+.blacksite-hud .terminal-line .command,
+.blacksite-hud .terminal-line .output {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Programs grid — chamfered cards + cyan hairlines. Preserve the glitchy
+   .program-icon / .program-description ::before/::after (they layer over
+   the icon text) but drop the harsh white 3px top bar in favor of a thin
+   cyan hairline. */
+.blacksite-hud .programs-grid {
+  gap: var(--spacing-lg, 24px);
+  padding-top: var(--spacing-md, 16px);
+}
+
+.blacksite-hud .program-card {
+  border: 1px solid rgba(var(--color-club-rgb, 20 229 255), 0.22);
+  border-radius: 0;
+  background:
+    linear-gradient(135deg, rgba(var(--color-club-rgb, 20 229 255), 0.055) 0%, transparent 45%),
+    rgba(8, 14, 20, 0.72);
+  box-shadow: 0 0 18px rgba(var(--color-club-rgb, 20 229 255), 0.08);
+  clip-path: polygon(
+    18px 0,
+    100% 0,
+    100% calc(100% - 18px),
+    calc(100% - 18px) 100%,
+    0 100%,
+    0 18px
+  );
+  min-height: 220px;
+  transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+}
+
+.blacksite-hud .program-card::before {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(var(--color-club-rgb, 20 229 255), 0.85) 12%,
+    rgba(var(--color-club-rgb, 20 229 255), 0.85) 88%,
+    transparent 100%);
+  opacity: 1;
+  box-shadow: 0 0 6px rgba(var(--color-club-rgb, 20 229 255), 0.55);
+}
+
+.blacksite-hud .program-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(var(--color-club-rgb, 20 229 255), 0.55);
+  box-shadow: 0 8px 32px rgba(var(--color-club-rgb, 20 229 255), 0.22);
+}
+
+/* State variants — keep the semantic red for locked but recolor to match
+   the arterial-red used in Wound HUD instead of the harsh pure red. */
+.blacksite-hud .program-card.active {
+  border-color: rgba(var(--color-club-rgb, 20 229 255), 0.55);
+  background:
+    linear-gradient(135deg, rgba(var(--color-club-rgb, 20 229 255), 0.09) 0%, transparent 45%),
+    rgba(8, 14, 20, 0.78);
+}
+.blacksite-hud .program-card.standby {
+  border-color: rgba(255, 210, 90, 0.45);
+}
+.blacksite-hud .program-card.standby::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 210, 90, 0.85), transparent);
+  box-shadow: 0 0 6px rgba(255, 210, 90, 0.5);
+}
+.blacksite-hud .program-card.locked {
+  border-color: rgba(219, 47, 47, 0.42);
+  opacity: 0.82;
+}
+.blacksite-hud .program-card.locked::before {
+  background: linear-gradient(90deg, transparent, rgba(219, 47, 47, 0.85), transparent);
+  box-shadow: 0 0 6px rgba(219, 47, 47, 0.5);
+}
+
+/* Program icon — the mono chip code (SYS.01, SEC.03…). Recentered as a
+   proper HUD chip rather than a giant emoji. The ::before/::after
+   chromatic-glitch pseudos continue to work because we're not touching
+   their content — data-text still comes from JSX. */
+.blacksite-hud .program-icon {
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  color: var(--color-club, #14e5ff);
+  text-align: left;
+  margin: 0 0 12px 0;
+  padding: 3px 10px;
+  align-self: flex-start;
+  border: 1px solid rgba(var(--color-club-rgb, 20 229 255), 0.4);
+  background: rgba(var(--color-club-rgb, 20 229 255), 0.06);
+  text-shadow: 0 0 6px rgba(var(--color-club-rgb, 20 229 255), 0.45);
+  display: inline-block;
+  min-width: 76px;
+}
+.blacksite-hud .program-card.locked .program-icon {
+  color: rgba(255, 155, 155, 0.9);
+  border-color: rgba(219, 47, 47, 0.4);
+  background: rgba(219, 47, 47, 0.08);
+  text-shadow: 0 0 6px rgba(219, 47, 47, 0.4);
+}
+.blacksite-hud .program-card.standby .program-icon {
+  color: #ffd25a;
+  border-color: rgba(255, 210, 90, 0.4);
+  background: rgba(255, 210, 90, 0.08);
+  text-shadow: 0 0 6px rgba(255, 210, 90, 0.4);
+}
+
+/* Icon glitch pseudos — override the fixed centering (they were flex-centered
+   for the giant emoji) so they anchor left like the new chip. */
+.blacksite-hud .program-icon::before,
+.blacksite-hud .program-icon::after {
+  padding: 3px 10px;
+  justify-content: flex-start;
+  color: var(--color-club, #14e5ff);
+  text-shadow:
+    1px 0 rgba(219, 47, 47, 0.55),
+    -1px 0 rgba(var(--color-club-rgb, 20 229 255), 0.55);
+}
+
+.blacksite-hud .program-name {
+  color: rgba(255, 255, 255, 0.94);
+  letter-spacing: 0.12em;
+  font-size: 1.05rem;
+}
+.blacksite-hud .program-description {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.88rem;
+}
+
+/* Meta row — pill-style status + clearance chips. */
+.blacksite-hud .program-meta {
+  border-top: 1px solid rgba(var(--color-club-rgb, 20 229 255), 0.14);
+  padding-top: 12px;
+  margin-top: 8px;
+}
+.blacksite-hud .status {
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  padding: 3px 8px;
+  border-radius: 0;
+}
+.blacksite-hud .status.active {
+  background: rgba(var(--color-club-rgb, 20 229 255), 0.14);
+  color: var(--color-club, #14e5ff);
+  border: 1px solid rgba(var(--color-club-rgb, 20 229 255), 0.4);
+}
+.blacksite-hud .status.standby {
+  background: rgba(255, 210, 90, 0.14);
+  color: #ffd25a;
+  border: 1px solid rgba(255, 210, 90, 0.4);
+}
+.blacksite-hud .status.locked {
+  background: rgba(219, 47, 47, 0.14);
+  color: rgba(255, 155, 155, 0.95);
+  border: 1px solid rgba(219, 47, 47, 0.4);
+}
+.blacksite-hud .clearance {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+}
+
+/* Access / locked buttons — chamfered cyan pill vs desaturated red pill. */
+.blacksite-hud .access-program-btn,
+.blacksite-hud .locked-program-btn {
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  padding: 6px 12px;
+  border-radius: 0;
+  transition: all 0.2s ease;
+}
+.blacksite-hud .access-program-btn {
+  background: transparent;
+  color: var(--color-club, #14e5ff);
+  border: 1px solid rgba(var(--color-club-rgb, 20 229 255), 0.55);
+}
+.blacksite-hud .access-program-btn:hover {
+  background: rgba(var(--color-club-rgb, 20 229 255), 0.14);
+  box-shadow: 0 0 12px rgba(var(--color-club-rgb, 20 229 255), 0.4);
+}
+.blacksite-hud .locked-program-btn {
+  background: transparent;
+  color: rgba(255, 155, 155, 0.85);
+  border: 1px solid rgba(219, 47, 47, 0.4);
+  cursor: not-allowed;
+}
+
+/* Footer — cyan status indicator + mono legend. */
+.blacksite-hud .blacksite-footer {
+  border-top: 1px solid rgba(var(--color-club-rgb, 20 229 255), 0.18);
+  padding-top: var(--spacing-md, 16px);
+  color: rgba(255, 255, 255, 0.55);
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+}
+.blacksite-hud .status-indicator.active {
+  background: var(--color-club, #14e5ff);
+  box-shadow: 0 0 8px rgba(var(--color-club-rgb, 20 229 255), 0.6);
+}
+
+/* Program-modal on card click — same chamfer + cyan family. */
+.blacksite-hud .program-modal .modal-content {
+  background:
+    linear-gradient(135deg, rgba(var(--color-club-rgb, 20 229 255), 0.055) 0%, transparent 45%),
+    rgba(8, 14, 20, 0.9);
+  border: 1px solid rgba(var(--color-club-rgb, 20 229 255), 0.35);
+  border-radius: 0;
+  clip-path: polygon(
+    18px 0,
+    100% 0,
+    100% calc(100% - 18px),
+    calc(100% - 18px) 100%,
+    0 100%,
+    0 18px
+  );
+}
+.blacksite-hud .program-modal .modal-header {
+  border-bottom: 1px solid rgba(var(--color-club-rgb, 20 229 255), 0.28);
+}
+.blacksite-hud .program-modal .modal-header h2 {
+  color: var(--color-club, #14e5ff);
+  letter-spacing: 0.18em;
+}
+.blacksite-hud .program-modal .launch-btn {
+  background: transparent;
+  color: var(--color-club, #14e5ff);
+  border: 1px solid rgba(var(--color-club-rgb, 20 229 255), 0.55);
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  letter-spacing: 0.22em;
+}
+.blacksite-hud .program-modal .launch-btn:hover {
+  background: rgba(var(--color-club-rgb, 20 229 255), 0.14);
+  box-shadow: 0 0 16px rgba(var(--color-club-rgb, 20 229 255), 0.45);
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   Programs Access (/programs) HUD overrides
+   ────────────────────────────────────────────────────────────────────────
+   Scoped to .programs-hud so nothing outside this page is affected. Same
+   HUD family as BlackSite + engineering log — chamfered terminal shell,
+   cyan hairlines, corner brackets, arterial-red warning card. The typing
+   scrollback already renders through .terminal-row / .terminal-caret from
+   the earlier refactor, so we only tune colors + chrome here. */
+
+.programs-hud {
+  --hud-cyan: var(--color-club, #14e5ff);
+  --hud-cyan-rgb: var(--color-club-rgb, 20 229 255);
+  --hud-red: #db2f2f;
+  --hud-red-rgb: 219 47 47;
+  padding: var(--spacing-xl, 32px) var(--spacing-lg, 24px);
+  gap: var(--spacing-xl, 32px);
+}
+
+.programs-hud .programs-frame {
+  position: absolute;
+  top: clamp(12px, 1.5vw, 22px);
+  right: clamp(12px, 1.5vw, 22px);
+  bottom: clamp(12px, 1.5vw, 22px);
+  left: clamp(12px, 1.5vw, 22px);
+  pointer-events: none;
+  z-index: 1;
+}
+.programs-hud .programs-frame-corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--hud-cyan);
+  box-shadow: 0 0 12px rgba(var(--hud-cyan-rgb), 0.35);
+}
+.programs-hud .programs-frame-corner--tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+.programs-hud .programs-frame-corner--tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+.programs-hud .programs-frame-corner--bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+.programs-hud .programs-frame-corner--br { bottom: 0; right: 0; border-left: none; border-top: none; }
+@media (max-width: 640px) {
+  .programs-hud .programs-frame-corner { width: 20px; height: 20px; }
+}
+
+/* Terminal shell — chamfered clip-path, cyan hairline (was harsh white). */
+.programs-hud .access-terminal {
+  border: 1px solid rgba(var(--hud-cyan-rgb), 0.28);
+  border-radius: 0;
+  background:
+    linear-gradient(135deg, rgba(var(--hud-cyan-rgb), 0.045) 0%, transparent 45%),
+    rgba(8, 14, 20, 0.72);
+  box-shadow:
+    0 0 24px rgba(var(--hud-cyan-rgb), 0.12),
+    inset 0 0 40px rgba(0, 0, 0, 0.35);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 22px) 0,
+    100% 22px,
+    100% 100%,
+    22px 100%,
+    0 calc(100% - 22px)
+  );
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+}
+
+.programs-hud .terminal-header {
+  border-bottom: 1px solid rgba(var(--hud-cyan-rgb), 0.28);
+  border-left: none; border-right: none; border-top: none;
+  box-shadow: 0 0 12px rgba(var(--hud-cyan-rgb), 0.18);
+  position: relative;
+}
+
+.programs-hud .terminal-title {
+  color: var(--hud-cyan);
+  letter-spacing: 0.22em;
+  text-shadow: 0 0 8px rgba(var(--hud-cyan-rgb), 0.35);
+}
+
+.programs-hud .terminal-body {
+  background: transparent;
+}
+
+/* Scrollback rows — subtle white for outputs, cyan for the typing line so
+   the currently-streaming command reads as "live". */
+.programs-hud .terminal-row {
+  color: rgba(255, 255, 255, 0.78);
+}
+.programs-hud .terminal-row--typing {
+  color: var(--hud-cyan);
+  text-shadow: 0 0 6px rgba(var(--hud-cyan-rgb), 0.35);
+}
+.programs-hud .terminal-caret {
+  color: var(--hud-cyan);
+}
+
+/* Access buttons after "ACCESS GRANTED" — chamfered cyan pills like the
+   log-launch button pattern. */
+.programs-hud .access-btn {
+  background: transparent;
+  border: 1px solid rgba(var(--hud-cyan-rgb), 0.55);
+  color: var(--hud-cyan);
+  border-radius: 0;
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  letter-spacing: 0.22em;
+  padding: 12px 28px;
+  animation: none;
+  box-shadow: none;
+  text-shadow: 0 0 6px rgba(var(--hud-cyan-rgb), 0.35);
+  transition: all 0.2s ease;
+}
+.programs-hud .access-btn::before {
+  display: none;
+}
+.programs-hud .access-btn:hover {
+  background: rgba(var(--hud-cyan-rgb), 0.14);
+  box-shadow: 0 0 18px rgba(var(--hud-cyan-rgb), 0.4);
+  border-color: rgba(var(--hud-cyan-rgb), 0.85);
+  color: var(--hud-cyan);
+  transform: translateY(-1px);
+}
+.programs-hud .access-btn.secondary {
+  border-color: rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.75);
+  text-shadow: none;
+}
+.programs-hud .access-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #fff;
+  box-shadow: none;
+}
+
+/* Restricted-access warning card — same chamfered treatment as the terminal
+   panel above it (top-right + bottom-left corner clips, hairline border,
+   backdrop blur, glowing top-edge hairline) recolored arterial red. Keeps
+   the semantic red block; adopts the HUD chrome. */
+.programs-hud .access-warning {
+  background:
+    linear-gradient(135deg, rgba(var(--hud-red-rgb), 0.08) 0%, transparent 45%),
+    rgba(24, 8, 8, 0.72);
+  border: 1px solid rgba(var(--hud-red-rgb), 0.55);
+  border-radius: 0;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 22px) 0,
+    100% 22px,
+    100% 100%,
+    22px 100%,
+    0 calc(100% - 22px)
+  );
+  position: relative;
+  padding: 24px 28px;
+  box-shadow:
+    0 0 24px rgba(var(--hud-red-rgb), 0.2),
+    inset 0 0 40px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+}
+.programs-hud .access-warning::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 22px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(var(--hud-red-rgb), 0.9) 10%,
+    rgba(var(--hud-red-rgb), 0.9) 90%,
+    transparent 100%);
+  box-shadow: 0 0 8px rgba(var(--hud-red-rgb), 0.6);
+}
+.programs-hud .warning-icon {
+  color: #ffd25a;
+  filter: drop-shadow(0 0 6px rgba(255, 210, 90, 0.55));
+}
+.programs-hud .warning-text h3 {
+  color: rgba(255, 155, 155, 0.98);
+  letter-spacing: 0.24em;
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  text-shadow: 0 0 8px rgba(var(--hud-red-rgb), 0.45);
+}
+.programs-hud .warning-text p {
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-family-mono, 'Space Mono', monospace);
+  letter-spacing: 0.02em;
+}
+
+/* Light-mode overrides (existing rules force red bg + white text). Force
+   our chamfered HUD look to win. */
+[data-theme="light"] .programs-hud .access-warning {
+  background:
+    linear-gradient(135deg, rgba(var(--hud-red-rgb), 0.08) 0%, transparent 45%),
+    rgba(24, 8, 8, 0.72) !important;
+  border: 1px solid rgba(var(--hud-red-rgb), 0.55) !important;
+  box-shadow: 0 0 24px rgba(var(--hud-red-rgb), 0.2) !important;
+}
+[data-theme="light"] .programs-hud .warning-text h3 {
+  color: rgba(255, 155, 155, 0.98) !important;
+}
+[data-theme="light"] .programs-hud .warning-text p {
+  color: rgba(255, 255, 255, 0.7) !important;
 } 
