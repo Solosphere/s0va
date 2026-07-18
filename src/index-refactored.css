@@ -1521,10 +1521,13 @@ nav #logo span.special-char,
    cyan side/top border and a bright cyan bottom edge so it reads as sitting
    on a rail. */
 /* Layout wrapper only — the inner .home-cta button carries the same look as the
-   three hero CTAs (/ABOUT /ENGINEERING /GALLERY). Centered by the strip's
-   text-align: center. */
+   three hero CTAs (/ABOUT /ENGINEERING /GALLERY). Now lives INSIDE the featured
+   box: a full-width row that pins the button to the bottom-right corner, sitting
+   diagonally opposite the top-left 01/05 counter and clear of the left-edge
+   FEATURED spine. */
 .home-featured-viewall {
-  display: inline-block;
+  display: flex;
+  justify-content: flex-end;
   margin-top: var(--spacing-lg);
   text-decoration: none;
 }
@@ -1539,25 +1542,20 @@ nav #logo span.special-char,
     text-align: center;
   }
   .home-featured-rail-box {
-    /* On mobile the spine is swapped for a horizontal FEATURED chip in the
-       top-left, so we can drop the extra left padding and use the same edge
-       gutter as the other three sides. Top stays roomy for the chip + counter. */
-    padding-left: clamp(12px, 3vw, 20px);
+    /* Keep the same right gutter as the other sides, but preserve the larger
+       left padding (from the base rule) so the vertical FEATURED spine has
+       room to sit on the left edge — same as tablet/desktop. */
     padding-right: clamp(12px, 3vw, 20px);
   }
-  .home-featured-rail-spine {
-    /* Vertical spine reserves too much horizontal space on a phone — swap for
-       the horizontal FEATURED chip below. */
-    display: none;
+  .home-featured-viewall {
+    /* Right-aligned looks unmoored on a narrow box — center the button below
+       the rail so it reads as a clean footer action clear of the top-left
+       counter and left-edge spine. */
+    justify-content: center;
   }
-  .home-featured-rail-chip {
-    display: inline-block;
-  }
-  .home-featured-rail-counter {
-    /* Counter swaps to the right on mobile so FEATURED can take the left. */
-    left: auto;
-    right: clamp(14px, 2vw, 22px);
-  }
+  /* Mobile keeps the tablet/desktop arrangement: vertical FEATURED spine on the
+     left edge with the 01/05 counter pinned above it at top-left. The horizontal
+     chip stays hidden and the counter is NOT swapped to the right. */
   .home-featured-tile:hover {
     transform: none;
   }

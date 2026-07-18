@@ -12,7 +12,7 @@ import { withImageWidth, WIDTHS } from '../utils/imageService';
 // feel and keeps the block from popping.
 const ROTATING_ROLES = [
   { to: '/engineering', text: 'DevOps engineer @ Salesforce' },
-  { to: '/gallery', text: 'multimedia artist' },
+  { to: '/gallery', text: 'Multimedia artist' },
 ];
 
 const HOLD_MS = 2600;   // pause once a role is fully typed
@@ -173,7 +173,7 @@ return (
                 <span className="whoami-sep" aria-hidden="true">&nbsp;&middot;&nbsp;</span>
                 <Link to="/engineering" className="whoami-role whoami-role--engineer">DevOps engineer @ Salesforce</Link>
                 <span className="whoami-sep" aria-hidden="true">&nbsp;&middot;&nbsp;</span>
-                <Link to="/gallery" className="whoami-role whoami-role--artist">multimedia artist</Link>
+                <Link to="/gallery" className="whoami-role whoami-role--artist">Multimedia artist</Link>
               </span>
               <span className="terminal-cursor whoami-cursor" aria-hidden="true">▮</span>
             </p>
@@ -314,12 +314,16 @@ return (
               );
             })}
           </div>
+          {/* Bottom-right "next action" — sits inside the box, diagonally
+              opposite the top-left 01/05 counter and clear of the left-edge
+              FEATURED spine, so the panel reads as: 5 shown of the full set,
+              here's the listing for all of them. */}
+          <Link to="/gallery" className="home-featured-viewall">
+            <button className="home-about-button home-cta">
+              <span className="btn-prompt">LS</span>{products?.length ? `${products.length} ` : ''}works &rarr;
+            </button>
+          </Link>
         </div>
-        <Link to="/gallery" className="home-featured-viewall">
-          <button className="home-about-button home-cta">
-            <span className="btn-prompt">LS</span>all {products?.length ? `${products.length} ` : ''}works &rarr;
-          </button>
-        </Link>
       </Reveal>
     </div>
   </div>
