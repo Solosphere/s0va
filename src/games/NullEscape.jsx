@@ -1080,13 +1080,14 @@ export default function NullEscape({ onClose }) {
   );
 
   return (
-    <div className="null-escape-container">
+    <div className="null-escape-container hud-skin">
       <div className="null-escape-modal">
         <div className="modal-header">
+          <span className="ne-header-tag" aria-hidden="true">SYS.02</span>
           <h2>NULL_ESCAPE v1.0</h2>
           <button className="close-btn" onClick={onClose}>×</button>
         </div>
-        
+
         <div className="modal-body">
           {gameState === 'menu' && renderMenu()}
           {gameState === 'countdown' && renderCountdown()}
