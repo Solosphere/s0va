@@ -5,8 +5,9 @@ import { useEffect, useState } from 'react';
 // the professional pitch lives, Internship / Education / Skills are the
 // supporting context.
 const SECTIONS = [
-  { id: 'sec-case-studies', label: 'Case Studies' },
-  { id: 'sec-internship',   label: 'Internship' },
+  { id: 'sec-case-studies', label: 'Work Experience' },
+  { id: 'sec-internship',   label: 'Internships' },
+  { id: 'sec-personal',     label: 'Personal' },
   { id: 'sec-education',    label: 'Education' },
   { id: 'sec-skills',       label: 'Skills' },
 ];

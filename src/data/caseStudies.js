@@ -13,9 +13,8 @@
 // its org + period so the timeline reads clearly.
 
 export const logMeta = {
-  role: 'Software Engineering AMTS · Salesforce / OWN',
-  timeline:
-    'Intern @ OWN (Aug 2024 – Feb 2025) → AMTS @ Salesforce (Feb 2025 – Present)',
+  role: 'Salesforce',
+  timeline: 'Software Engineering AMTS · Feb 2025 – Present',
   stack: [
     'AWS', 'GovCloud', 'Terraform', 'Ansible', 'Jenkins', 'Packer',
     'Python', 'Lambda', 'Datadog', 'CrowdStrike', 'Tenable', 'GitLab',
@@ -402,27 +401,78 @@ export const schools = [
   },
 ];
 
-// Career internships that aren't deep case studies — links to the Cache piece.
-export const internships = [
+// Legacy flat list of internship entries — kept as a compatibility alias for
+// anything that still consumes it. New code should read `internshipGroups`
+// below, which lets each company render as its own sub-group (mirroring the
+// EDUCATION layout of one head per school).
+export const internshipGroups = [
   {
-    id: 'careerspring-interest-finder',
-    title: 'CareerSpring Interest Finder',
-    type: 'Internship · Developer',
-    year: '2023',
-    cacheId: 59,
-    summary:
-      'A custom WordPress career-interest profiler — design, wireframing, and build — that guides people toward careers aligned with their interests.',
-    stack: ['JavaScript', 'HTML', 'CSS', 'WordPress'],
+    name: 'OWN',
+    focus: 'Software Engineering Intern',
+    period: 'Aug 2024 – Feb 2025',
+    anchor: 'intern-own',
+    // These are full case studies — the card links to /engineering/:id via
+    // findCaseStudy(), so we only reference the case-study ids here.
+    projects: [
+      { caseStudyId: 'ec2-reboot-alerting' },
+      { caseStudyId: 'cron-email-reputation' },
+    ],
+  },
+  {
+    name: 'CareerSpring',
+    focus: 'Developer Intern',
+    period: 'Summer 2023',
+    anchor: 'intern-careerspring',
+    projects: [
+      {
+        id: 'careerspring-interest-finder',
+        title: 'CareerSpring Interest Finder',
+        type: 'Internship · Developer',
+        year: '2023',
+        cacheId: 59,
+        summary:
+          'A custom WordPress career-interest profiler — design, wireframing, and build — that guides people toward careers aligned with their interests.',
+        stack: ['JavaScript', 'HTML', 'CSS', 'WordPress'],
+      },
+    ],
   },
 ];
+
+// Flat list used to filter case studies out of the CASE STUDIES grid — anything
+// that already lives under INTERNSHIP shouldn't double up on top.
+export const internships = internshipGroups.flatMap((g) =>
+  g.projects.map((p) => ({ id: p.caseStudyId || p.id })),
+);
+
+// Personal projects — solo, non-job work. Same grouped shape as
+// internshipGroups / schools so the log renders them with the same section
+// hierarchy. Each project references a full case study by id and links to
+// /engineering/:id.
+export const personalProjects = [
+  {
+    name: 'Independent',
+    focus: 'Solo build',
+    period: 'Ongoing',
+    anchor: 'personal-independent',
+    projects: [
+      { caseStudyId: 'blacksite' },
+    ],
+  },
+];
+
+// Flat list of personal project ids used to filter the CASE STUDIES grid so
+// entries that already live under PERSONAL PROJECTS don't double up.
+export const personalProjectIds = personalProjects.flatMap((g) =>
+  g.projects.map((p) => p.caseStudyId || p.id),
+);
 
 // Career "metro line" — the institutions and companies, in order. Each station
 // scrolls to that place's projects in the sections below (anchor ids).
 export const timeline = [
   { year: '2020', label: 'Parsons School of Design', sub: 'Education', to: '#edu-parsons', origin: true },
   { year: '2022', label: 'Marcy Lab School', sub: 'Education', to: '#edu-marcy' },
-  { year: '2023', label: 'CareerSpring', sub: 'Internship', to: '#sec-internship' },
-  { year: '2024', label: 'OWN', sub: 'Internship', to: '#sec-case-studies' },
+  { year: '2023', label: 'CareerSpring', sub: 'Internship', to: '#intern-careerspring' },
+  { year: '2024', label: 'OWN', sub: 'Internship', to: '#intern-own' },
   { year: '2025', label: 'Salesforce', sub: 'AMTS', to: '#sec-case-studies', current: true },
 ];
 

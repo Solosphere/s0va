@@ -8788,7 +8788,11 @@ input:checked + .toggle-slider:before {
   gap: var(--spacing-lg);
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 var(--spacing-lg) var(--spacing-4xl);
+  /* Match the org/school head indent (2× spacing-lg on the left) so the card
+     column visually hangs off the H3, not the section H2. Extra top space
+     keeps the first card row from hugging the org header. */
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-4xl)
+    calc(var(--spacing-lg) + var(--spacing-lg));
 }
 
 .log-card {
@@ -9399,12 +9403,11 @@ input:checked + .toggle-slider:before {
 
 .log-section-label h2 {
   font-family: var(--font-family-display);
-  /* Bumped up so INTERNSHIP / EDUCATION / SKILLS sit clearly *above* the
-     org/school h3 (1rem) in the hierarchy — the previous clamp bottomed
-     out at 1.4rem which was only a hair larger than the h3 below it and
-     read as the same tier on phones. */
+  /* Sit clearly *above* the org/school h3 (1.1rem) in the hierarchy while
+     still deferring to the page H1 (ENGINEERING LOG). Same thin display
+     weight as the H1 so the H2s don't out-punch it. */
   font-size: clamp(1.75rem, 5vw, 2.25rem);
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   margin: var(--spacing-xs) 0 0;
@@ -9421,7 +9424,10 @@ input:checked + .toggle-slider:before {
 .log-school-head {
   max-width: 1200px;
   margin: 0 auto;
-  padding: var(--spacing-md) var(--spacing-lg) 0;
+  /* Indent the org/school head so it clearly sits *below* the section label
+     (CASE STUDIES / INTERNSHIP / EDUCATION) in the visual hierarchy — a step
+     right of the H2 mirrors the h2 → h3 relationship at every viewport. */
+  padding: var(--spacing-md) var(--spacing-lg) 0 calc(var(--spacing-lg) + var(--spacing-lg));
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
@@ -9446,7 +9452,9 @@ input:checked + .toggle-slider:before {
 }
 
 .log-grid--school {
-  padding-top: var(--spacing-md);
+  /* Same horizontal indent inherited from .log-grid; tighter vertical stack
+     inside a school/intern block (H3 → cards) vs. section H2 → cards. */
+  padding-top: var(--spacing-lg);
   padding-bottom: var(--spacing-lg);
 }
 
@@ -9668,6 +9676,7 @@ input:checked + .toggle-slider:before {
 .log-work-head,
 .log-school,
 .log-internship,
+.log-personal,
 .log-education,
 .log-skills,
 .log-case-studies {
@@ -9813,10 +9822,12 @@ input:checked + .toggle-slider:before {
   padding-bottom: 0;
 }
 
-/* Tablet keeps the stations on one row (scrolls if needed). Only on mobile does
-   THE JOURNEY stack into a vertical rail — and reversed, so the present role
-   (Salesforce) sits on top and Parsons at the bottom. */
-@media (max-width: 767px) {
+/* Below the wide desktop, the horizontal rail's 500px min-width overflows the
+   container gutters (500 + 2× spacing-lg > 860px). Rather than clip the bar
+   or force horizontal scrolling on a portrait tablet, adopt the mobile
+   vertical-rail layout up through 860px so the stations always fit within
+   the viewport. Wide desktops (>= 861px) keep the horizontal metro line. */
+@media (max-width: 860px) {
   .log-timeline {
     overflow-x: visible;
   }
