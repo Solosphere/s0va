@@ -4065,7 +4065,12 @@ nav #logo span.special-char,
   color: #ffffff;
 }
 
+/* Branded placeholder — matches the top toolbar (changeling-neo, uppercase). */
 .sticky-search-field .search-bar-input::placeholder {
+  font-family: var(--font-family-display);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.5);
 }
 
@@ -4095,6 +4100,10 @@ nav #logo span.special-char,
   content: none;
 }
 [data-theme="dark"] .sticky-search-field .search-bar-input::placeholder {
+  font-family: var(--font-family-display);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.5);
 }
 
