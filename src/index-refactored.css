@@ -3199,15 +3199,20 @@ nav #logo span.special-char,
   display: flex;
   max-width: 100%;
   align-items: center;
+  gap: var(--spacing-md);
   border-bottom: none !important;
-  padding-right: 0%;
+  padding-inline: 3%; /* side gutters for the whole toolbar (title + controls) */
   margin-top: 100px; /* Prevent navigation bar overlap */
 }
 
-.gallery-search {
+/* Wraps the search field + console so they stay on one row while the GALLERY
+   title stacks above them on narrow viewports (below the tablet breakpoint). */
+.gallery-controls {
   display: flex;
   align-items: center;
-  width: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: var(--spacing-md);
 }
 
 .gallery-title {
@@ -3242,6 +3247,123 @@ nav #logo span.special-char,
   width: 100%;
   margin: 0;
   padding: 0;
+}
+
+/* ---- Top-toolbar search: one slim pill (leading magnifier + bare field) ----
+   Mirrors the scroll pill's vocabulary so the two toolbars read as one system.
+   The pill is the only chrome; the input inside is stripped bare. */
+.gallery-search-field {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 10px;
+  height: 48px;
+  padding-left: 18px;
+  border-radius: 999px;
+  /* Shimmering glass fill (same liquid-shimmer the filter/discretion buttons
+     use) — a subtle traveling highlight across the pill. */
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.10) 50%,
+    rgba(255, 255, 255, 0.04) 75%,
+    rgba(255, 255, 255, 0.09) 100%
+  );
+  background-size: 200% 200%;
+  animation: liquid-shimmer 3.5s ease-in-out infinite;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+[data-motion="reduced"] .gallery-search-field {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gallery-search-field { animation: none; }
+}
+.gallery-search-field:focus-within {
+  border-color: rgba(var(--color-club-rgb), 0.5);
+  box-shadow: 0 0 14px rgba(var(--color-club-rgb), 0.2);
+}
+
+.gallery-search-icon {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 1rem;
+}
+
+.gallery-search-field .search-bar {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Strip the base input's standalone chrome (gradient, border, shadow, blur,
+   shimmer, lift, rounded-right corners, 70px height) — the pill carries it. */
+.gallery-search-field .search-bar-input {
+  width: 100%;
+  height: 46px;
+  margin: 0;
+  /* Bottom pad (with no top pad) lifts the text up within the fixed-height box
+     so the changeling-neo caps optically center against the leading magnifier. */
+  padding: 0 16px 3px 2px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  animation: none;
+  transform: none;
+  font-family: var(--font-family-mono); /* typed queries stay legible */
+  font-size: 1rem;
+  color: #ffffff;
+}
+.gallery-search-field .search-bar-input::before { content: none; }
+.gallery-search-field .search-bar-input:focus {
+  transform: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* Branded placeholder: echoes the GALLERY wordmark (changeling-neo, uppercase,
+   letter-spaced). Typed text stays mono via the rule above. */
+.gallery-search-field .search-bar-input::placeholder {
+  font-family: var(--font-family-display);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Slightly smaller "SEARCH…" on mobile so it doesn't crowd the narrower pill. */
+@media (max-width: 749px) {
+  .gallery-search-field .search-bar-input::placeholder {
+    font-size: 0.85rem;
+  }
+}
+
+/* Drop the autocomplete just below the pill (base is offset for the old field). */
+.gallery-search-field .search-suggest {
+  top: calc(100% + 12px);
+  left: 0;
+  right: 0;
+}
+
+/* Win back over [data-theme="dark"] .search-bar-input (equal specificity, later
+   in the file) which re-adds a border + gradient + shimmer inside the pill. */
+[data-theme="dark"] .gallery-search-field .search-bar-input {
+  background: transparent;
+  border: none;
+  animation: none;
+  overflow: visible;
+}
+[data-theme="dark"] .gallery-search-field .search-bar-input::before { content: none; }
+[data-theme="dark"] .gallery-search-field .search-bar-input::placeholder {
+  font-family: var(--font-family-display);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* Center the search bar on mobile + tablet (instead of hugging the left) */
@@ -3364,7 +3486,7 @@ nav #logo span.special-char,
   gap: var(--spacing-sm);
   justify-content: flex-end;
   padding-right: 0px;
-  margin-left: var(--spacing-sm);
+  flex: 0 0 auto; /* sits beside the flex:1 search field; never shrinks */
   position: relative; /* anchor for the console dropdown panel */
 }
 
@@ -3780,6 +3902,8 @@ nav #logo span.special-char,
   margin-left: 0;
 }
 
+/* Compact = the round shape only; the base .console-toggle / discretion glass
+   gradient, liquid-shimmer animation, bevel and hover-sweep all carry through. */
 .gallery-console--compact .console-toggle {
   width: 44px;
   height: 44px;
@@ -3787,17 +3911,6 @@ nav #logo span.special-char,
   padding: 0;
   border-radius: 50%;
   justify-content: center;
-  animation: none; /* drop the liquid-shimmer sweep at this small size */
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: none;
-}
-
-.gallery-console--compact .console-toggle:hover {
-  transform: none;
-  color: var(--color-club);
-  border-color: rgba(var(--color-club-rgb), 0.5);
-  box-shadow: 0 0 12px rgba(var(--color-club-rgb), 0.25);
 }
 
 .gallery-console--compact .viewer-discretion-button {
@@ -3806,8 +3919,6 @@ nav #logo span.special-char,
   min-height: 44px;
   padding: 0;
   border-radius: 50%;
-  animation: none;
-  background: rgba(255, 255, 255, 0.05);
 }
 
 /* Anchor the dropdown to the pill and center it under the cluster so it can't
@@ -3819,6 +3930,17 @@ nav #logo span.special-char,
   transform: translateX(-50%);
   width: min(92vw, 560px);
   margin-inline: 0;
+}
+
+/* On the top toolbar the console hugs the right edge of the controls row at
+   every width, so a cluster-centered panel would run off-screen — right-align
+   it to the cluster instead (it then extends left, staying on-screen). The
+   sticky pill (centered under the nav) keeps the centered rule above. */
+.filter-and-sort-row .gallery-console--compact .console-panel {
+  left: auto;
+  right: 0;
+  transform: none;
+  width: min(94vw, 560px);
 }
 
 /* ---- Search: one continuous pill unit ----
@@ -7599,49 +7721,33 @@ input:checked + .toggle-slider:before {
 
 /* Mobile - 320px+ */
 @media (min-width: 320px) {
+  /* Stack the GALLERY title above the controls row on narrow viewports. */
   .filter-search-row {
     flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-md);
     margin-top: 80px; /* Reduced from 100px for smaller viewports */
   }
-  
-  .gallery-search {
-    flex-direction: column;
-    gap: var(--spacing-md);
-  }
-  
+
+  /* Title centered on its own line above the controls. */
   .gallery-title {
+    justify-content: center;
     font-size: 1.8em;
     height: 50px;
-    padding: 0 var(--spacing-md);
+    padding: 0;
+    margin-right: 0;
   }
-  
-  .search-bar {
+
+  /* Search field + the two circle buttons share one full-width row, so the
+     field can stretch wide instead of the whole cluster stacking + centering. */
+  .gallery-controls {
     width: 100%;
-    margin-left: 0; /* was spacing-xl, which overflowed the row to the right */
-  }
-  
-  .search-bar-input {
-    height: 50px;
-    font-size: 1.2em;
-    border-radius: 25px;
-    width: 94%; /* leave a symmetric 3% gutter on both sides */
-    margin-left: 3%;
-    margin-right: 3%;
-    max-width: 100%;
-  }
-  
-  .filter-and-sort-row {
-    width: 100%;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: var(--spacing-md);
-    /* Reset the base rule's margin-left (--spacing-sm): combined with the
-       full-width row it pushed the row 8px past the viewport, expanding the
-       page and forcing the full-width fixed nav/overlays to overflow too. */
-    margin-left: 0;
-    margin-top: var(--spacing-lg);
+    gap: var(--spacing-sm);
     margin-bottom: var(--spacing-lg);
+  }
+
+  .filter-and-sort-row {
+    gap: var(--spacing-sm);
   }
 
   /* Center the console cluster on mobile (right-aligned only on desktop) */
@@ -7717,39 +7823,28 @@ input:checked + .toggle-slider:before {
 
 /* Tablet - 748px+ */
 @media (min-width: 748px) {
+  /* Tablet+ : title returns to the left, inline with the controls row. */
   .filter-search-row {
     flex-direction: row;
+    align-items: center;
     margin-top: 100px;
   }
-  
-  .gallery-search {
-    flex-direction: row;
-  }
-  
+
   .gallery-title {
+    justify-content: flex-start;
     font-size: 2.2em;
     height: 60px;
   }
-  
-  .search-bar {
-    margin-left: 0px;
+
+  /* Drop the mobile stacking margin — on one row it offsets the controls
+     upward (align-items:center centers the margin box), misaligning the title. */
+  .gallery-controls {
+    margin-bottom: 0;
   }
-  
-  .search-bar-input {
-    height: 60px;
-    font-size: 1.3em;
-    /* At row layout the title is the visual left anchor — reset the mobile
-       symmetric-gutter override so the input fills its flex slot. */
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-  }
-  
+
   .filter-and-sort-row {
-    width: auto;
     flex-shrink: 0;
     flex-direction: row;
-    margin-right: var(--spacing-xl);
   }
 
   /* Reset the mobile-centered panel back to right-anchored on tablet+

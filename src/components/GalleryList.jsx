@@ -5,6 +5,8 @@ import SearchBar from './SearchBar';
 import GalleryConsole from './GalleryConsole';
 import GalleryStickyBar from './GalleryStickyBar';
 import Loading from './Loading';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useProducts } from '../context/ProductsProvider';
 import { matchesSearch } from '../utils/search';
@@ -102,6 +104,11 @@ const GalleryList = () => {
 
   const filtersActive =
     searchTerm.trim() !== '' || filters.date !== 'all' || filters.media !== 'all';
+
+  // Just the console's own state (year / media / sort off default) — drives the
+  // active dot on the icon-only FILTERS trigger, independent of the search box.
+  const consoleActive =
+    filters.date !== 'all' || filters.media !== 'all' || sortBy !== 'recent';
 
   const clearAll = () => {
     setSearchTerm('');
@@ -258,23 +265,28 @@ const GalleryList = () => {
   return (
     <div className="gallery-list-container">
       <div className="filter-search-row" ref={toolbarRef}>
-        <div className="gallery-search">
         <h1 className="gallery-title">GALLERY</h1>
-        <SearchBar searchTerm={searchTerm} setSearchTerm={handleSearchChange} suggestions={suggestionPool} className="gallery-search-bar" />
+        <div className="gallery-controls">
+          <div className="gallery-search-field">
+            <FontAwesomeIcon icon={faMagnifyingGlass} className="gallery-search-icon" aria-hidden="true" />
+            <SearchBar searchTerm={searchTerm} setSearchTerm={handleSearchChange} suggestions={suggestionPool} />
+          </div>
+          <div className="filter-and-sort-row">
+            <GalleryConsole
+              compact
+              hasActiveFilters={consoleActive}
+              filters={filters}
+              setFilters={setFilters}
+              handleFilterChange={handleFilterChange}
+              sortOptions={sortOptions}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              handleSortChange={handleSortChange}
+              showViolentContent={showViolentContent}
+              handleViewerDiscretionToggle={handleViewerDiscretionToggle}
+            />
+          </div>
         </div>
-        <div className="filter-and-sort-row">
-          <GalleryConsole
-            filters={filters}
-            setFilters={setFilters}
-            handleFilterChange={handleFilterChange}
-            sortOptions={sortOptions}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            handleSortChange={handleSortChange}
-            showViolentContent={showViolentContent}
-            handleViewerDiscretionToggle={handleViewerDiscretionToggle}
-          />
-      </div>
       </div>
 
       {/* Floating condensed toolbar — pins under the nav once the row above
