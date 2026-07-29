@@ -42,17 +42,22 @@ const GalleryConsole = ({
   const [open, setOpen] = useState(false);
   const consoleRef = useRef(null);
 
-  // Close the console when clicking outside of it
+  // Close the console when tapping/clicking anywhere outside it. Listen for
+  // touchstart too (not just mousedown) so a tap outside the panel dismisses it
+  // on touch devices, where synthetic mouse events aren't guaranteed to fire.
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    if (!open) return undefined;
+    const handlePointerOutside = (event) => {
       if (consoleRef.current && !consoleRef.current.contains(event.target)) {
         setOpen(false);
       }
     };
-    if (open) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handlePointerOutside);
+    document.addEventListener('touchstart', handlePointerOutside, { passive: true });
+    return () => {
+      document.removeEventListener('mousedown', handlePointerOutside);
+      document.removeEventListener('touchstart', handlePointerOutside);
+    };
   }, [open]);
 
   const selectDate = (value) => {

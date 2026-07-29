@@ -3745,6 +3745,14 @@ nav #logo span.special-char,
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* For the horizontally-centered panel (sticky pill): keep translateX(-50%) in
+   the keyframes so the drop-in doesn't clobber the centering transform and snap
+   from the right into place. */
+@keyframes console-drop-center {
+  from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
 /* One labeled readout row: [LABEL] [ chips... ] */
 .console-row {
   display: grid;
@@ -3930,6 +3938,8 @@ nav #logo span.special-char,
   transform: translateX(-50%);
   width: min(92vw, 560px);
   margin-inline: 0;
+  /* Center-preserving entrance so it doesn't snap in from the right. */
+  animation: console-drop-center 0.22s ease;
 }
 
 /* On the top toolbar the console hugs the right edge of the controls row at
@@ -3941,6 +3951,8 @@ nav #logo span.special-char,
   right: 0;
   transform: none;
   width: min(94vw, 560px);
+  /* Right-anchored (no translateX), so use the plain translateY-only drop. */
+  animation: console-drop 0.22s ease;
 }
 
 /* ---- Search: one continuous pill unit ----
