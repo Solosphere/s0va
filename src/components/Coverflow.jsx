@@ -65,7 +65,7 @@ const Coverflow = ({ items = [], getImageUrl, showCaption = false, onNavigate })
     const abs = Math.abs(offset);
     const hidden = abs >= 3;
 
-    const spread = Math.min(viewportW * 0.32, 260);
+    const spread = Math.min(viewportW * 0.42, 300);
     const z = abs === 0 ? 0 : -160 * abs;
     const dim = abs === 0 ? 0 : abs === 1 ? 0.5 : abs === 2 ? 0.72 : 0.85;
 

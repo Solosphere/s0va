@@ -7368,10 +7368,14 @@ input:checked + .toggle-slider:before {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 52vw;
-  max-width: 270px;
-  height: 98vw;
-  max-height: 450px;
+  /* Mobile: widen the card + shorten the height so the aspect ratio is
+     closer to 3:4 instead of the old ~0.53:1 shard. Landscape cover images
+     now show more of their frame; portrait log content has more line-length
+     to breathe. */
+  width: 66vw;
+  max-width: 280px;
+  height: 88vw;
+  max-height: 400px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -7415,9 +7419,10 @@ input:checked + .toggle-slider:before {
   background: transparent;
 }
 
-/* Floating DAT.NN chip on every image card; the terminal (log) face
-   already has its own header, so skip it there. */
-.coverflow-card:not(:has(.coverflow-log-face))::before {
+/* Floating DAT.NN chip on every card. Image cards get it top-left; the
+   log card has a root@mettaire.os prompt in the top-left already, so its
+   chip mounts top-right instead (see .coverflow-card:has() override). */
+.coverflow-card::before {
   content: 'DAT.' attr(data-card-idx);
   position: absolute;
   top: 10px;
@@ -7431,6 +7436,7 @@ input:checked + .toggle-slider:before {
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(var(--color-club-rgb), 0.5);
 }
+
 
 /* Deepen the card shadows in dark mode, where soft light shadows disappear. */
 [data-theme="dark"] .coverflow-card {
@@ -9988,16 +9994,21 @@ input:checked + .toggle-slider:before {
 .coverflow-log-face {
   position: relative;
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 10px;
-  padding: calc(var(--spacing-lg) + 4px);
+  /* Align to top so long summaries stack naturally down the card and
+     footer chips + CTA sit at the bottom via margin-top: auto below.
+     Center-justify was clipping the top of h3 and bottom of p on mobile
+     the moment the natural height exceeded the card. */
+  justify-content: flex-start;
+  gap: 8px;
+  /* Extra top padding leaves room for the top-right DAT chip without
+     pushing the prompt line into it. */
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-md);
+  padding-top: calc(var(--spacing-md) + 18px);
   text-align: left;
   overflow: hidden;
-  /* Wound HUD cyan-box treatment: dark cyan-tinted panel instead of pure black,
-     with a beveled cyan frame (see ::before). Borrows the Wound page's panel
-     vocabulary; reuses the site's --color-club, which is the same cyan. */
   background: linear-gradient(
     160deg,
     rgba(8, 14, 20, 0.97) 0%,
@@ -10031,15 +10042,18 @@ input:checked + .toggle-slider:before {
 
 .coverflow-log-face h3 {
   font-family: var(--font-family-display);
-  font-size: 20px;
+  font-size: 17px;
   line-height: 1.2;
   color: #ffffff;
   margin: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+@media (min-width: 748px) {
+  .coverflow-log-face h3 { font-size: 20px; -webkit-line-clamp: 3; line-clamp: 3; }
 }
 
 .cf-log-org {
@@ -10051,15 +10065,24 @@ input:checked + .toggle-slider:before {
 }
 
 .coverflow-log-face p {
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 12px;
+  line-height: 1.45;
   color: rgba(255, 255, 255, 0.78);
   margin: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 4;
-  line-clamp: 4;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+@media (min-width: 748px) {
+  .coverflow-log-face p { font-size: 13px; line-height: 1.5; -webkit-line-clamp: 4; line-clamp: 4; }
+}
+
+/* Pin the chips + CTA row at the bottom of the flex column so the
+   summary above always has the remaining vertical space to breathe. */
+.coverflow-log-face .cf-log-chips {
+  margin-top: auto;
 }
 
 .cf-log-chips {
