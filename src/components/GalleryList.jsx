@@ -3,6 +3,7 @@ import GalleryCard from './GalleryCard';
 import GalleryHero from './GalleryHero';
 import SearchBar from './SearchBar';
 import GalleryConsole from './GalleryConsole';
+import GalleryStickyBar from './GalleryStickyBar';
 import Loading from './Loading';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useProducts } from '../context/ProductsProvider';
@@ -46,6 +47,9 @@ const GalleryList = () => {
   const [showViolentContent, setShowViolentContent] = useState(false);
 
   const loadTokenRef = useRef(0);
+  // The tall toolbar row — the sticky bar watches it and only reveals once it
+  // has scrolled out of view.
+  const toolbarRef = useRef(null);
 
   // Full-screen loader for deliberate in-page navigation (filter / sort /
   // discretion toggle). Holds until the new visible card images have actually
@@ -253,7 +257,7 @@ const GalleryList = () => {
 
   return (
     <div className="gallery-list-container">
-      <div className="filter-search-row">
+      <div className="filter-search-row" ref={toolbarRef}>
         <div className="gallery-search">
         <h1 className="gallery-title">GALLERY</h1>
         <SearchBar searchTerm={searchTerm} setSearchTerm={handleSearchChange} suggestions={suggestionPool} className="gallery-search-bar" />
@@ -272,6 +276,25 @@ const GalleryList = () => {
           />
       </div>
       </div>
+
+      {/* Floating condensed toolbar — pins under the nav once the row above
+          scrolls away, so search/filters/discretion stay one gesture out. */}
+      <GalleryStickyBar
+        toolbarRef={toolbarRef}
+        searchTerm={searchTerm}
+        setSearchTerm={handleSearchChange}
+        suggestions={suggestionPool}
+        filters={filters}
+        setFilters={setFilters}
+        handleFilterChange={handleFilterChange}
+        sortOptions={sortOptions}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        handleSortChange={handleSortChange}
+        showViolentContent={showViolentContent}
+        handleViewerDiscretionToggle={handleViewerDiscretionToggle}
+      />
+
       <p className="gallery-subtitle">{subtitle}</p>
 
       {/* Hero only shows when the grid is unfiltered — no point orienting

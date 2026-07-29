@@ -3706,6 +3706,317 @@ nav #logo span.special-char,
   padding-block: var(--spacing-sm);
 }
 
+/* ========================================
+   FLOATING CONDENSED TOOLBAR (STICKY BAR)
+   Appears once the full filter/search row scrolls out of view. Shares all
+   state with the tall toolbar; this is purely an alternate presentation.
+   ======================================== */
+.gallery-sticky-bar {
+  position: fixed;
+  top: var(--sticky-top, 66px);
+  left: 50%;
+  z-index: calc(var(--z-dropdown) - 1); /* under the fixed nav, above content */
+  /* Hidden resting state: nudged up + faded, non-interactive. */
+  opacity: 0;
+  transform: translateX(-50%) translateY(-12px);
+  pointer-events: none;
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+/* Revealed once the top toolbar has scrolled away. */
+.gallery-sticky-bar[data-pinned="true"] {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-sticky-bar { transition: none; }
+}
+[data-motion="reduced"] .gallery-sticky-bar { transition: none; }
+
+/* The glass pill itself */
+.gallery-sticky-inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  /* Never let the pill (grown by the expanded search) exceed the viewport. */
+  max-width: calc(100vw - 20px);
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.92) 0%,
+    rgba(14, 14, 14, 0.88) 50%,
+    rgba(0, 0, 0, 0.92) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 10px 34px rgba(0, 0, 0, 0.45),
+    0 0 14px rgba(var(--color-club-rgb), 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Active dot — signals "you're filtered" while the toolbar is collapsed. */
+.sticky-search.has-active .sticky-search-icon::after,
+.gallery-console--compact .console-toggle.has-active::after {
+  content: '';
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-club);
+  box-shadow: 0 0 6px rgba(var(--color-club-rgb), 0.8);
+}
+
+/* Compact console trigger: match the round icon-button look, drop the pill/label
+   chrome the tall toolbar uses. */
+.gallery-console--compact {
+  gap: 6px;
+  margin-left: 0;
+}
+
+.gallery-console--compact .console-toggle {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  justify-content: center;
+  animation: none; /* drop the liquid-shimmer sweep at this small size */
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+}
+
+.gallery-console--compact .console-toggle:hover {
+  transform: none;
+  color: var(--color-club);
+  border-color: rgba(var(--color-club-rgb), 0.5);
+  box-shadow: 0 0 12px rgba(var(--color-club-rgb), 0.25);
+}
+
+.gallery-console--compact .viewer-discretion-button {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  animation: none;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Anchor the dropdown to the pill and center it under the cluster so it can't
+   run off-screen (the base rule right-aligns it to a wide toolbar). */
+.gallery-console--compact .console-panel {
+  top: calc(100% + 12px);
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: min(92vw, 560px);
+  margin-inline: 0;
+}
+
+/* ---- Search: one continuous pill unit ----
+   The magnifier stays put and the field grows out beside it inside a single
+   pill — a circle when closed, a stretched pill when open. */
+.sticky-search {
+  position: relative; /* containing block for the autocomplete dropdown */
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 0 1 auto;
+  /* The container IS the box: a circle when closed (matching the filter /
+     discretion buttons), stretched into a pill when the field grows open. */
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* Closed, the search behaves exactly like its sibling icon buttons on hover:
+   cyan border + glow (the icon itself dims to #ccc via the global button:hover,
+   same as the filter / discretion buttons). No hover lift once the field is open. */
+.sticky-search:not(.is-open):hover {
+  border-color: rgba(var(--color-club-rgb), 0.5);
+  box-shadow: 0 0 12px rgba(var(--color-club-rgb), 0.25);
+}
+
+/* Leading magnifier — a bare glyph; the pill around it is the box. The closed
+   hover tint is driven by the container above; the icon itself never lightens
+   on hover (so it stays put once the field is open). */
+.sticky-search-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0; /* clear the base button's 1.5rem side padding (inflates the box) */
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+/* Both bare icons stay transparent — kill the global button:hover grey box and
+   its active-state lift so they read as flat glyphs, not buttons. */
+.sticky-search-icon:hover,
+.sticky-search-clear:hover {
+  background: transparent;
+}
+.sticky-search-icon:active,
+.sticky-search-clear:active {
+  transform: none;
+}
+
+/* The field: grows open via animated max-width (a smooth reveal, no swap). */
+.sticky-search-field {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-width 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.24s ease;
+}
+.sticky-search.is-open .sticky-search-field {
+  max-width: 260px;
+  opacity: 1;
+}
+
+[data-motion="reduced"] .sticky-search-field,
+[data-motion="reduced"] .sticky-search-clear {
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sticky-search-field,
+  .sticky-search-clear { transition: none; }
+}
+
+/* Static so the autocomplete dropdown's containing block resolves to the
+   positioned .sticky-search pill (above the field's overflow:hidden), letting
+   it drop below the pill instead of being clipped by the collapse-clip. */
+.sticky-search-field .search-bar {
+  min-width: 0;
+  position: static;
+}
+
+/* The pill IS the field's chrome — strip every bit of the base input's
+   standalone styling (gradient fill, border, shadow, blur, shimmer, lift, the
+   rounded-right pill corners and 70px height) so it reads as one bare field. */
+.sticky-search-field .search-bar-input {
+  width: 240px;
+  max-width: 100%;
+  min-width: 0;
+  height: 38px;
+  margin: 0;
+  padding: 0 2px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  animation: none;
+  transform: none;
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.sticky-search-field .search-bar-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Kill the base input's animated shimmer sweep + focus lift inside the pill. */
+.sticky-search-field .search-bar-input::before {
+  content: none;
+  animation: none;
+}
+
+.sticky-search-field .search-bar-input:focus {
+  transform: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* [data-theme="dark"] .search-bar-input re-adds a border, gradient fill and
+   shimmer at equal specificity but later in the file, drawing a second box
+   inside the pill. Win it back with a theme-scoped override (higher
+   specificity) so the pill stays the only chrome. */
+[data-theme="dark"] .sticky-search-field .search-bar-input {
+  background: transparent;
+  border: none;
+  animation: none;
+  overflow: visible;
+}
+[data-theme="dark"] .sticky-search-field .search-bar-input::before {
+  content: none;
+}
+[data-theme="dark"] .sticky-search-field .search-bar-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Drop the autocomplete panel just below the pill's field. */
+.sticky-search-field .search-suggest {
+  top: calc(100% + 12px);
+  left: 0;
+  right: 0;
+}
+
+/* Close (×) — also bare, and collapses to zero width alongside the field. */
+.sticky-search-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0;
+  min-width: 0; /* let width:0 actually collapse it (flex default is min-content) */
+  height: 38px;
+  padding: 0; /* clear the base button's side padding */
+  flex-shrink: 0;
+  overflow: hidden;
+  opacity: 0;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: width 0.24s ease, opacity 0.2s ease;
+}
+.sticky-search.is-open .sticky-search-clear {
+  width: 32px;
+  opacity: 1;
+}
+
+/* Mobile: the expanded search takes over the whole bar — hide the filter and
+   discretion icons so it has full width instead of spilling out of frame, and
+   let the search unit fill the pill. Tap the × to collapse back. */
+@media (max-width: 749px) {
+  .gallery-sticky-bar[data-search-open="true"] .gallery-sticky-inner {
+    width: calc(100vw - 20px);
+  }
+  .gallery-sticky-bar[data-search-open="true"] .gallery-console {
+    display: none;
+  }
+  .gallery-sticky-bar[data-search-open="true"] .sticky-search {
+    flex: 1 1 auto;
+  }
+  .sticky-search.is-open .sticky-search-field {
+    max-width: 100%;
+    flex: 1 1 auto;
+  }
+  .sticky-search-field .search-bar-input {
+    width: 100%;
+  }
+}
+
 /* Gallery Container */
 .gallery-list-container {
   max-width: 100%;

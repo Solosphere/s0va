@@ -32,6 +32,12 @@ const GalleryConsole = ({
   handleSortChange,
   showViolentContent,
   handleViewerDiscretionToggle,
+  // Compact mode drops the "FILTERS" text label so the trigger reads as an
+  // icon in the floating sticky bar; the dropdown panel is otherwise identical.
+  compact = false,
+  // Whether any filter/sort is off its default — drives the active dot on the
+  // icon-only trigger so a collapsed toolbar still signals "you're filtered".
+  hasActiveFilters = false,
 }) => {
   const [open, setOpen] = useState(false);
   const consoleRef = useRef(null);
@@ -65,21 +71,22 @@ const GalleryConsole = ({
   };
 
   return (
-    <div className="gallery-console" ref={consoleRef}>
+    <div className={`gallery-console ${compact ? 'gallery-console--compact' : ''}`} ref={consoleRef}>
       <button
-        className={`console-toggle ${open ? 'active' : ''}`}
+        className={`console-toggle ${open ? 'active' : ''} ${compact && hasActiveFilters ? 'has-active' : ''}`}
         onClick={() => setOpen((prev) => !prev)}
         aria-expanded={open}
         aria-label="Filter and sort panel"
       >
         <FontAwesomeIcon icon={faSliders} />
-        <span className="console-toggle-label">FILTERS</span>
+        {!compact && <span className="console-toggle-label">FILTERS</span>}
       </button>
 
       <button
         onClick={handleViewerDiscretionToggle}
         className="viewer-discretion-button"
         aria-label="Toggle viewer discretion"
+        aria-pressed={showViolentContent}
       >
         {showViolentContent ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
       </button>

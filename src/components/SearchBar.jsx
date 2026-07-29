@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 
-const SearchBar = ({ searchTerm, setSearchTerm, suggestions = [] }) => {
+const SearchBar = ({ searchTerm, setSearchTerm, suggestions = [], autoFocus = false }) => {
   const [open, setOpen] = useState(false);
   const [highlight, setHighlight] = useState(-1);
   const containerRef = useRef(null);
@@ -62,6 +62,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, suggestions = [] }) => {
           value={searchTerm}
           className="search-bar-input"
           placeholder="Search…"
+          autoFocus={autoFocus}
           onChange={(e) => { setSearchTerm(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
           onKeyDown={handleKeyDown}
