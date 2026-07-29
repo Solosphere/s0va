@@ -7325,6 +7325,10 @@ input:checked + .toggle-slider:before {
     justify-content: center;
     align-items: center;
     gap: var(--spacing-md);
+    /* Reset the base rule's margin-left (--spacing-sm): combined with the
+       full-width row it pushed the row 8px past the viewport, expanding the
+       page and forcing the full-width fixed nav/overlays to overflow too. */
+    margin-left: 0;
     margin-top: var(--spacing-lg);
     margin-bottom: var(--spacing-lg);
   }
