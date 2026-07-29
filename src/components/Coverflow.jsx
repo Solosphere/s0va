@@ -5,9 +5,10 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import { withImageWidth, WIDTHS } from '../utils/imageService';
 
 /**
- * A 3D glowing coverflow slider (autoplay, swipe, dots, arrows).
+ * Filmstrip coverflow — cards line up on a Z vanishing point (no rotation)
+ * with a Wound-HUD skin: chamfered corners, cyan hairlines, mono DAT chips.
  *
- * @param {Array} items - [{ key, image, to, title?, description? }]
+ * @param {Array} items - [{ key, image, to, title?, meta?, kind? }]
  * @param {Function} getImageUrl - (filename) => url
  * @param {boolean} showCaption - render a caption block inside each card
  */
@@ -21,7 +22,6 @@ const Coverflow = ({ items = [], getImageUrl, showCaption = false, onNavigate })
   const prevSlide = () => setCurrentSlide((p) => (p - 1 + n) % n);
   const goToSlide = (i) => setCurrentSlide(i);
 
-  // Track viewport width so the tilt + spread can scale with it
   const [viewportW, setViewportW] = useState(
     () => (typeof window !== 'undefined' ? window.innerWidth : 375)
   );
@@ -31,7 +31,6 @@ const Coverflow = ({ items = [], getImageUrl, showCaption = false, onNavigate })
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  // Auto-play (pauses on hover or touch)
   useEffect(() => {
     if (!isAutoPlaying || n <= 1) return;
     const interval = setInterval(() => nextSlide(), 4500);
@@ -56,23 +55,28 @@ const Coverflow = ({ items = [], getImageUrl, showCaption = false, onNavigate })
     setIsAutoPlaying(true);
   };
 
-  // 3D placement for a card based on its distance from the active one
+  // Filmstrip placement: horizontal spread + Z recession, no rotation.
+  // Distance rides on --cf-dim (a black wash on ::after) so neighbors stay
+  // solid instead of letting the page background bleed through.
   const cardStyle = (index) => {
     let offset = index - currentSlide;
     if (offset > n / 2) offset -= n;
     if (offset < -n / 2) offset += n;
     const abs = Math.abs(offset);
-    const hidden = abs >= 2; // only the centre + immediate neighbours show
-    // Steeper tilt on small phones, flatter/more open on larger screens
-    const tilt = Math.max(44, Math.min(68, 68 - ((viewportW - 320) / 428) * 24));
-    // Side spread scales with width but caps so desktop cards don't fly apart.
-    // The cap is generous so the row keeps widening through tablet/desktop.
-    const spread = Math.min(viewportW * 0.44, 360);
+    const hidden = abs >= 3;
+
+    const spread = Math.min(viewportW * 0.32, 260);
+    const z = abs === 0 ? 0 : -160 * abs;
+    const dim = abs === 0 ? 0 : abs === 1 ? 0.5 : abs === 2 ? 0.72 : 0.85;
+
     return {
-      transform: `translateX(calc(-50% + ${offset * spread}px)) translateY(-50%) translateZ(${abs === 0 ? 40 : -120}px) rotateY(${offset * tilt}deg)`,
+      transform:
+        `translateX(calc(-50% + ${offset * spread}px)) ` +
+        `translateY(-50%) translateZ(${z}px)`,
       zIndex: 10 - abs,
       opacity: hidden ? 0 : 1,
       pointerEvents: hidden ? 'none' : 'auto',
+      '--cf-dim': dim,
     };
   };
 
@@ -94,6 +98,7 @@ const Coverflow = ({ items = [], getImageUrl, showCaption = false, onNavigate })
               key={item.key ?? index}
               className={`coverflow-card ${isActive ? 'active' : ''}`}
               style={cardStyle(index)}
+              data-card-idx={String(index + 1).padStart(2, '0')}
               onClick={() => {
                 if (!isActive) return goToSlide(index);
                 if (item.to) {

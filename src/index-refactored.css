@@ -7360,6 +7360,10 @@ input:checked + .toggle-slider:before {
   transform-style: preserve-3d;
 }
 
+/* Wound-HUD filmstrip card: chamfered corners + cyan hairline; solid dark
+   floor so receded neighbors stay opaque instead of letting the page
+   background bleed through. Distance rides on --cf-dim (set inline by JS)
+   via the ::after black wash. */
 .coverflow-card {
   position: absolute;
   top: 50%;
@@ -7370,17 +7374,18 @@ input:checked + .toggle-slider:before {
   max-height: 450px;
   display: flex;
   flex-direction: column;
-  border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
-  background: linear-gradient(160deg, #0b0b0b 0%, #171717 50%, #0b0b0b 100%);
-  /* No border in light mode: a faint-white border over the dark card composites
-     to a near-black 1px ring, which reads as a black outline on the light page.
-     Dark mode re-adds it (there it's a subtle edge highlight, not an outline). */
-  border: none;
-  /* Soft, layered, light-mode-friendly shadows. The side cards sit further
-     back so they cast a lighter shadow than the focused card; dark mode
-     deepens both (a faint light-mode shadow would vanish on a dark page). */
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
+  border: 1px solid rgba(var(--color-club-rgb), 0.35);
+  background: linear-gradient(160deg, #050505 0%, #0e0e0e 60%, #050505 100%);
   --cf-ground-side: 0 10px 24px rgba(0, 0, 0, 0.14), 0 3px 8px rgba(0, 0, 0, 0.10);
   --cf-ground: 0 22px 44px rgba(0, 0, 0, 0.20), 0 7px 16px rgba(0, 0, 0, 0.12);
   box-shadow: var(--cf-ground-side);
@@ -7390,31 +7395,44 @@ input:checked + .toggle-slider:before {
   will-change: transform;
 }
 
-/* Dim the side faces so the focused card owns the spotlight */
+.coverflow-card.active {
+  border-color: rgba(var(--color-club-rgb), 0.85);
+  box-shadow:
+    0 0 22px rgba(var(--color-club-rgb), 0.4),
+    inset 0 0 0 1px rgba(var(--color-club-rgb), 0.25);
+}
+
 .coverflow-card::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  transition: opacity 0.4s ease;
+  background: rgba(0, 0, 0, var(--cf-dim, 0));
+  transition: background 0.4s ease;
   pointer-events: none;
 }
 
-/* Only the front/active card glows — keeps the row from looking noisy */
-.coverflow-card.active {
-  box-shadow:
-    0 0 22px rgba(var(--color-club-rgb), 0.38),
-    var(--cf-ground);
-  animation: coverflow-glow 2s ease-in-out infinite alternate;
-}
-
 .coverflow-card.active::after {
-  opacity: 0;
+  background: transparent;
 }
 
-/* Deepen the card shadows in dark mode, where soft light shadows disappear.
-   (No border — the faint-white border over the dark card reads as a dark
-   1px outline, same as it did in light mode.) */
+/* Floating DAT.NN chip on every image card; the terminal (log) face
+   already has its own header, so skip it there. */
+.coverflow-card:not(:has(.coverflow-log-face))::before {
+  content: 'DAT.' attr(data-card-idx);
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 3;
+  padding: 0.25em 0.5em;
+  font-family: var(--font-family-mono, ui-monospace, monospace);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--color-club);
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(var(--color-club-rgb), 0.5);
+}
+
+/* Deepen the card shadows in dark mode, where soft light shadows disappear. */
 [data-theme="dark"] .coverflow-card {
   --cf-ground-side: 0 14px 30px rgba(0, 0, 0, 0.5), 0 4px 10px rgba(0, 0, 0, 0.38);
   --cf-ground: 0 22px 44px rgba(0, 0, 0, 0.55), 0 7px 16px rgba(0, 0, 0, 0.42);
@@ -7457,7 +7475,8 @@ input:checked + .toggle-slider:before {
 }
 
 /* Title overlay (gallery-card style): a gradient with the title at the bottom,
-   shown on the active card. No shimmer — the image carries the card now. */
+   shown on the active card. No shimmer — the image carries the card now.
+   Deeper black wash so the chamfered corner clip stays visible. */
 .coverflow-card-text {
   position: absolute;
   left: 0;
@@ -7469,7 +7488,7 @@ input:checked + .toggle-slider:before {
   gap: 3px;
   padding: var(--spacing-md);
   text-align: left;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.35) 55%, transparent 100%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.4) 55%, transparent 100%);
   opacity: 0;
   transform: translateY(40%);
   transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -7497,8 +7516,8 @@ input:checked + .toggle-slider:before {
   font-family: var(--font-family-mono);
   font-size: var(--font-size-xs);
   line-height: 1.35;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.16em;
+  color: var(--color-club);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -7522,6 +7541,7 @@ input:checked + .toggle-slider:before {
   font-weight: bold;
   margin: 0;
   color: #ffffff;
+  letter-spacing: 0.02em;
 }
 
 /* SAP's home-carousel title, sized per breakpoint (desktop keeps the default). */
@@ -7540,14 +7560,6 @@ input:checked + .toggle-slider:before {
 @media (max-width: 640px) {
   .coverflow-card-text--compact h3 {
     font-size: 16px;
-  }
-}
-
-@keyframes coverflow-glow {
-  to {
-    box-shadow:
-      0 0 36px rgba(var(--color-club-rgb), 0.6),
-      var(--cf-ground);
   }
 }
 
