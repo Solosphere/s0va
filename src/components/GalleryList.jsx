@@ -78,9 +78,11 @@ const GalleryList = () => {
     })();
   };
 
+  // Purely in-place per-card visibility flip — no list rebuild, no reorder,
+  // no refetch. Skip the scroll-to-top + full-screen loader so a visitor
+  // reading a piece deep in the grid stays exactly where they are.
   const handleViewerDiscretionToggle = () => {
-    setShowViolentContent((prev) => !prev); // Toggle the state
-    triggerLoader();
+    setShowViolentContent((prev) => !prev);
   };
 
   const sortOptions = [
