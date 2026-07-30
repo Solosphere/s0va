@@ -297,6 +297,57 @@ nav .right {
   display: none;
 }
 
+/* ----------------------------------------------------------------------------
+   Light-mode nav skin. The base .nav-header is pinned to pure black in both
+   themes; on the light page that's a heavy black bar dominating the top.
+   Flip it to white with dark ink for the METTAIRE wordmark + nav links so
+   the whole top edge sits inside the light-mode vocabulary. The wordmark
+   still pulses its glow, but the glow shifts from mostly-white to a cyan-
+   leaning-white so it registers against a white bg (a pure-white glow on a
+   white bar is invisible; a pure-cyan glow reads too neon). Dark mode is
+   untouched.
+   ---------------------------------------------------------------------------- */
+html[data-theme="light"] .nav-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+}
+html[data-theme="light"] nav #logo,
+html[data-theme="light"] nav a {
+  color: #1a1a1a;
+}
+html[data-theme="light"] nav a:hover {
+  color: var(--color-club);
+}
+html[data-theme="light"] .dropdown-btn {
+  color: #1a1a1a;
+}
+html[data-theme="light"] .dropdown-btn:hover {
+  color: rgba(0, 0, 0, 0.65);
+}
+/* Cyan-leaning-white wordmark glow so METTAIRE still pulses on the white bar.
+   Base color is dark ink; the animated text-shadow layers do the glow work.
+   Runs on the base #logo (not just .active) since on the home page the logo
+   is not marked .active but still needs the glow. */
+html[data-theme="light"] nav #logo {
+  animation: wordmark-active-glow-light 2.2s ease-in-out infinite alternate;
+}
+@keyframes wordmark-active-glow-light {
+  0% {
+    text-shadow:
+      0 0 2px rgba(220, 240, 245, 0.85),
+      0 0 7px rgba(180, 230, 240, 0.55),
+      0 0 14px rgba(var(--color-club-rgb), 0.30),
+      0 0 22px rgba(var(--color-club-rgb), 0.16);
+  }
+  100% {
+    text-shadow:
+      0 0 4px rgba(220, 240, 245, 0.95),
+      0 0 11px rgba(180, 230, 240, 0.65),
+      0 0 20px rgba(var(--color-club-rgb), 0.42),
+      0 0 30px rgba(var(--color-club-rgb), 0.22);
+  }
+}
+
 /* ========================================
    BUTTONS & INTERACTIVE ELEMENTS
    ======================================== */
@@ -6588,6 +6639,50 @@ html[data-theme="light"] .strip-meta-desc {
   font-size: var(--font-size-sm);
   color: rgba(255, 255, 255, 0.7);
   margin: 0;
+}
+
+/* ----------------------------------------------------------------------------
+   Light-mode footer skin. Base .footer is pinned to pure black in both
+   themes -- flip to white with dark ink for the METTAIRE wordmark, nav
+   links, social-media icons, and copyright text so it matches the nav
+   above. Hairline divider between the first row and rest also flips from
+   rgba(255, 255, 255, 0.2) to a dark hairline. The METTAIRE wordmark in
+   the footer picks up the same cyan-leaning-white glow the nav wordmark
+   wears when active. Dark mode is untouched.
+   ---------------------------------------------------------------------------- */
+html[data-theme="light"] .footer {
+  background-color: #ffffff;
+  color: #1a1a1a;
+}
+html[data-theme="light"] .footer-row:first-child {
+  border-bottom-color: rgba(0, 0, 0, 0.14);
+}
+html[data-theme="light"] .logo-information a,
+html[data-theme="light"] .navigation-links a,
+html[data-theme="light"] .social-media-links a,
+html[data-theme="light"] .copyright-information p {
+  color: #1a1a1a;
+}
+html[data-theme="light"] .navigation-links a:hover,
+html[data-theme="light"] .social-media-links a:hover {
+  color: var(--color-club);
+}
+/* Cyan-leaning-white glow on the footer METTAIRE wordmark. Applied to the
+   base anchor (not just .active) so it pulses everywhere. */
+html[data-theme="light"] .footer .logo-information h2 a {
+  animation: wordmark-active-glow-light 2.2s ease-in-out infinite alternate;
+}
+/* Back-to-top puck in the footer row: flip the docked variant border/glyph
+   colors so it reads on the white footer surface. */
+html[data-theme="light"] .back-to-top-button.is-docked {
+  color: #1a1a1a;
+  border-color: rgba(0, 0, 0, 0.35);
+}
+html[data-theme="light"] .back-to-top-button.is-docked:hover,
+html[data-theme="light"] .back-to-top-button.is-docked:focus-visible,
+html[data-theme="light"] .back-to-top-button.is-docked:active {
+  color: var(--color-club);
+  border-color: rgba(var(--color-club-rgb), 0.9);
 }
 
 /* ========================================
