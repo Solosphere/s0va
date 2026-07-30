@@ -1348,7 +1348,12 @@ nav #logo span.special-char,
   font-weight: 400;
   letter-spacing: 0.24em;
   line-height: 1;
-  color: var(--color-text);
+  /* Locked to the fixed off-white foreground (not var(--color-text)) because
+     the rail-box background is a dark shimmering-metal panel in every theme
+     — using --color-text made "FEATURED" go black on the dark panel in
+     light mode and disappear. --color-secondary is the site's canonical
+     light-on-dark ink and stays legible in both themes. */
+  color: var(--color-secondary);
   white-space: nowrap;
   pointer-events: none;
 }
@@ -1369,7 +1374,9 @@ nav #logo span.special-char,
   font-weight: 400;
   letter-spacing: 0.12em;
   line-height: 1;
-  color: var(--color-text);
+  /* See .home-featured-rail-spine — the rail-box is dark in every theme
+     so the chip stays on --color-secondary rather than --color-text. */
+  color: var(--color-secondary);
   pointer-events: none;
 }
 
@@ -3451,6 +3458,12 @@ nav #logo span.special-char,
   }
 }
 
+/* Light-mode search bar is the mirror of the dark-mode override further down:
+   dark mode uses a translucent LIGHT panel on dark page bg — here we use a
+   translucent DARK panel on light page bg, so the input reads as a raised
+   glass chip in both themes instead of blending into the page. Previously the
+   base gradient was rgba(170,170,170,0.1-0.3) with white borders, which over
+   a white page bg made the bar nearly invisible. */
 .search-bar-input {
   display: block;
   width: 100%;
@@ -3458,21 +3471,21 @@ nav #logo span.special-char,
   height: 70px;
   background: linear-gradient(
     135deg,
-    rgba(170, 170, 170, 0.1) 0%,
-    rgba(170, 170, 170, 0.2) 25%,
-    rgba(170, 170, 170, 0.3) 50%,
-    rgba(170, 170, 170, 0.2) 75%,
-    rgba(170, 170, 170, 0.1) 100%
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.10) 25%,
+    rgba(0, 0, 0, 0.14) 50%,
+    rgba(0, 0, 0, 0.10) 75%,
+    rgba(0, 0, 0, 0.06) 100%
   );
   background-size: 200% 200%;
   animation: liquid-shimmer 2s ease-in-out infinite;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0.2);
   box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
   border-top-right-radius: 40px;
   border-bottom-right-radius: 40px;
   font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
@@ -3482,14 +3495,14 @@ nav #logo span.special-char,
   padding: 0 2% 0 24px;
   position: relative;
   overflow: hidden;
-  color: #333333;
+  color: #222222;
   transform: translateY(-1px);
 }
 
 .search-bar-input::placeholder {
   font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
   letter-spacing: 0.06em;
-  color: rgba(51, 51, 51, 0.55);
+  color: rgba(34, 34, 34, 0.6);
 }
 
 .search-bar-input::before {
@@ -3499,10 +3512,13 @@ nav #logo span.special-char,
   left: -100%;
   width: 100%;
   height: 100%;
+  /* Dark sweep on the light-mode bar (inverse of the dark-mode override, which
+     sweeps light across a dark panel). Same visual: a subtle highlight travels
+     the length of the input to confirm interactivity. */
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.4),
+    rgba(0, 0, 0, 0.12),
     transparent
   );
   transition: left 0.8s ease;
@@ -4027,8 +4043,32 @@ nav #logo span.special-char,
   /* The container IS the box: a circle when closed (matching the filter /
      discretion buttons), stretched into a pill when the field grows open. Uses
      the same glass gradient + shimmer + bevel as those buttons so it reads solid,
-     not see-through. */
+     not see-through. Light-mode default = translucent light glass; dark-mode
+     override further down flips it to the dark gradient. */
   border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(240, 240, 240, 0.8) 25%,
+    rgba(225, 225, 225, 0.75) 50%,
+    rgba(240, 240, 240, 0.8) 75%,
+    rgba(255, 255, 255, 0.85) 100%
+  );
+  background-size: 200% 200%;
+  animation: liquid-shimmer 3s ease-in-out infinite;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* Dark mode: bring back the original near-black pill so the whole assembly
+   still reads as glass chrome on the dark backdrop. */
+[data-theme="dark"] .sticky-search {
   background: linear-gradient(
     135deg,
     rgba(0, 0, 0, 0.95) 0%,
@@ -4037,16 +4077,11 @@ nav #logo span.special-char,
     rgba(10, 10, 10, 0.9) 75%,
     rgba(0, 0, 0, 0.95) 100%
   );
-  background-size: 200% 200%;
-  animation: liquid-shimmer 3s ease-in-out infinite;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 [data-motion="reduced"] .sticky-search { animation: none; }
@@ -4144,16 +4179,17 @@ nav #logo span.special-char,
   animation: none;
   transform: none;
   font-size: 0.95rem;
-  color: #ffffff;
+  color: #111111;
 }
 
-/* Branded placeholder — matches the top toolbar (changeling-neo, uppercase). */
+/* Branded placeholder — matches the top toolbar (changeling-neo, uppercase).
+   Light mode: dark ink on the light pill. Dark mode override lives below. */
 .sticky-search-field .search-bar-input::placeholder {
   font-family: var(--font-family-display);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(17, 17, 17, 0.6);
 }
 
 /* Kill the base input's animated shimmer sweep + focus lift inside the pill. */
@@ -4177,6 +4213,7 @@ nav #logo span.special-char,
   border: none;
   animation: none;
   overflow: visible;
+  color: #ffffff;
 }
 [data-theme="dark"] .sticky-search-field .search-bar-input::before {
   content: none;
