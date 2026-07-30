@@ -4996,6 +4996,41 @@ html[data-theme="light"] .gallery-load-more:hover {
     0 0 14px rgba(var(--color-club-rgb), 0.28);
 }
 
+/* Continuous shimmer loop for the five silver-chrome control chips in light
+   mode: search pill, FILTERS toggle, viewer-discretion, load-more, back-to-
+   gallery. The ::before sweeps already ride these buttons for the hover
+   effect; here we just kick them into an infinite loop so the chips look
+   alive at rest. The hover :hover::before { left: 100% } rules still evaluate
+   but the running animation wins the cascade on the `left` property. */
+@keyframes light-chrome-shimmer-loop {
+  0%   { left: -100%; }
+  60%  { left: 100%; }
+  100% { left: 100%; }
+}
+html[data-theme="light"] .sticky-search::before,
+html[data-theme="light"] .console-toggle::before,
+html[data-theme="light"] .viewer-discretion-button::before,
+html[data-theme="light"] .back-button::before,
+html[data-theme="light"] .gallery-load-more::before {
+  animation: light-chrome-shimmer-loop 3.2s ease-in-out infinite;
+}
+[data-motion="reduced"] .sticky-search::before,
+[data-motion="reduced"] .console-toggle::before,
+[data-motion="reduced"] .viewer-discretion-button::before,
+[data-motion="reduced"] .back-button::before,
+[data-motion="reduced"] .gallery-load-more::before {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme="light"] .sticky-search::before,
+  html[data-theme="light"] .console-toggle::before,
+  html[data-theme="light"] .viewer-discretion-button::before,
+  html[data-theme="light"] .back-button::before,
+  html[data-theme="light"] .gallery-load-more::before {
+    animation: none;
+  }
+}
+
 .details-container {
   display: flex;
   max-width: 100%;
