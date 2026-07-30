@@ -104,6 +104,34 @@
   --z-tooltip: 3000;
 }
 
+/* ----------------------------------------------------------------------------
+   Light-mode palette tokens. Mono-chrome remix: black ink on cool-white
+   paper with chrome/silver surfaces. No blue — the "ice" tone lives on the
+   near-white edge of the neutral axis so it reads as cool light rather
+   than color. --color-club (the branded HUD cyan) is locally re-mapped
+   inside light-mode so cyan hovers/glows/hairlines collapse to a near-
+   white ice tone. Dark mode still gets the full cyan.
+   ---------------------------------------------------------------------------- */
+html[data-theme="light"] {
+  --aqua-paper: #f6f7f8;
+  --aqua-paper-warm: #eceff2;
+  --aqua-ink: #1a1a1a;
+  --aqua-ink-rgb: 26, 26, 26;
+  --aqua-ink-soft: rgba(26, 26, 26, 0.72);
+  --aqua-ink-quiet: rgba(26, 26, 26, 0.5);
+  /* Ice = mono-cool near-white. Sits at the top of the neutral axis;
+     reads as bright cool light, not blue color. */
+  --aqua-ice: #dfe4ea;
+  --aqua-ice-rgb: 223, 228, 234;
+  --aqua-hairline: rgba(0, 0, 0, 0.14);
+  --aqua-hairline-strong: rgba(0, 0, 0, 0.22);
+  /* Locally override the branded HUD cyan so light-mode hover/focus/glow
+     rules that reference var(--color-club) or var(--color-club-rgb)
+     collapse to the ice tone instead of the neon cyan. */
+  --color-club: var(--aqua-ice);
+  --color-club-rgb: var(--aqua-ice-rgb);
+}
+
 /* ========================================
    RESET & BASE STYLES
    ======================================== */
@@ -307,45 +335,37 @@ nav .right {
    white bar is invisible; a pure-cyan glow reads too neon). Dark mode is
    untouched.
    ---------------------------------------------------------------------------- */
+/* Mono-chrome light-mode shell: cool-white paper background, black ink,
+   silver hover states. No blue in the base surfaces — the only cool
+   accent is a whisper on the paper (~2% ice) so it reads as bright light
+   rather than a color. */
+html[data-theme="light"] body {
+  background: linear-gradient(180deg, var(--aqua-paper) 0%, var(--aqua-paper-warm) 100%);
+}
 html[data-theme="light"] .nav-header {
-  background-color: #ffffff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+  background-color: var(--aqua-paper);
+  border-bottom: 1px solid var(--aqua-hairline);
 }
 html[data-theme="light"] nav #logo,
 html[data-theme="light"] nav a {
   color: #1a1a1a;
 }
 html[data-theme="light"] nav a:hover {
-  color: var(--color-club);
+  color: rgba(0, 0, 0, 0.55);
 }
 html[data-theme="light"] .dropdown-btn {
   color: #1a1a1a;
 }
 html[data-theme="light"] .dropdown-btn:hover {
-  color: rgba(0, 0, 0, 0.65);
+  color: rgba(0, 0, 0, 0.55);
 }
-/* Cyan-leaning-white wordmark glow so METTAIRE still pulses on the white bar.
-   Base color is dark ink; the animated text-shadow layers do the glow work.
-   Runs on the base #logo (not just .active) since on the home page the logo
-   is not marked .active but still needs the glow. */
+/* METTAIRE wordmark on light mode — flat-black printed logotype. No glow,
+   no aberration, no animation. Sits like ink on paper so the atmospheric
+   layers (aqua-glass buttons, ice-blue paper) do the mood work. */
 html[data-theme="light"] nav #logo {
-  animation: wordmark-active-glow-light 2.2s ease-in-out infinite alternate;
-}
-@keyframes wordmark-active-glow-light {
-  0% {
-    text-shadow:
-      0 0 2px rgba(220, 240, 245, 0.85),
-      0 0 7px rgba(180, 230, 240, 0.55),
-      0 0 14px rgba(var(--color-club-rgb), 0.30),
-      0 0 22px rgba(var(--color-club-rgb), 0.16);
-  }
-  100% {
-    text-shadow:
-      0 0 4px rgba(220, 240, 245, 0.95),
-      0 0 11px rgba(180, 230, 240, 0.65),
-      0 0 20px rgba(var(--color-club-rgb), 0.42),
-      0 0 30px rgba(var(--color-club-rgb), 0.22);
-  }
+  animation: none;
+  color: #1a1a1a;
+  text-shadow: none;
 }
 
 /* ========================================
@@ -1388,10 +1408,10 @@ html[data-theme="light"] .home-featured-rail-box {
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.98) 0%,
-    rgba(244, 244, 246, 0.96) 55%,
-    rgba(228, 228, 232, 0.96) 100%
+    rgba(244, 246, 248, 0.96) 55%,
+    rgba(226, 230, 234, 0.96) 100%
   );
-  border: 1px solid rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--aqua-hairline-strong);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.06),
@@ -1399,11 +1419,11 @@ html[data-theme="light"] .home-featured-rail-box {
 }
 html[data-theme="light"] .home-featured-rail-spine,
 html[data-theme="light"] .home-featured-rail-chip {
-  color: #1a1a1a;
+  color: var(--aqua-ink);
 }
 html[data-theme="light"] .home-featured-rail-counter-sep,
 html[data-theme="light"] .home-featured-rail-counter-total {
-  color: rgba(26, 26, 26, 0.55);
+  color: var(--aqua-ink-quiet);
 }
 
 /* Vertical FEATURED spine — reads top-to-bottom starting right under the
@@ -3448,7 +3468,7 @@ html[data-theme="light"] .home-featured-rail-counter-total {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(0, 0, 0, 0.12),
+    rgba(255, 255, 255, 0.9),
     transparent
   );
   pointer-events: none;
@@ -4097,6 +4117,53 @@ html[data-theme="light"] .home-featured-rail-counter-total {
   color: #0a0a0a !important;
 }
 
+/* ----------------------------------------------------------------------------
+   Light-mode skin for the FILTERS dropdown panel. Base .console-panel is
+   pinned to near-black glass in both themes; flip the whole surface to the
+   same silver / chrome recipe the sticky bar and CTA buttons use so the
+   panel reads as continuous with its trigger button. Every descendant of
+   the panel (row dividers, .console-label caps, .console-chip LEDs) also
+   flips: white-alpha lines become dark-alpha, and the "active" chip
+   inverts to a black fill with white text so it still reads as a lit LED
+   against the light chassis. Dark mode untouched.
+   ---------------------------------------------------------------------------- */
+html[data-theme="light"] .console-panel {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(244, 246, 248, 0.96) 55%,
+    rgba(226, 230, 234, 0.96) 100%
+  );
+  border: 1px solid var(--aqua-hairline-strong);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+}
+html[data-theme="light"] .console-row + .console-row {
+  border-top-color: var(--aqua-hairline);
+}
+html[data-theme="light"] .console-label {
+  color: var(--aqua-ink-soft);
+}
+html[data-theme="light"] .console-chip {
+  color: rgba(26, 26, 26, 0.72);
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--aqua-hairline-strong);
+}
+html[data-theme="light"] .console-chip:not(.active):hover {
+  color: #1a1a1a;
+  border-color: rgba(0, 0, 0, 0.5);
+}
+html[data-theme="light"] .console-chip.active {
+  color: #ffffff;
+  background: rgba(26, 26, 26, 0.92);
+  border-color: rgba(26, 26, 26, 0.92);
+  box-shadow:
+    0 0 10px rgba(0, 0, 0, 0.25),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+
 /* Keep the discretion toggle compact and height-matched inside the cluster */
 .gallery-console .viewer-discretion-button {
   max-width: none;
@@ -4234,10 +4301,10 @@ html[data-theme="light"] .gallery-sticky-inner .viewer-discretion-button {
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.98) 0%,
-    rgba(244, 244, 246, 0.96) 55%,
-    rgba(228, 228, 232, 0.96) 100%
+    rgba(244, 246, 248, 0.96) 55%,
+    rgba(226, 230, 234, 0.96) 100%
   );
-  border: 1px solid rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--aqua-hairline-strong);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.06),
@@ -4249,23 +4316,21 @@ html[data-theme="light"] .gallery-sticky-inner .viewer-discretion-button::before
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(0, 0, 0, 0.08),
+    rgba(255, 255, 255, 0.9),
     transparent
   );
 }
 
-/* Hover: match the .sticky-search cyan glow so all three chips in the docked
-   pill light up the same way. Higher specificity than the base
-   .console-toggle:hover / .viewer-discretion-button:hover chain so the silver
-   base stays and only the border + outer glow swap in. */
+/* Hover: ice hairline + soft mono glow. Border-color reads through the
+   locally-remapped --color-club-rgb (near-white ice) instead of neon cyan. */
 html[data-theme="light"] .gallery-sticky-inner .console-toggle:hover,
 html[data-theme="light"] .gallery-sticky-inner .viewer-discretion-button:hover {
-  border-color: rgba(var(--color-club-rgb), 0.5);
+  border-color: rgba(0, 0, 0, 0.35);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.06),
     0 1px 2px rgba(0, 0, 0, 0.06),
-    0 0 12px rgba(var(--color-club-rgb), 0.25);
+    0 0 14px rgba(0, 0, 0, 0.12);
 }
 
 /* Anchor the dropdown to the pill and center it under the cluster so it can't
@@ -4339,6 +4404,27 @@ html[data-theme="light"] .gallery-sticky-inner .viewer-discretion-button:hover {
     0 8px 32px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Light-mode: pin the sticky-search pill to the SAME gradient + border +
+   shadow the sibling FILTERS and viewer-discretion sticky buttons use, so
+   the three chips in the docked sticky bar read as one continuous chrome
+   set. The base .sticky-search rule above uses slightly cooler stops than
+   the sibling chips got in the mono-chrome refresh; this override brings
+   them back into lockstep. */
+html[data-theme="light"] .sticky-search {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(244, 246, 248, 0.96) 55%,
+    rgba(226, 230, 234, 0.96) 100%
+  );
+  background-size: 200% 200%;
+  border: 1px solid var(--aqua-hairline-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 [data-motion="reduced"] .sticky-search { animation: none; }
@@ -4828,7 +4914,7 @@ html[data-theme="light"] .gallery-sticky-inner .viewer-discretion-button:hover {
    pale slab doesn't have enough contrast for a small mono-cased count. Switch
    to dark grey so "10 / 108" reads cleanly against the light chip. */
 html[data-theme="light"] .gallery-load-more-count {
-  color: rgba(26, 26, 26, 0.85);
+  color: var(--aqua-ink-soft);
 }
 
 /* Pagination */
@@ -5093,10 +5179,10 @@ html[data-theme="light"] .carousel-nav {
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.98) 0%,
-    rgba(244, 244, 246, 0.96) 55%,
-    rgba(228, 228, 232, 0.96) 100%
+    rgba(244, 246, 248, 0.96) 55%,
+    rgba(226, 230, 234, 0.96) 100%
   );
-  border: 1px solid rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--aqua-hairline-strong);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.06),
@@ -5104,12 +5190,8 @@ html[data-theme="light"] .carousel-nav {
   color: #1a1a1a;
 }
 
-/* .home-cta re-tint. The `.home-cta.home-cta` selector at the top of the
-   file pins border + shadow to dark-panel values with a doubled-class
-   specificity boost. Match that specificity here so the silver skin wins
-   in light mode; the btn-prompt (CD / LS chip) also flips to dark ink. */
 html[data-theme="light"] .home-cta.home-cta {
-  border-color: rgba(0, 0, 0, 0.18);
+  border-color: var(--aqua-hairline-strong);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.06),
@@ -5119,6 +5201,8 @@ html[data-theme="light"] .home-cta .btn-prompt {
   color: #1a1a1a;
 }
 
+/* Neutral chrome shimmer — soft white highlight sweeping the silver
+   surface. No color inside the sweep so it reads as brushed metal. */
 html[data-theme="light"] .back-button::before,
 html[data-theme="light"] .gallery-load-more::before,
 html[data-theme="light"] .home-about-button::before,
@@ -5144,23 +5228,23 @@ html[data-theme="light"] .carousel-nav:hover {
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.98) 0%,
-    rgba(244, 244, 246, 0.96) 55%,
-    rgba(228, 228, 232, 0.96) 100%
+    rgba(244, 246, 248, 0.96) 55%,
+    rgba(226, 230, 234, 0.96) 100%
   );
-  border-color: rgba(var(--color-club-rgb), 0.55);
+  border-color: rgba(0, 0, 0, 0.35);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.06),
-    0 4px 12px rgba(0, 0, 0, 0.10),
-    0 0 14px rgba(var(--color-club-rgb), 0.28);
+    0 4px 12px rgba(0, 0, 0, 0.12),
+    0 0 16px rgba(0, 0, 0, 0.10);
 }
 html[data-theme="light"] .home-cta.home-cta:hover {
-  border-color: rgba(var(--color-club-rgb), 0.55);
+  border-color: rgba(0, 0, 0, 0.35);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.06),
-    0 4px 12px rgba(0, 0, 0, 0.10),
-    0 0 14px rgba(var(--color-club-rgb), 0.28);
+    0 4px 12px rgba(0, 0, 0, 0.12),
+    0 0 16px rgba(0, 0, 0, 0.10);
 }
 /* .carousel-nav has a scale(1.1) hover instead of the translateY(-2px)
    the other CTAs use -- restore it so the button still pops in light
@@ -5429,6 +5513,44 @@ html[data-theme="light"] .carousel-nav::before {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* ----------------------------------------------------------------------------
+   Light-mode skin for the previous/next artwork pager pair at the bottom
+   of gallery detail pages. Base .artwork-pager-btn ships as the same near-
+   black glass slab the other CTA buttons wore before their light-mode
+   overrides landed -- reuse the silver / chrome recipe from .back-button
+   so the pager reads as sibling to the "Back to Gallery" pill above it.
+   PREVIOUS / NEXT labels and the artwork name inside also flip to dark
+   ink, and hover picks up a mono outer glow instead of cyan.
+   ---------------------------------------------------------------------------- */
+html[data-theme="light"] .artwork-pager-btn {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(244, 246, 248, 0.96) 55%,
+    rgba(226, 230, 234, 0.96) 100%
+  );
+  border: 1px solid var(--aqua-hairline-strong);
+  color: #1a1a1a;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.06);
+}
+html[data-theme="light"] .artwork-pager-btn:hover {
+  border-color: rgba(0, 0, 0, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
+    0 4px 12px rgba(0, 0, 0, 0.12),
+    0 0 16px rgba(0, 0, 0, 0.10);
+}
+html[data-theme="light"] .artwork-pager-label {
+  color: var(--aqua-ink-soft);
+}
+html[data-theme="light"] .artwork-pager-name {
+  color: #1a1a1a;
 }
 
 .details-header {
@@ -5740,6 +5862,64 @@ html[data-theme="light"] .carousel-nav::before {
   transform: scale(1.04);
 }
 
+/* ----------------------------------------------------------------------------
+   Light-mode skin for the artwork angle rail on gallery detail pages. Base
+   .strip-rail-thumb ships as a black box with white-alpha hairlines and
+   the counter renders in the branded HUD cyan -- both unreadable on the
+   mono-chrome light page. Flip the whole rail to the same silver / chrome
+   recipe used by the sticky bar + console panel + CTA buttons, and force
+   the counter numerals (01 / 08) to flat black.
+   ---------------------------------------------------------------------------- */
+html[data-theme="light"] .strip-rail-counter {
+  color: var(--aqua-ink-soft);
+}
+html[data-theme="light"] .strip-rail-counter-current {
+  color: #1a1a1a;
+}
+html[data-theme="light"] .strip-rail-counter-sep {
+  color: var(--aqua-ink-quiet);
+}
+html[data-theme="light"] .strip-rail-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(244, 246, 248, 0.96) 55%,
+    rgba(226, 230, 234, 0.96) 100%
+  );
+  border: 1px solid var(--aqua-hairline-strong);
+}
+html[data-theme="light"] .strip-rail-thumb:hover {
+  border-color: var(--aqua-hairline-strong);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+}
+html[data-theme="light"] .strip-rail-thumb.active {
+  border-color: var(--aqua-hairline-strong);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(240, 242, 244, 0.98) 55%,
+    rgba(220, 224, 228, 0.98) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
+    0 0 14px rgba(0, 0, 0, 0.12);
+}
+html[data-theme="light"] .strip-rail-thumb-index {
+  color: var(--aqua-ink-soft);
+}
+html[data-theme="light"] .strip-rail-thumb.active .strip-rail-thumb-index {
+  color: #1a1a1a;
+}
+/* Also flip the rail scrollbar thumb from a translucent cyan to a soft
+   dark-alpha so it doesn't disappear into the light chrome. */
+html[data-theme="light"] .strip-rail-list {
+  scrollbar-color: rgba(0, 0, 0, 0.28) transparent;
+}
+html[data-theme="light"] .strip-rail-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.28);
+}
+
 .strip-main {
   grid-area: main;
   min-width: 0;
@@ -5767,10 +5947,10 @@ html[data-theme="light"] .carousel-nav::before {
 }
 html[data-theme="light"] .strip-meta-title,
 html[data-theme="light"] .strip-meta-title-name {
-  color: #1a1a1a;
+  color: var(--aqua-ink);
 }
 html[data-theme="light"] .strip-meta-desc {
-  color: rgba(26, 26, 26, 0.82);
+  color: var(--aqua-ink-soft);
 }
 .strip-meta-title-year {
   margin-left: 0.4em;
@@ -5784,6 +5964,17 @@ html[data-theme="light"] .strip-meta-desc {
 .strip-meta-title-year-bracket {
   opacity: 0.5;
   margin: 0 0.15em;
+}
+/* Light-mode: the base rule paints the year in var(--color-club), which in
+   light mode is locally remapped to the near-white ice tone -- unreadable
+   on the paper page. Flip to dark ink at ~78% black so the year still
+   reads as secondary metadata but stays legible; brackets stay slightly
+   quieter for the [ 2024 ] typographic frame. */
+html[data-theme="light"] .strip-meta-title-year {
+  color: rgba(26, 26, 26, 0.78);
+}
+html[data-theme="light"] .strip-meta-title-year-bracket {
+  opacity: 0.65;
 }
 
 .strip-meta-rows {
@@ -6651,11 +6842,11 @@ html[data-theme="light"] .strip-meta-desc {
    wears when active. Dark mode is untouched.
    ---------------------------------------------------------------------------- */
 html[data-theme="light"] .footer {
-  background-color: #ffffff;
+  background-color: var(--aqua-paper);
   color: #1a1a1a;
 }
 html[data-theme="light"] .footer-row:first-child {
-  border-bottom-color: rgba(0, 0, 0, 0.14);
+  border-bottom-color: var(--aqua-hairline);
 }
 html[data-theme="light"] .logo-information a,
 html[data-theme="light"] .navigation-links a,
@@ -6665,24 +6856,31 @@ html[data-theme="light"] .copyright-information p {
 }
 html[data-theme="light"] .navigation-links a:hover,
 html[data-theme="light"] .social-media-links a:hover {
-  color: var(--color-club);
+  color: rgba(0, 0, 0, 0.55);
 }
-/* Cyan-leaning-white glow on the footer METTAIRE wordmark. Applied to the
-   base anchor (not just .active) so it pulses everywhere. */
+/* METTAIRE wordmark in the footer — flat-black printed ink, no glow. */
 html[data-theme="light"] .footer .logo-information h2 a {
-  animation: wordmark-active-glow-light 2.2s ease-in-out infinite alternate;
+  animation: none;
+  color: #1a1a1a;
+  text-shadow: none;
 }
-/* Back-to-top puck in the footer row: flip the docked variant border/glyph
-   colors so it reads on the white footer surface. */
+/* Home page hero METTAIRE — flat-black printed ink. title-reveal fades the
+   wordmark in on mount; no continuous pulse afterwards. */
+html[data-theme="light"] .landingpage-title {
+  animation: title-reveal 2.5s ease-out forwards;
+  color: #1a1a1a;
+  text-shadow: none;
+}
+/* Back-to-top puck in the footer row: monochrome docked variant. */
 html[data-theme="light"] .back-to-top-button.is-docked {
   color: #1a1a1a;
-  border-color: rgba(0, 0, 0, 0.35);
+  border-color: var(--aqua-hairline-strong);
 }
 html[data-theme="light"] .back-to-top-button.is-docked:hover,
 html[data-theme="light"] .back-to-top-button.is-docked:focus-visible,
 html[data-theme="light"] .back-to-top-button.is-docked:active {
-  color: var(--color-club);
-  border-color: rgba(var(--color-club-rgb), 0.9);
+  color: rgba(0, 0, 0, 0.55);
+  border-color: rgba(0, 0, 0, 0.55);
 }
 
 /* ========================================
@@ -6938,8 +7136,8 @@ html[data-theme="light"] .back-to-top-button.is-docked:active {
       linear-gradient(
         180deg,
         rgba(255, 255, 255, 0.98) 0%,
-        rgba(244, 244, 246, 0.96) 55%,
-        rgba(228, 228, 232, 0.96) 100%
+        rgba(244, 246, 248, 0.96) 55%,
+        rgba(226, 230, 234, 0.96) 100%
       );
   }
   html[data-theme="light"] .main-menu::before {
@@ -6950,16 +7148,16 @@ html[data-theme="light"] .back-to-top-button.is-docked:active {
   }
   html[data-theme="light"] .main-menu li a {
     color: #1a1a1a;
-    border-bottom-color: rgba(0, 0, 0, 0.14);
+    border-bottom-color: var(--aqua-hairline);
   }
   html[data-theme="light"] .main-menu li a .menu-idx {
-    color: rgba(26, 26, 26, 0.45);
+    color: var(--aqua-ink-quiet);
   }
   html[data-theme="light"] .main-menu li a:hover {
-    color: var(--color-club);
+    color: rgba(0, 0, 0, 0.55);
   }
   html[data-theme="light"] .main-menu .menu-terminal-footer {
-    color: rgba(26, 26, 26, 0.55);
+    color: var(--aqua-ink-soft);
   }
 }
 
@@ -7388,7 +7586,7 @@ nav #logo:focus,
 /* Light mode: the cog icon rides on the new white nav bar, so the white
    glyph disappears. Flip to dark ink to match the sibling nav links. */
 html[data-theme="light"] .settings-toggle {
-  color: #1a1a1a;
+  color: var(--aqua-ink);
 }
 
 /* Full-screen "blast-door" settings panel (all viewports), matching the mobile
@@ -10968,6 +11166,15 @@ input:checked + .toggle-slider:before {
   text-shadow: 0 0 6px rgba(var(--color-club-rgb), 0.45);
   z-index: 2;
 }
+/* Light-mode: swap the cyan chip glow for a mono-editorial `/// SEC.0N`
+   marker — flat black ink, no glow, `///` prefix (inspo: lounge classics).
+   Dark mode keeps the cyan chip untouched. */
+html[data-theme="light"] .log-section-label::before {
+  content: '/// SEC.' counter(logsec, decimal-leading-zero);
+  color: #1a1a1a;
+  text-shadow: none;
+  letter-spacing: 0.2em;
+}
 
 /* The clipped/bordered panel — chamfered top-right + bottom-left corners,
    cyan tinted border, red arterial hairline pinned to the bottom edge. */
@@ -11873,17 +12080,17 @@ input:checked + .toggle-slider:before {
    .settings-overlay override in cascade order. Dark mode untouched.
    ---------------------------------------------------------------------------- */
 html[data-theme="light"] .settings-overlay {
-  background-color: #ffffff;
+  background-color: var(--aqua-paper);
   background-image: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.98) 0%,
-    rgba(244, 244, 246, 0.96) 55%,
-    rgba(228, 228, 232, 0.96) 100%
+    rgba(244, 246, 248, 0.96) 55%,
+    rgba(226, 230, 234, 0.96) 100%
   );
   color: #1a1a1a;
   --color-text: #1a1a1a;
-  --color-text-light: rgba(26, 26, 26, 0.6);
-  --color-border: rgba(0, 0, 0, 0.18);
+  --color-text-light: var(--aqua-ink-quiet);
+  --color-border: var(--aqua-hairline-strong);
   --color-hover: rgba(0, 0, 0, 0.06);
   --color-primary: #1a1a1a;
 }
@@ -11894,7 +12101,7 @@ html[data-theme="light"] .settings-overlay::after {
   background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.03) 0 1px, transparent 1px 3px);
 }
 html[data-theme="light"] .settings-overlay .settings-header {
-  border-bottom-color: rgba(0, 0, 0, 0.14);
+  border-bottom-color: var(--aqua-hairline);
 }
 html[data-theme="light"] .settings-overlay .settings-header h2 {
   color: #1a1a1a;
@@ -11903,15 +12110,15 @@ html[data-theme="light"] .settings-overlay .settings-close {
   color: #1a1a1a;
 }
 html[data-theme="light"] .settings-overlay .setting-group h3 {
-  color: rgba(26, 26, 26, 0.75);
-  border-bottom-color: rgba(0, 0, 0, 0.14);
+  color: var(--aqua-ink-soft);
+  border-bottom-color: var(--aqua-hairline);
 }
 html[data-theme="light"] .settings-overlay .shortcut-item span {
   color: #1a1a1a;
 }
 html[data-theme="light"] .settings-overlay .shortcut-item kbd {
   background-color: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.18);
+  border-color: var(--aqua-hairline-strong);
   color: #1a1a1a;
 }
 

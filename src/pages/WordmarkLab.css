@@ -1,0 +1,302 @@
+/* METTAIRE wordmark treatments — light-mode preview lab. The page renders on
+   the light background; five candidate skins are each self-contained under
+   `.wordmark-treat-<id>` so they can be swapped in the JSX by class alone. */
+
+.wordmark-lab {
+  min-height: 100vh;
+  padding: clamp(6rem, 12vh, 9rem) clamp(1rem, 5vw, 3rem) clamp(4rem, 8vh, 6rem);
+  background: linear-gradient(180deg, #ffffff 0%, #f4f4f6 100%);
+  color: #1a1a1a;
+  font-family: var(--font-family-display);
+}
+
+.wordmark-lab-header {
+  max-width: 900px;
+  margin: 0 auto var(--spacing-2xl);
+  text-align: center;
+  position: relative;
+}
+
+.wordmark-lab-chip {
+  display: inline-block;
+  font-family: var(--font-family-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  padding: 4px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.28);
+  color: rgba(26, 26, 26, 0.75);
+  border-radius: 3px;
+  margin-bottom: var(--spacing-md);
+}
+
+.wordmark-lab-header h1 {
+  font-family: var(--font-family-display);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  margin: 0 0 var(--spacing-md);
+  color: #1a1a1a;
+}
+
+.wordmark-lab-lede {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 60ch;
+  margin: 0 auto;
+  color: rgba(26, 26, 26, 0.75);
+}
+
+/* Hero — the active treatment renders BIG. Chamfered chrome frame with a
+   silver-chrome gradient so the wordmark sits inside a familiar surface.
+   Some treatments (underline-scan) need a positioning parent — .wordmark-lab-
+   target below carries it. */
+.wordmark-lab-hero {
+  max-width: 1100px;
+  margin: 0 auto var(--spacing-xl);
+  padding: clamp(3rem, 9vh, 6rem) clamp(1rem, 5vw, 4rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(244, 244, 246, 0.96) 55%,
+    rgba(228, 228, 232, 0.96) 100%
+  );
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 12px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
+    0 8px 26px rgba(0, 0, 0, 0.08);
+}
+
+.wordmark-lab-target {
+  font-family: var(--font-family-wordmark);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  font-size: clamp(3rem, 10vw, 7rem);
+  line-height: 1;
+  color: #1a1a1a;
+  position: relative;
+  display: inline-block;
+}
+
+/* Tabs — one per treatment. Silver-chrome pills so they match the
+   established button vocabulary. Active pill goes cyan-outlined. */
+.wordmark-lab-controls {
+  max-width: 900px;
+  margin: 0 auto var(--spacing-lg);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.wordmark-lab-tab {
+  font-family: var(--font-family-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #1a1a1a;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(244, 244, 246, 0.96) 55%,
+    rgba(228, 228, 232, 0.96) 100%
+  );
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.wordmark-lab-tab:hover {
+  transform: translateY(-1px);
+  border-color: rgba(var(--color-club-rgb), 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
+    0 4px 10px rgba(0, 0, 0, 0.08),
+    0 0 12px rgba(var(--color-club-rgb), 0.25);
+}
+
+.wordmark-lab-tab.is-active {
+  border-color: rgba(var(--color-club-rgb), 0.75);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
+    0 4px 10px rgba(0, 0, 0, 0.08),
+    0 0 16px rgba(var(--color-club-rgb), 0.35);
+}
+
+.wordmark-lab-desc {
+  max-width: 720px;
+  margin: 0 auto var(--spacing-2xl);
+  text-align: center;
+  min-height: 3em;
+}
+
+.wordmark-lab-desc p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(26, 26, 26, 0.72);
+  margin: 0;
+}
+
+/* Reference row — one small copy per treatment at nav-bar scale. */
+.wordmark-lab-reference {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.wordmark-lab-reference-title {
+  font-family: var(--font-family-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.6);
+  margin: 0 0 var(--spacing-md);
+  text-align: center;
+}
+
+.wordmark-lab-reference-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.wordmark-lab-reference-item {
+  padding: var(--spacing-md);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  transition: border-color 0.18s ease, transform 0.18s ease;
+  min-height: 100px;
+}
+
+.wordmark-lab-reference-item:hover {
+  border-color: rgba(var(--color-club-rgb), 0.4);
+  transform: translateY(-1px);
+}
+
+.wordmark-lab-reference-item.is-active {
+  border-color: rgba(var(--color-club-rgb), 0.7);
+  box-shadow: 0 0 12px rgba(var(--color-club-rgb), 0.2);
+}
+
+.wordmark-lab-reference-mark {
+  font-family: var(--font-family-wordmark);
+  font-size: 1.6rem;
+  letter-spacing: 0.06em;
+  color: #1a1a1a;
+  position: relative;
+  display: inline-block;
+}
+
+.wordmark-lab-reference-caption {
+  font-family: var(--font-family-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.6);
+  text-align: center;
+}
+
+/* ============================================================================
+   TREATMENT #1 — Chromatic aberration
+   Two razor-thin color-fringed offsets (cyan right, arterial-red left) over
+   crisp black ink. No blur. Uses text-shadow layers rather than a duplicate
+   DOM copy so the underlying text stays a single glyph run (accessible /
+   selectable / stays the wordmark's exact letterform).
+   ============================================================================ */
+.wordmark-treat-chromatic {
+  color: #1a1a1a;
+  font-weight: 300;
+  text-shadow:
+    2px 0 0 rgba(255, 60, 60, 0.72),
+    -2px 0 0 rgba(60, 90, 255, 0.72),
+    0 2px 0 rgba(80, 220, 140, 0.22);
+}
+
+/* ============================================================================
+   TREATMENT #2 — Letterpress deboss
+   Paper-white 1px inset highlight BELOW the glyph edge + soft charcoal
+   shadow ABOVE, so the wordmark reads as pressed into the surface.
+   ============================================================================ */
+.wordmark-treat-letterpress {
+  color: #2a2a2a;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95),
+    0 -1px 0 rgba(0, 0, 0, 0.12);
+}
+
+/* ============================================================================
+   TREATMENT #3 — Ghost double-strike
+   The wordmark twice: crisp #1a1a1a base + a duplicate copy offset 3px right
+   and 3px down at ~10% opacity via text-shadow.
+   ============================================================================ */
+.wordmark-treat-ghost-strike {
+  color: #1a1a1a;
+  text-shadow: 3px 3px 0 rgba(26, 26, 26, 0.12);
+}
+
+/* ============================================================================
+   TREATMENT #4 — Underline scan
+   Black ink, no glow on the letterforms. A 2px cyan hairline runs beneath
+   the wordmark and pulses opacity slowly. The hairline is a <span> child
+   (.wordmark-treat-underline-bar) inside the wordmark so it stays anchored.
+   ============================================================================ */
+.wordmark-treat-underline-scan {
+  color: #1a1a1a;
+  padding-bottom: 0.15em;
+}
+.wordmark-treat-underline-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(var(--color-club-rgb), 0.9) 15%,
+    rgba(var(--color-club-rgb), 0.9) 85%,
+    transparent 100%
+  );
+  animation: wordmark-underline-pulse 2.4s ease-in-out infinite alternate;
+}
+@keyframes wordmark-underline-pulse {
+  0%   { opacity: 0.35; }
+  100% { opacity: 1; }
+}
+[data-motion="reduced"] .wordmark-treat-underline-bar {
+  animation: none;
+  opacity: 0.85;
+}
+
+/* ============================================================================
+   TREATMENT #5 — Static clean
+   Just the wordmark, no effect. Slightly boosted letter-spacing so it
+   doesn't feel understated to the point of shy.
+   ============================================================================ */
+.wordmark-treat-static-clean {
+  color: #1a1a1a;
+  letter-spacing: 0.1em;
+}

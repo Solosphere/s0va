@@ -10,6 +10,7 @@ import ProgramsAccess from './pages/ProgramsAccess';
 import EngineeringLog from './pages/EngineeringLog';
 import EngineeringLogDetail from './pages/EngineeringLogDetail';
 import WoundHUD from './pages/WoundHUD';
+import WordmarkLab from './pages/WordmarkLab';
 import SiteHeadingAndNav from './components/SiteHeadingAndNav';
 import Footer from './components/Footer';
 import NotFoundPage from './pages/NotFound';
@@ -164,6 +165,7 @@ export default function App() {
           <Route path="/programs" element={<ProgramsAccess />} />
           <Route path="/programs/blacksite" element={<BlackSite />} />
           <Route path="/wound" element={<WoundHUD />} />
+          <Route path="/wordmark-lab" element={<WordmarkLab />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
