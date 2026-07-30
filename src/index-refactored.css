@@ -5540,6 +5540,10 @@ html[data-theme="light"] .gallery-load-more:hover {
 .strip-meta-title-name {
   color: #ffffff;
 }
+html[data-theme="light"] .strip-meta-title,
+html[data-theme="light"] .strip-meta-title-name {
+  color: #1a1a1a;
+}
 .strip-meta-title-year {
   margin-left: 0.4em;
   font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
