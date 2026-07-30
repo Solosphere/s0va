@@ -118,38 +118,135 @@ const featuredSlots = [
   { kind: 'artwork', slot: 5, data: findFeatured('secondwind.webp') },
 ];
 
-// Which tile is currently under the rail's viewport focus. Drives the
-// "01 / 05" counter chip and the cyan active-tile border. Uses tile centers
-// vs. the rail's center, plus an explicit end-of-scroll clamp — otherwise
-// the last tile can never win because the rail's scroll position clamps
-// before its left edge reaches the container's left edge.
+// Featured rail is a multi-per-view auto-advancing carousel: mobile shows 1
+// tile per view, tablet 2, desktop 3 (mirrors the --home-featured-per-view
+// CSS var). A persistent interval advances activeIndex every AUTO_MS.
+// Interaction (hover, touch, manual scroll) flips pausedRef so the interval
+// skips a tick without being torn down and re-created.
 const railRef = useRef(null);
+// activeIndex is the *target* the auto-advance / swipe wants to land on.
+// displayIndex tracks what's *actually* on screen right now — updated live
+// from scrollLeft on every scroll event so the 01/05 counter animates in
+// sync with the scroll, instead of jumping ahead of the still-animating
+// tiles the moment activeIndex changes.
 const [activeIndex, setActiveIndex] = useState(0);
-const handleRailScroll = () => {
+const [displayIndex, setDisplayIndex] = useState(0);
+const pausedRef = useRef(false);
+const programmaticScrollRef = useRef(false);
+const resumeTimerRef = useRef(null);
+const AUTO_MS = 5000;
+// Kept in sync with the --home-featured-gap CSS var. When each tile is
+// (100% - gap*(n-1))/n and separated by a gap, the scrollLeft of tile N is
+// N * (tileWidth + gap).
+const FEATURED_GAP = 24;
+
+// Match the tiles-per-view breakpoints in the CSS (748px, 1100px). Kept in
+// sync via a matchMedia listener so a viewport resize updates the step math
+// + the active-index cap on the fly.
+const getPerView = () => {
+  if (typeof window === 'undefined') return 1;
+  if (window.matchMedia('(min-width: 1100px)').matches) return 3;
+  if (window.matchMedia('(min-width: 748px)').matches) return 2;
+  return 1;
+};
+const [perView, setPerView] = useState(getPerView);
+useEffect(() => {
+  const onResize = () => setPerView(getPerView());
+  window.addEventListener('resize', onResize);
+  return () => window.removeEventListener('resize', onResize);
+}, []);
+// With N tiles and P per view, the last valid start-index is (N - P). Any
+// higher would clamp to the same scroll position — the tile would appear
+// frozen for a tick before wrapping. maxIndex handles the ceiling.
+const maxIndex = Math.max(0, featuredSlots.length - perView);
+// activeTileIndex maps the current scroll POSITION (0..maxIndex) onto the
+// tile range (0..N-1) proportionally so the leftmost scroll highlights
+// tile 1 and the rightmost highlights tile N. Same mapping the 01/05
+// counter uses, so glow + counter stay in lockstep.
+const activeTileIndex =
+  maxIndex === 0
+    ? 0
+    : Math.round((displayIndex / maxIndex) * (featuredSlots.length - 1));
+// If perView jumps (e.g. rotation, resize), clamp the active index so it
+// doesn't sit above the new maxIndex.
+useEffect(() => {
+  setActiveIndex((i) => Math.min(i, maxIndex));
+}, [maxIndex]);
+
+// Advance timer — installed once on mount, torn down on unmount. State is
+// driven inside the tick so pausing doesn't wipe out the schedule. The
+// modulo is (maxIndex + 1) so 3-per-view desktop wraps at index 2 → 0
+// instead of stepping through 3, 4 (which would clamp to the same scroll
+// position and look frozen).
+useEffect(() => {
+  const t = setInterval(() => {
+    if (pausedRef.current) return;
+    setActiveIndex((i) => (i + 1) % (maxIndex + 1));
+  }, AUTO_MS);
+  return () => clearInterval(t);
+}, [maxIndex]);
+
+// Sync scroll position to the active slot whenever it changes.
+// programmaticScrollRef flags the resulting onScroll fires so they don't get
+// mistaken for a user swipe (which would pause auto-advance).
+// Wrap-around (last -> first) uses an instant jump because a smooth scroll
+// across 4+ snap points fights `scroll-snap-type: x mandatory` — the snap
+// engine keeps re-anchoring mid-animation, leaving the tile stuck.
+// Step math: with P tiles per view, each tile is (clientWidth - gap*(P-1))/P
+// wide, and each snap point is (tileWidth + gap) apart.
+useEffect(() => {
   const rail = railRef.current;
   if (!rail) return;
-  const tiles = rail.querySelectorAll('.home-featured-tile');
-  if (!tiles.length) return;
-  const atEnd = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 2;
-  const atStart = rail.scrollLeft <= 2;
-  let next;
-  if (atEnd) {
-    next = tiles.length - 1;
-  } else if (atStart) {
-    next = 0;
-  } else {
-    const railRect = rail.getBoundingClientRect();
-    const railCenter = railRect.left + railRect.width / 2;
-    let best = Infinity;
-    next = 0;
-    tiles.forEach((tile, i) => {
-      const r = tile.getBoundingClientRect();
-      const d = Math.abs((r.left + r.width / 2) - railCenter);
-      if (d < best) { best = d; next = i; }
-    });
-  }
-  if (next !== activeIndex) setActiveIndex(next);
+  const tileWidth = (rail.clientWidth - FEATURED_GAP * (perView - 1)) / perView;
+  const step = tileWidth + FEATURED_GAP;
+  const target = activeIndex * step;
+  const current = rail.scrollLeft;
+  const distance = Math.abs(target - current);
+  const isLongJump = distance > step * 1.5;
+  programmaticScrollRef.current = true;
+  rail.scrollTo({
+    left: target,
+    behavior: isLongJump ? 'auto' : 'smooth',
+  });
+  const settle = setTimeout(() => {
+    programmaticScrollRef.current = false;
+    // Force-sync the display index once the animation should have landed —
+    // some browsers don't fire a final `scroll` event exactly at the snap
+    // target on smooth scrolls, so the counter could otherwise stick 1
+    // short of the active tile.
+    setDisplayIndex(activeIndex);
+  }, isLongJump ? 60 : 900);
+  return () => clearTimeout(settle);
+}, [activeIndex, perView]);
+
+const pauseAuto = (resumeMs = 6000) => {
+  pausedRef.current = true;
+  clearTimeout(resumeTimerRef.current);
+  resumeTimerRef.current = setTimeout(() => {
+    pausedRef.current = false;
+  }, resumeMs);
 };
+
+// Scroll handler serves two purposes:
+// 1. Update displayIndex live (including during programmatic scrolls) so
+//    the 01/05 counter tracks the actual rail position instead of jumping
+//    ahead the moment activeIndex changes. This was the "counter is messed
+//    up and doesn't align to the scroll" bug on desktop.
+// 2. On user swipes (programmaticScrollRef is false), update activeIndex
+//    to match where the swipe landed and pause auto-advance for a beat.
+const handleRailScroll = () => {
+  const rail = railRef.current;
+  if (!rail || !rail.clientWidth) return;
+  const tileWidth = (rail.clientWidth - FEATURED_GAP * (perView - 1)) / perView;
+  const step = tileWidth + FEATURED_GAP;
+  const live = Math.max(0, Math.min(Math.round(rail.scrollLeft / step), maxIndex));
+  setDisplayIndex((prev) => (prev === live ? prev : live));
+  if (programmaticScrollRef.current) return;
+  if (live !== activeIndex) setActiveIndex(live);
+  pauseAuto(6000);
+};
+const handleRailPointerEnter = () => pauseAuto(6000);
+const handleRailPointerLeave = () => pauseAuto(1500);
 
 return (
   <div className="home-page">
@@ -234,9 +331,19 @@ return (
         <div className="home-featured-rail-box">
           <h2 className="home-featured-rail-spine">FEATURED</h2>
           <span className="home-featured-rail-chip" aria-hidden="true">FEATURED</span>
+          {/* Counter always reads NN/05 (total = tile count) regardless of
+              perView, so both endpoints stay reachable. We map the current
+              scroll POSITION (0..maxIndex) proportionally onto the tile
+              range (1..N): leftmost scroll = 01, rightmost = N, middle
+              stops interpolate. On mobile (perView=1) maxIndex = N-1 so
+              this collapses to the natural 01, 02, 03, 04, 05. */}
           <div className="home-featured-rail-counter" aria-hidden="true">
             <span className="home-featured-rail-counter-current">
-              {String(activeIndex + 1).padStart(2, '0')}
+              {String(
+                maxIndex === 0
+                  ? 1
+                  : 1 + Math.round((displayIndex / maxIndex) * (featuredSlots.length - 1))
+              ).padStart(2, '0')}
             </span>
             <span className="home-featured-rail-counter-sep">/</span>
             <span className="home-featured-rail-counter-total">
@@ -247,9 +354,13 @@ return (
             className="home-featured-tiles"
             ref={railRef}
             onScroll={handleRailScroll}
+            onMouseEnter={handleRailPointerEnter}
+            onMouseLeave={handleRailPointerLeave}
+            onTouchStart={handleRailPointerEnter}
+            onTouchEnd={handleRailPointerLeave}
           >
             {featuredSlots.map((entry, i) => {
-              const isActive = i === activeIndex;
+              const isActive = i === activeTileIndex;
               const indexLabel = String(entry.slot).padStart(2, '0');
               if (entry.kind === 'blacksite') {
                 return (

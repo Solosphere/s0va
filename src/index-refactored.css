@@ -1317,6 +1317,10 @@ nav #logo span.special-char,
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  /* Clip to the rounded frame so the scroll rail's negative-margin bleed
+     + edge-fade mask stay inside the box. Without this the leftmost /
+     rightmost tile visibly extended past the rounded corners of the box. */
+  overflow: hidden;
 }
 
 /* Vertical FEATURED spine — reads top-to-bottom starting right under the
@@ -1398,35 +1402,45 @@ nav #logo span.special-char,
    much bigger than "5 across a phone" would allow — a viewer swipes to move
    through the featured set. Edge-fade mask softens the cut-off on either side
    so tiles dissolve into the black box interior instead of hard-clipping. */
+/* Single-card carousel: rail is exactly one tile wide, each tile fills 100%
+   of the viewport, scroll-snap holds the neighbor slot fully offscreen with
+   a --home-featured-gap gutter between tiles so a swipe reveals blank frame
+   before the next tile enters (avoids the "tiles hugging each other" feel).
+   Home auto-advances via JS on a timer, so a viewer sees each featured piece
+   in full without needing to swipe. Manual swipe/scroll still works — the
+   handler in Home.jsx pauses the timer briefly on interaction. If the gap
+   changes, update FEATURED_GAP in Home.jsx to match the pixel value. */
 .home-featured-tiles {
+  --home-featured-gap: 24px;
+  /* Mobile default: one tile per view. Tablet/desktop overrides raise this
+     via media queries below. .home-featured-tile widths its `flex-basis`
+     off this value so the row lines up with the rail edges. */
+  --home-featured-per-view: 1;
   display: flex;
   flex-direction: row;
-  gap: clamp(10px, 1.6vw, 20px);
+  gap: var(--home-featured-gap);
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 4px 24px 8px;
-  margin-inline: -24px;
   scroll-snap-type: x mandatory;
-  scroll-padding-left: 24px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    #000 24px,
-    #000 calc(100% - 24px),
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    #000 24px,
-    #000 calc(100% - 24px),
-    transparent 100%
-  );
 }
 .home-featured-tiles::-webkit-scrollbar {
   display: none;
+}
+
+/* Tablet: two per view. */
+@media (min-width: 748px) {
+  .home-featured-tiles {
+    --home-featured-per-view: 2;
+  }
+}
+
+/* Desktop: three per view. */
+@media (min-width: 1100px) {
+  .home-featured-tiles {
+    --home-featured-per-view: 3;
+  }
 }
 
 /* Featured tiles share the coverflow HUD card vocabulary: chamfered
@@ -1439,10 +1453,18 @@ nav #logo span.special-char,
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto;
-  flex: 0 0 auto;
-  width: clamp(210px, 42vw, 340px);
+  /* Multi-per-view carousel: --home-featured-per-view controls how many
+     tiles fit in the rail viewport (mobile 1, tablet 2, desktop 3). Each
+     tile is (100% - gap*(n-1)) / n so the row lines up with the rail edges
+     and the auto-advance step-per-tile stays honest. */
+  flex: 0 0 calc(
+    (100% - var(--home-featured-gap) * (var(--home-featured-per-view) - 1))
+    / var(--home-featured-per-view)
+  );
+  width: auto;
   padding: 0;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
   overflow: hidden;
   clip-path: polygon(
     0 0,
@@ -1498,9 +1520,20 @@ nav #logo span.special-char,
 .home-featured-tile-media {
   display: block;
   position: relative;
+  /* Aspect scales with tiles-per-view. Mobile (1 across, wide tile) uses a
+     4:5 portrait so a full-width tile isn't a tower. Tablet (2 across) and
+     desktop (3 across) use 3:4 so the shorter tile width still gets enough
+     vertical presence — 16:10 was too squat for a rail card. Overridden
+     per-breakpoint below. */
   aspect-ratio: 4 / 5;
   overflow: hidden;
   background: #000;
+}
+
+@media (min-width: 748px) {
+  .home-featured-tile-media {
+    aspect-ratio: 3 / 4;
+  }
 }
 
 .home-featured-tile-media img {
@@ -7407,7 +7440,10 @@ input:checked + .toggle-slider:before {
   position: relative;
   height: 100vw;
   max-height: 460px;
-  margin: 0 auto var(--spacing-md);
+  /* Tighter bottom margin so the prev/dots/next row rides closer to the
+     stage — the old --spacing-md left an airy gap that read as a visual
+     break between the card and its controls. */
+  margin: 0 auto var(--spacing-xs);
   perspective: 900px;
   transform-style: preserve-3d;
 }
@@ -7528,8 +7564,17 @@ input:checked + .toggle-slider:before {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
   flex-shrink: 0;
   display: block;
+}
+
+/* SAP piece is composed off-center in the source — the sculpture sits
+   left of frame, so a default center-crop pushes the subject to the right
+   of the card. Slide the crop window right (higher x%) so the sculpture
+   reads centered in the coverflow slot. */
+.coverflow-card img[src*="SAP"] {
+  object-position: 55% center;
 }
 
 /* Title overlay (gallery-card style): a gradient with the title at the bottom,
@@ -7621,9 +7666,12 @@ input:checked + .toggle-slider:before {
   }
 }
 
-/* Controls sit between the slide and the title in the coverflow */
+/* Controls sit between the slide and the title in the coverflow.
+   margin-top: 0 pulls them flush against the coverflow-stage's bottom
+   margin so the row reads as part of the card, not a separate strip. */
 .coverflow .carousel-controls {
   margin: 0 0 var(--spacing-md);
+  margin-top: 0;
 }
 
 .coverflow-caption {
