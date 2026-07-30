@@ -153,7 +153,7 @@ const AboutPage = () => {
             On the engineering side, I'm looking for what's next. Roles where I can go deeper on platform security, resilience, and the tooling that keeps critical systems standing. Teams that treat reliability and incident response as craft rather than checkbox work. Problems where the stakes are real and the solutions ship.
           </p>
           <p>
-            On the creative side, the work keeps compounding. <i>Heart in Chrome</i> is mid-production; new tattoo work, paintings, and browser games ship in between infrastructure shifts.
+            On the creative side, the work keeps compounding. <i>Heart in Chrome</i> is mid-production; new tattoo work, paintings, and browser games are landing on a steady cadence.
           </p>
           <div className="trajectory-projects upcoming-projects-column-2">
             <Reveal className="image-with-description" id="chrome-container">

@@ -1429,41 +1429,69 @@ nav #logo span.special-char,
   display: none;
 }
 
+/* Featured tiles share the coverflow HUD card vocabulary: chamfered
+   14px top-right + bottom-left corner clips, cyan hairline border,
+   floating SET.NN mono chip in the top-left. Active tile lifts the
+   border to solid cyan + a glow, matching how the coverflow's active
+   card reads. */
 .home-featured-tile {
   position: relative;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto auto;
-  gap: 8px;
+  grid-template-rows: auto;
   flex: 0 0 auto;
   width: clamp(210px, 42vw, 340px);
-  padding: clamp(8px, 1.2vw, 14px);
+  padding: 0;
   scroll-snap-align: start;
   overflow: hidden;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(0, 0, 0, 0.4);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
+  border: 1px solid rgba(var(--color-club-rgb), 0.35);
+  background: linear-gradient(160deg, #050505 0%, #0e0e0e 60%, #050505 100%);
   text-decoration: none;
   transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Active tile: solid cyan border + soft glow to match the reference. */
+/* Active tile: brighter cyan border + soft glow. */
 .home-featured-tile--active {
   border-color: rgba(var(--color-club-rgb), 0.85);
-  box-shadow: 0 0 0 1px rgba(var(--color-club-rgb), 0.35), 0 0 22px rgba(var(--color-club-rgb), 0.18);
+  box-shadow:
+    0 0 22px rgba(var(--color-club-rgb), 0.4),
+    inset 0 0 0 1px rgba(var(--color-club-rgb), 0.25);
 }
 
+/* Relocate the numeric index into the media area as a mono chip in the
+   top-left corner — mirrors the coverflow's DAT.NN chip. Prefix `SET.`
+   distinguishes it from the coverflow's DAT (About page). */
 .home-featured-tile-index {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 3;
+  padding: 0.25em 0.5em;
   font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-  font-size: clamp(0.65rem, 1.1vw, 0.85rem);
+  font-size: 0.65rem;
   letter-spacing: 0.12em;
-  color: rgba(255, 255, 255, 0.55);
-  text-align: center;
-  padding: 2px 0 0;
+  color: var(--color-club);
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(var(--color-club-rgb), 0.5);
+}
+
+.home-featured-tile-index::before {
+  content: 'SET.';
+  opacity: 0.7;
+  margin-right: 1px;
 }
 
 .home-featured-tile--active .home-featured-tile-index {
   color: var(--color-club);
+  border-color: rgba(var(--color-club-rgb), 0.85);
   text-shadow: 0 0 6px rgba(var(--color-club-rgb), 0.45);
 }
 
@@ -1472,7 +1500,6 @@ nav #logo span.special-char,
   position: relative;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  border-radius: 6px;
   background: #000;
 }
 
@@ -4397,12 +4424,17 @@ nav #logo span.special-char,
 
 /* Reuses the home CTA look (.home-about-button.home-cta) — this rule only adds
    the inline-flex layout needed to sit the "N / total" readout beside the label
-   and the count-specific styling. */
+   and the count-specific styling. The `width: auto` override cancels the 100%
+   / max-width: 300px stretch that .home-about-button gets on mobile from the
+   .home-button-row context — a short "Load more N/total" label doesn't need to
+   fill a 300px slab, and the extra right-side whitespace read as broken padding. */
 .gallery-load-more {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
   cursor: pointer;
+  width: auto;
+  max-width: none;
 }
 
 .gallery-load-more-count {
@@ -7443,7 +7475,7 @@ input:checked + .toggle-slider:before {
    log card has a root@mettaire.os prompt in the top-left already, so its
    chip mounts top-right instead (see .coverflow-card:has() override). */
 .coverflow-card::before {
-  content: 'DAT.' attr(data-card-idx);
+  content: 'SET.' attr(data-card-idx);
   position: absolute;
   top: 10px;
   left: 10px;
