@@ -5544,6 +5544,9 @@ html[data-theme="light"] .strip-meta-title,
 html[data-theme="light"] .strip-meta-title-name {
   color: #1a1a1a;
 }
+html[data-theme="light"] .strip-meta-desc {
+  color: rgba(26, 26, 26, 0.82);
+}
 .strip-meta-title-year {
   margin-left: 0.4em;
   font-family: var(--font-family-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
