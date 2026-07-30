@@ -3353,7 +3353,8 @@ nav #logo span.special-char,
    the constant shimmer on the sticky search / FILTERS / discretion / load-more
    / back-to-gallery buttons. Theme-swappable: dark-tinted sweep on the light-
    mode translucent-dark-glass pill, white-tinted sweep on the dark-mode
-   white-glass pill. */
+   white-glass pill. Animation rule is applied by the shared shimmer-loop block
+   further down so all six pills share one animation-timing source. */
 .gallery-search-field::before {
   content: '';
   position: absolute;
@@ -3367,7 +3368,6 @@ nav #logo span.special-char,
     rgba(0, 0, 0, 0.12),
     transparent
   );
-  animation: chrome-shimmer-loop 3.2s ease-in-out infinite;
   pointer-events: none;
   z-index: 0;
 }
@@ -3378,12 +3378,6 @@ nav #logo span.special-char,
     rgba(255, 255, 255, 0.1),
     transparent
   );
-}
-[data-motion="reduced"] .gallery-search-field::before {
-  animation: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .gallery-search-field::before { animation: none; }
 }
 /* Keep the icon + input stacked above the sweep so they don't get washed out
    as it passes underneath. */
@@ -5064,6 +5058,7 @@ html[data-theme="light"] .gallery-load-more:hover {
   60%  { left: 100%; }
   100% { left: 100%; }
 }
+.gallery-search-field::before,
 .sticky-search::before,
 .console-toggle::before,
 .viewer-discretion-button::before,
@@ -5071,6 +5066,7 @@ html[data-theme="light"] .gallery-load-more:hover {
 .gallery-load-more::before {
   animation: chrome-shimmer-loop 3.2s ease-in-out infinite;
 }
+[data-motion="reduced"] .gallery-search-field::before,
 [data-motion="reduced"] .sticky-search::before,
 [data-motion="reduced"] .console-toggle::before,
 [data-motion="reduced"] .viewer-discretion-button::before,
@@ -5079,6 +5075,7 @@ html[data-theme="light"] .gallery-load-more:hover {
   animation: none;
 }
 @media (prefers-reduced-motion: reduce) {
+  .gallery-search-field::before,
   .sticky-search::before,
   .console-toggle::before,
   .viewer-discretion-button::before,
