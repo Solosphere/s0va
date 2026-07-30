@@ -7349,6 +7349,12 @@ nav #logo:focus,
   border: none;
 }
 
+/* Light mode: the cog icon rides on the new white nav bar, so the white
+   glyph disappears. Flip to dark ink to match the sibling nav links. */
+html[data-theme="light"] .settings-toggle {
+  color: #1a1a1a;
+}
+
 /* Full-screen "blast-door" settings panel (all viewports), matching the mobile
    nav menu. Always in the DOM; wipes open/closed via clip-path. */
 .settings-overlay {
