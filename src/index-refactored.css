@@ -6428,22 +6428,33 @@ nav #logo span.special-char,
     text-align: left;
   }
 
-  /* 3-column grid keeps the nav links dead-center regardless of the differing
-     widths of the wordmark (left) and Back to Top (right). */
+  /* Single-row 3-column grid: wordmark left, nav center, back-to-top right,
+     all on ONE row. Explicitly override the mobile grid-template-areas
+     (". logo dock" / ". nav .") — otherwise CSS cascades those areas into
+     the desktop breakpoint and nav gets pinned to its own second row.
+     Setting `grid-template-areas: none` clears them, and each child's
+     grid-area is reset to `auto` so auto-placement lays them out
+     left-center-right across the single row. */
   .footer-row:first-child {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
+    grid-template-areas: none;
+    grid-template-rows: auto;
     align-items: center;
     gap: var(--spacing-lg);
   }
   .footer-row:first-child .logo-information {
+    grid-area: auto;
     justify-self: start;
   }
   .footer-row:first-child .navigation-links {
+    grid-area: auto;
     justify-self: center;
   }
   .footer-row:first-child .back-to-top-dock {
+    grid-area: auto;
     justify-self: end;
+    align-self: center;
   }
 
   .navigation-links {
