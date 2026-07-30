@@ -4015,7 +4015,9 @@ nav #logo span.special-char,
 }
 [data-motion="reduced"] .gallery-sticky-bar { transition: none; }
 
-/* The glass pill itself */
+/* The glass pill itself. Light-mode default mirrors .gallery-search-field:
+   translucent dark glass on the light page bg. Dark-mode override further
+   down restores the original near-black glass. */
 .gallery-sticky-inner {
   display: flex;
   align-items: center;
@@ -4024,6 +4026,24 @@ nav #logo span.special-char,
   /* Never let the pill (grown by the expanded search) exceed the viewport. */
   max-width: calc(100vw - 20px);
   border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.09) 0%,
+    rgba(0, 0, 0, 0.04) 25%,
+    rgba(0, 0, 0, 0.10) 50%,
+    rgba(0, 0, 0, 0.04) 75%,
+    rgba(0, 0, 0, 0.09) 100%
+  );
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  box-shadow:
+    0 10px 34px rgba(0, 0, 0, 0.18),
+    0 0 14px rgba(var(--color-club-rgb), 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+[data-theme="dark"] .gallery-sticky-inner {
   background: linear-gradient(
     135deg,
     rgba(0, 0, 0, 0.92) 0%,
@@ -4035,8 +4055,6 @@ nav #logo span.special-char,
     0 10px 34px rgba(0, 0, 0, 0.45),
     0 0 14px rgba(var(--color-club-rgb), 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 
 /* Active dot — signals "you're filtered" while the toolbar is collapsed. */
@@ -4117,8 +4135,31 @@ nav #logo span.special-char,
   /* The container IS the box: a circle when closed (matching the filter /
      discretion buttons), stretched into a pill when the field grows open. Uses
      the same glass gradient + shimmer + bevel as those buttons so it reads solid,
-     not see-through. */
+     not see-through. Light-mode default = translucent dark glass mirroring
+     .gallery-search-field / .console-toggle. Dark-mode override below flips
+     it to the original near-black glass. */
   border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.09) 0%,
+    rgba(0, 0, 0, 0.04) 25%,
+    rgba(0, 0, 0, 0.10) 50%,
+    rgba(0, 0, 0, 0.04) 75%,
+    rgba(0, 0, 0, 0.09) 100%
+  );
+  background-size: 200% 200%;
+  animation: liquid-shimmer 3s ease-in-out infinite;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+[data-theme="dark"] .sticky-search {
   background: linear-gradient(
     135deg,
     rgba(0, 0, 0, 0.95) 0%,
@@ -4127,16 +4168,11 @@ nav #logo span.special-char,
     rgba(10, 10, 10, 0.9) 75%,
     rgba(0, 0, 0, 0.95) 100%
   );
-  background-size: 200% 200%;
-  animation: liquid-shimmer 3s ease-in-out infinite;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 [data-motion="reduced"] .sticky-search { animation: none; }
@@ -4166,10 +4202,14 @@ nav #logo span.special-char,
   flex-shrink: 0;
   border: none;
   background: transparent;
-  color: #ffffff;
+  color: #111111;
   font-size: 1.05rem;
   cursor: pointer;
   transition: color 0.18s ease;
+}
+
+[data-theme="dark"] .sticky-search-icon {
+  color: #ffffff;
 }
 
 /* Both bare icons stay transparent — kill the global button:hover grey box and
@@ -4234,16 +4274,17 @@ nav #logo span.special-char,
   animation: none;
   transform: none;
   font-size: 0.95rem;
-  color: #ffffff;
+  color: #111111;
 }
 
-/* Branded placeholder — matches the top toolbar (changeling-neo, uppercase). */
+/* Branded placeholder — matches the top toolbar (changeling-neo, uppercase).
+   Light mode: dark ink on the light pill. Dark mode override below. */
 .sticky-search-field .search-bar-input::placeholder {
   font-family: var(--font-family-display);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(17, 17, 17, 0.55);
 }
 
 /* Kill the base input's animated shimmer sweep + focus lift inside the pill. */
@@ -4267,6 +4308,7 @@ nav #logo span.special-char,
   border: none;
   animation: none;
   overflow: visible;
+  color: #ffffff;
 }
 [data-theme="dark"] .sticky-search-field .search-bar-input::before {
   content: none;
@@ -4300,10 +4342,14 @@ nav #logo span.special-char,
   opacity: 0;
   border: none;
   background: transparent;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(17, 17, 17, 0.6);
   font-size: 0.95rem;
   cursor: pointer;
   transition: width 0.24s ease, opacity 0.2s ease;
+}
+
+[data-theme="dark"] .sticky-search-clear {
+  color: rgba(255, 255, 255, 0.6);
 }
 .sticky-search.is-open .sticky-search-clear {
   width: 32px;
