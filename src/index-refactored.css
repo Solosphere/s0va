@@ -3328,8 +3328,25 @@ nav #logo span.special-char,
   height: 48px;
   padding-left: 18px;
   border-radius: 999px;
-  /* Shimmering glass fill (same liquid-shimmer the filter/discretion buttons
-     use) — a subtle traveling highlight across the pill. */
+  /* Light-mode default: translucent dark glass on the light page bg so the pill
+     reads as a raised chip. Dark-mode override further down flips it back to
+     the original white-glass shimmer. */
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.09) 0%,
+    rgba(0, 0, 0, 0.04) 25%,
+    rgba(0, 0, 0, 0.10) 50%,
+    rgba(0, 0, 0, 0.04) 75%,
+    rgba(0, 0, 0, 0.09) 100%
+  );
+  background-size: 200% 200%;
+  animation: liquid-shimmer 3.5s ease-in-out infinite;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* Dark mode: restore the original white-glass shimmer + hairline. */
+[data-theme="dark"] .gallery-search-field {
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.09) 0%,
@@ -3338,10 +3355,7 @@ nav #logo span.special-char,
     rgba(255, 255, 255, 0.04) 75%,
     rgba(255, 255, 255, 0.09) 100%
   );
-  background-size: 200% 200%;
-  animation: liquid-shimmer 3.5s ease-in-out infinite;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 [data-motion="reduced"] .gallery-search-field {
@@ -3357,8 +3371,12 @@ nav #logo span.special-char,
 
 .gallery-search-icon {
   flex-shrink: 0;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(0, 0, 0, 0.6);
   font-size: 1rem;
+}
+
+[data-theme="dark"] .gallery-search-icon {
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .gallery-search-field .search-bar {
@@ -3385,7 +3403,7 @@ nav #logo span.special-char,
   transform: none;
   font-family: var(--font-family-mono); /* typed queries stay legible */
   font-size: 1rem;
-  color: #ffffff;
+  color: #111111;
 }
 .gallery-search-field .search-bar-input::before { content: none; }
 .gallery-search-field .search-bar-input:focus {
@@ -3395,12 +3413,13 @@ nav #logo span.special-char,
 }
 
 /* Branded placeholder: echoes the GALLERY wordmark (changeling-neo, uppercase,
-   letter-spaced). Typed text stays mono via the rule above. */
+   letter-spaced). Typed text stays mono via the rule above. Dark ink in light
+   mode; the [data-theme="dark"] override below flips it back to white. */
 .gallery-search-field .search-bar-input::placeholder {
   font-family: var(--font-family-display);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(17, 17, 17, 0.55);
 }
 
 /* Slightly smaller "SEARCH…" on mobile so it doesn't crowd the narrower pill. */
@@ -3424,6 +3443,7 @@ nav #logo span.special-char,
   border: none;
   animation: none;
   overflow: visible;
+  color: #ffffff;
 }
 [data-theme="dark"] .gallery-search-field .search-bar-input::before { content: none; }
 [data-theme="dark"] .gallery-search-field .search-bar-input::placeholder {
