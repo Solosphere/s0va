@@ -4635,9 +4635,14 @@ nav #logo span.special-char,
   flex-direction: column;
   max-width: 90%;
   margin: 2% auto;
-  margin-top: 100px !important;
+  /* Clear the fixed nav (~60px) plus a comfortable air gap above the
+     "back to gallery" button — the older 100px + 20px padding stacked
+     to ~120px of dead space, but zero was too tight and read as the
+     button crashing into the nav. 96px lands between them. Tablet/mobile
+     override in the <=1024px query where the nav is a touch shorter. */
+  margin-top: 96px !important;
   padding: 1%;
-  padding-top: 20px !important;
+  padding-top: 0 !important;
   border-radius: 30px;
   background-color: var(--color-background);
 }
@@ -5078,7 +5083,12 @@ nav #logo span.special-char,
   gap: var(--spacing-md) var(--spacing-xl);
   max-width: min(1400px, 100%);
   margin: 0 auto;
-  padding: var(--spacing-xl) var(--spacing-lg) 0;
+  /* Small top padding so the .back-button's hover transform: translateY(-2px)
+     doesn't push the button under the .gallery-details `overflow: hidden`
+     clip line. 6px covers the lift + the button's box-shadow spread — the
+     gap to the nav is handled by .gallery-details margin-top. Tablet/mobile
+     override this in the <=1024px query below. */
+  padding: 6px var(--spacing-lg) 0;
   color: var(--color-text);
 }
 
@@ -5403,7 +5413,12 @@ nav #logo span.special-char,
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
-    padding: var(--spacing-sm) var(--spacing-md) 0;
+    /* Give the back button breathing room below the fixed nav — 60px
+       margin-top on .gallery-details only cleared the nav's bottom edge, so
+       the button used to sit flush against the nav. --spacing-lg adds a
+       proper visual gap in the 748-1024px range and stays comfortable at
+       small mobile widths too. */
+    padding: var(--spacing-lg) var(--spacing-md) 0;
   }
 
   /* Flatten the rail wrapper so its rail child becomes a direct flex child
