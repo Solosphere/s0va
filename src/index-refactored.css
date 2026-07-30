@@ -4222,6 +4222,42 @@ html[data-theme="light"] .gallery-sticky-inner .viewer-discretion-button:hover {
   .sticky-search { animation: none; }
 }
 
+/* Light-mode only: give the search pill the same left-to-right shimmer sweep
+   the sibling FILTERS + discretion buttons play on hover. The sweep rides on a
+   ::before pseudo pinned inside the pill; the outer pill's `overflow: hidden`
+   keeps it clipped to the chip. Scoped to html[data-theme="light"] so dark
+   mode stays unchanged. */
+html[data-theme="light"] .sticky-search {
+  overflow: hidden;
+}
+html[data-theme="light"] .sticky-search::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.9),
+    transparent
+  );
+  transition: left 0.5s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+html[data-theme="light"] .sticky-search:hover::before {
+  left: 100%;
+}
+/* Keep the icon + field stacked above the sweep so they don't get washed out
+   as it passes underneath. */
+html[data-theme="light"] .sticky-search-icon,
+html[data-theme="light"] .sticky-search-field {
+  position: relative;
+  z-index: 1;
+}
+
 /* Closed, the search behaves exactly like its sibling icon buttons on hover:
    cyan border + glow (the icon itself dims to #ccc via the global button:hover,
    same as the filter / discretion buttons). No hover lift once the field is open. */
