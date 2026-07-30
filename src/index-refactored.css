@@ -4692,6 +4692,13 @@ html[data-theme="light"] .sticky-search-field {
   color: rgba(var(--color-club-rgb), 0.85);
 }
 
+/* Light mode: the button skin flipped to silver / chrome, and cyan on the
+   pale slab doesn't have enough contrast for a small mono-cased count. Switch
+   to dark grey so "10 / 108" reads cleanly against the light chip. */
+html[data-theme="light"] .gallery-load-more-count {
+  color: rgba(26, 26, 26, 0.85);
+}
+
 /* Pagination */
 .pagination {
   display: flex;
