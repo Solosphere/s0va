@@ -4935,6 +4935,60 @@ html[data-theme="light"] .sticky-search-field {
     inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
 
+/* ---- Light-mode silver / chrome skin ----
+   Reskin .back-button and .gallery-load-more (piggybacks on .home-about-button)
+   to the same silver / chrome recipe as the docked sticky bar so all four
+   surfaces (sticky FILTERS, sticky discretion, sticky search, plus these two
+   CTAs) share one control-chip vocabulary in light mode. Both buttons already
+   own a ::before left-to-right sweep + cyan hover glow -- swap the ::before
+   sweep to a much brighter white gradient so it registers on the light chrome,
+   and preserve the cyan border + glow on hover while keeping the silver base
+   (the base near-black glass gets overwritten by these rules). Scoped to
+   html[data-theme="light"] so dark mode is unchanged. */
+html[data-theme="light"] .back-button,
+html[data-theme="light"] .gallery-load-more {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(244, 244, 246, 0.96) 55%,
+    rgba(228, 228, 232, 0.96) 100%
+  );
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.06);
+  color: #1a1a1a;
+}
+
+html[data-theme="light"] .back-button::before,
+html[data-theme="light"] .gallery-load-more::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.9),
+    transparent
+  );
+}
+
+html[data-theme="light"] .back-button:hover,
+html[data-theme="light"] .gallery-load-more:hover {
+  transform: translateY(-2px);
+  color: #1a1a1a;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(244, 244, 246, 0.96) 55%,
+    rgba(228, 228, 232, 0.96) 100%
+  );
+  border-color: rgba(var(--color-club-rgb), 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
+    0 4px 12px rgba(0, 0, 0, 0.10),
+    0 0 14px rgba(var(--color-club-rgb), 0.28);
+}
+
 .details-container {
   display: flex;
   max-width: 100%;
