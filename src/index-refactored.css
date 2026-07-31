@@ -359,13 +359,35 @@ html[data-theme="light"] .dropdown-btn {
 html[data-theme="light"] .dropdown-btn:hover {
   color: rgba(0, 0, 0, 0.55);
 }
-/* METTAIRE wordmark on light mode — flat-black printed logotype. No glow,
-   no aberration, no animation. Sits like ink on paper so the atmospheric
-   layers (aqua-glass buttons, ice-blue paper) do the mood work. */
+/* METTAIRE wordmark on light mode — flat-black printed ink with the same
+   continuous chrome glimmer sweeping the glyphs as the home hero wordmark
+   (background-clip: text so only the letters are painted, no box). */
 html[data-theme="light"] nav #logo {
-  animation: none;
   color: #1a1a1a;
   text-shadow: none;
+  background-image: linear-gradient(
+    100deg,
+    #1a1a1a 0%,
+    #1a1a1a 42%,
+    #7a7f85 47%,
+    #ffffff 50%,
+    #7a7f85 53%,
+    #1a1a1a 58%,
+    #1a1a1a 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 400% 100%;
+  background-position: 0% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: wordmark-chrome-glimmer 4.5s linear infinite;
+}
+[data-motion="reduced"] html[data-theme="light"] nav #logo {
+  animation: none;
+  background: none;
+  -webkit-text-fill-color: #1a1a1a;
+  color: #1a1a1a;
 }
 
 /* ========================================
@@ -6992,18 +7014,70 @@ html[data-theme="light"] .navigation-links a:hover,
 html[data-theme="light"] .social-media-links a:hover {
   color: rgba(0, 0, 0, 0.55);
 }
-/* METTAIRE wordmark in the footer — flat-black printed ink, no glow. */
+/* METTAIRE wordmark in the footer — flat-black ink with the same chrome
+   glimmer sweeping the glyphs as nav + hero, so all three read as siblings. */
 html[data-theme="light"] .footer .logo-information h2 a {
-  animation: none;
   color: #1a1a1a;
   text-shadow: none;
+  background-image: linear-gradient(
+    100deg,
+    #1a1a1a 0%,
+    #1a1a1a 42%,
+    #7a7f85 47%,
+    #ffffff 50%,
+    #7a7f85 53%,
+    #1a1a1a 58%,
+    #1a1a1a 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 400% 100%;
+  background-position: 0% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: wordmark-chrome-glimmer 4.5s linear infinite;
 }
-/* Home page hero METTAIRE — flat-black printed ink. title-reveal fades the
-   wordmark in on mount; no continuous pulse afterwards. */
+[data-motion="reduced"] html[data-theme="light"] .footer .logo-information h2 a {
+  animation: none;
+  background: none;
+  -webkit-text-fill-color: #1a1a1a;
+  color: #1a1a1a;
+}
+/* Home page hero METTAIRE — flat-black printed ink with a continuous chrome
+   glimmer sweeping the glyphs only (background-clip: text). title-reveal
+   still fades the wordmark in on mount. Glimmer respects reduced-motion. */
 html[data-theme="light"] .landingpage-title {
-  animation: title-reveal 2.5s ease-out forwards;
   color: #1a1a1a;
   text-shadow: none;
+  background-image: linear-gradient(
+    100deg,
+    #1a1a1a 0%,
+    #1a1a1a 42%,
+    #7a7f85 47%,
+    #ffffff 50%,
+    #7a7f85 53%,
+    #1a1a1a 58%,
+    #1a1a1a 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 400% 100%;
+  background-position: 0% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation:
+    title-reveal 2.5s ease-out forwards,
+    wordmark-chrome-glimmer 4.5s linear 2.5s infinite;
+}
+@keyframes wordmark-chrome-glimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: 0% 0; }
+}
+[data-motion="reduced"] html[data-theme="light"] .landingpage-title {
+  animation: title-reveal 2.5s ease-out forwards;
+  background: none;
+  -webkit-text-fill-color: #1a1a1a;
+  color: #1a1a1a;
 }
 /* Back-to-top puck — base + floating + docked all render in the same
    mono-chrome vocabulary in light mode so the transition from floating to
