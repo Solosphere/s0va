@@ -177,9 +177,11 @@ const GalleryItemDetails = () => {
   const isVideo = currentImageUrl.includes('.mp4');
   const fullImageUrl = getFullImageUrl(currentImageUrl);
 
+  const isSingle = product.image.length === 1;
+
   return (
     <div className="gallery-details">
-      <div className="details-strip">
+      <div className={`details-strip${isSingle ? ' details-strip--single' : ''}`}>
         <button
           className="dynamic-back-button back-button strip-back-button"
           onClick={() => navigate(backTo)}
@@ -190,43 +192,43 @@ const GalleryItemDetails = () => {
             Back<span className="back-button-suffix">{` to ${backWhere}`}</span>
           </span>
         </button>
-        <aside className="strip-rail-column">
-          <div className="strip-rail" aria-label="Angle selector">
-            {product.image.length > 1 && (
+        {product.image.length > 1 && (
+          <aside className="strip-rail-column">
+            <div className="strip-rail" aria-label="Angle selector">
               <div className="strip-rail-counter">
                 <span className="strip-rail-counter-current">{String(safeIndex + 1).padStart(2, '0')}</span>
                 <span className="strip-rail-counter-sep">/</span>
                 <span className="strip-rail-counter-total">{String(product.image.length).padStart(2, '0')}</span>
               </div>
-            )}
-            <ul className="strip-rail-list" ref={railListRef}>
-              {product.image.map((image, index) => {
-                const active = index === safeIndex;
-                const thumbIsVideo = image.includes('.mp4');
-                return (
-                  <li key={index}>
-                    <button
-                      type="button"
-                      className={`strip-rail-thumb ${active ? 'active' : ''}`}
-                      onClick={() => handleThumbnailClick(index)}
-                      aria-current={active ? 'true' : undefined}
-                      aria-label={`View angle ${index + 1}`}
-                    >
-                      <span className="strip-rail-thumb-index">{String(index + 1).padStart(2, '0')}</span>
-                      <span className="strip-rail-thumb-media">
-                        {thumbIsVideo ? (
-                          <video playsInline muted src={getFullImageUrl(image)} />
-                        ) : (
-                          <img src={withImageWidth(getFullImageUrl(image), WIDTHS.RAIL_THUMB)} loading="lazy" alt="" />
-                        )}
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </aside>
+              <ul className="strip-rail-list" ref={railListRef}>
+                {product.image.map((image, index) => {
+                  const active = index === safeIndex;
+                  const thumbIsVideo = image.includes('.mp4');
+                  return (
+                    <li key={index}>
+                      <button
+                        type="button"
+                        className={`strip-rail-thumb ${active ? 'active' : ''}`}
+                        onClick={() => handleThumbnailClick(index)}
+                        aria-current={active ? 'true' : undefined}
+                        aria-label={`View angle ${index + 1}`}
+                      >
+                        <span className="strip-rail-thumb-index">{String(index + 1).padStart(2, '0')}</span>
+                        <span className="strip-rail-thumb-media">
+                          {thumbIsVideo ? (
+                            <video playsInline muted src={getFullImageUrl(image)} />
+                          ) : (
+                            <img src={withImageWidth(getFullImageUrl(image), WIDTHS.RAIL_THUMB)} loading="lazy" alt="" />
+                          )}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </aside>
+        )}
 
         <div className="strip-main">
           <header className="strip-meta">

@@ -5818,6 +5818,16 @@ html[data-theme="light"] .artwork-pager-name {
   color: var(--color-text);
 }
 
+/* Single-image gallery items skip the thumbnail rail entirely — collapse the
+   grid to a single column so .strip-main fills the width instead of leaving
+   an empty 220px gutter where the rail used to live. */
+.details-strip--single {
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "back"
+    "main";
+}
+
 .strip-rail-column {
   grid-area: rail;
   display: flex;
