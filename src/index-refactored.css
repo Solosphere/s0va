@@ -12212,12 +12212,13 @@ html[data-theme="light"] .log-section-nav a.is-active {
   padding-bottom: 0;
 }
 
-/* Below the wide desktop, the horizontal rail's 500px min-width overflows the
-   container gutters (500 + 2× spacing-lg > 860px). Rather than clip the bar
-   or force horizontal scrolling on a portrait tablet, adopt the mobile
-   vertical-rail layout up through 860px so the stations always fit within
-   the viewport. Wide desktops (>= 861px) keep the horizontal metro line. */
-@media (max-width: 860px) {
+/* Below the wide desktop, the horizontal rail overflows the container gutters
+   once station count grows past ~5 (each stop's min-width is 110px, so at 6+
+   stops the line needs ~660px + gutters — already too wide at ~975px viewport
+   once padding is subtracted). Adopt the vertical-rail layout up through
+   976px so the stations always fit within the viewport. Wide desktops
+   (>= 977px) keep the horizontal metro line. */
+@media (max-width: 976px) {
   .log-timeline {
     overflow-x: visible;
   }

@@ -473,6 +473,7 @@ export const timeline = [
   { year: '2022', label: 'Marcy Lab School', sub: 'Education', to: '#edu-marcy' },
   { year: '2023', label: 'CareerSpring', sub: 'Internship', to: '#intern-careerspring' },
   { year: '2024', label: 'OWN', sub: 'Internship', to: '#intern-own' },
+  { year: '2025', label: 'Salesforce', sub: 'AMTS', to: '#sec-case-studies' },
   { year: '2026', label: 'Salesforce', sub: 'MTS', to: '#sec-case-studies', current: true },
 ];
 
