@@ -25,10 +25,10 @@ const SECTION_LABELS = {
 
 const Section = ({ id, kind, className = '', children }) => (
   <Reveal as="section" className={`log-section log-detail-section ${className}`}>
+    <span className="log-detail-section-tag" aria-hidden="true">
+      SEC.{String(id).padStart(2, '0')}
+    </span>
     <div className="log-detail-section-inner">
-      <span className="log-detail-section-tag" aria-hidden="true">
-        SEC.{String(id).padStart(2, '0')}
-      </span>
       <h2 className="log-section-head">
         <span className="log-cmd">$ {SECTION_LABELS[kind]}</span>
       </h2>
@@ -114,8 +114,8 @@ const EngineeringLogDetail = () => {
         </Link>
 
         <header className="log-detail-head">
+          <span className="log-detail-head-tag" aria-hidden="true">ENTRY</span>
           <div className="log-detail-head-inner">
-            <span className="log-detail-head-tag" aria-hidden="true">ENTRY</span>
             <span className="log-detail-org">{entry.org} · {entry.period}</span>
             <h1>{entry.title}</h1>
             <p className="log-detail-summary">{entry.summary}</p>
