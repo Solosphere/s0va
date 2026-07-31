@@ -14,7 +14,7 @@
 
 export const logMeta = {
   role: 'Salesforce',
-  timeline: 'Software Engineering AMTS · Feb 2025 – Present',
+  timeline: 'Software Engineering MTS · Jul 2026 – Present · promoted from AMTS (Feb 2025)',
   stack: [
     'AWS', 'GovCloud', 'Terraform', 'Ansible', 'Jenkins', 'Packer',
     'Python', 'Lambda', 'Datadog', 'CrowdStrike', 'Tenable', 'GitLab',
@@ -473,7 +473,7 @@ export const timeline = [
   { year: '2022', label: 'Marcy Lab School', sub: 'Education', to: '#edu-marcy' },
   { year: '2023', label: 'CareerSpring', sub: 'Internship', to: '#intern-careerspring' },
   { year: '2024', label: 'OWN', sub: 'Internship', to: '#intern-own' },
-  { year: '2025', label: 'Salesforce', sub: 'AMTS', to: '#sec-case-studies', current: true },
+  { year: '2026', label: 'Salesforce', sub: 'MTS', to: '#sec-case-studies', current: true },
 ];
 
 // Skills grouped by domain — its own section (cat /var/log/skills).
