@@ -1473,12 +1473,12 @@ html[data-theme="light"] .home-featured-rail-counter-total {
   font-weight: 400;
   letter-spacing: 0.24em;
   line-height: 1;
-  /* Locked to the fixed off-white foreground (not var(--color-text)) because
-     the rail-box background is a dark shimmering-metal panel in every theme
-     — using --color-text made "FEATURED" go black on the dark panel in
-     light mode and disappear. --color-secondary is the site's canonical
-     light-on-dark ink and stays legible in both themes. */
-  color: var(--color-secondary);
+  /* Locked to a fixed off-white -- the rail-box background is a dark
+     shimmering-metal panel in every theme, so the spine must stay legible
+     on dark regardless of light/dark mode. --color-secondary can't be used
+     for this: it flips to #000 in dark mode (see [data-theme="dark"]
+     block) which made FEATURED render black-on-black. */
+  color: #ffffff;
   white-space: nowrap;
   pointer-events: none;
 }
@@ -1500,15 +1500,27 @@ html[data-theme="light"] .home-featured-rail-counter-total {
   letter-spacing: 0.12em;
   line-height: 1;
   /* See .home-featured-rail-spine — the rail-box is dark in every theme
-     so the chip stays on --color-secondary rather than --color-text. */
-  color: var(--color-secondary);
+     so the chip is hard-coded to off-white rather than the theme var
+     (which flips to #000 in dark mode). */
+  color: #ffffff;
   pointer-events: none;
 }
 
-.home-featured-rail-counter {
+/* Wrapper row: NN(-MM) counter + 5-segment HUD track sitting on one line in
+   the top-left of the rail box. Absolute-positioned so it floats over the
+   rail chrome; the two children lay out inline via flex. */
+.home-featured-rail-readout {
   position: absolute;
   top: clamp(10px, 1.6vw, 16px);
   left: clamp(14px, 2vw, 22px);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.home-featured-rail-counter {
   display: inline-flex;
   align-items: baseline;
   gap: 4px;
@@ -1527,6 +1539,63 @@ html[data-theme="light"] .home-featured-rail-counter-total {
 .home-featured-rail-counter-total {
   color: rgba(255, 255, 255, 0.4);
 }
+
+/* Range dash between the leftmost + rightmost visible tile numbers when the
+   counter shows a range (e.g. "01-02/05" at perView=2). Sits in the same
+   accent color as the leading number so the range reads as one atom. */
+.home-featured-rail-counter-range {
+  margin: 0 1px;
+  color: var(--color-club);
+  text-shadow: 0 0 8px rgba(var(--color-club-rgb), 0.5);
+}
+html[data-theme="light"] .home-featured-rail-counter-range {
+  color: var(--aqua-ink);
+  text-shadow: none;
+}
+
+/* Segmented HUD track -- one small chamfered bar per tile, sitting to the
+   right of the numeric counter inside the shared .home-featured-rail-readout
+   flex row. The tile(s) currently visible in the rail get the "is-on" state
+   (cyan-filled with a soft glow) so at any snap you can see at a glance
+   exactly which tile(s) the range readout to its left covers. */
+.home-featured-rail-segments {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.home-featured-rail-segment {
+  width: clamp(14px, 2vw, 20px);
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(var(--color-club-rgb), 0.35);
+  /* Chamfered ends -- tiny top-right + bottom-left cuts so each bar reads
+     as a piece of on-brand HUD chrome, not a plain rectangle. */
+  clip-path: polygon(
+    0 0,
+    calc(100% - 2px) 0,
+    100% 100%,
+    2px 100%
+  );
+  transition: background 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+}
+
+.home-featured-rail-segment.is-on {
+  background: var(--color-club);
+  border-color: var(--color-club);
+  box-shadow: 0 0 8px rgba(var(--color-club-rgb), 0.55);
+}
+
+html[data-theme="light"] .home-featured-rail-segment {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.28);
+}
+html[data-theme="light"] .home-featured-rail-segment.is-on {
+  background: var(--aqua-ink);
+  border-color: var(--aqua-ink);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
 
 /* Unified swipeable rail — same structure on mobile, tablet, and desktop. Each
    tile is a framed card with the mono index number rendered above its media
@@ -1774,165 +1843,222 @@ html[data-theme="light"] .home-featured-rail-counter-total {
 }
 
 /* ----------------------------------------------------------------------------
-   Blacksite mobile tile — mimics a corrupt terminal boot: green-on-black
-   monospace, moving scanline overlay, chromatic-aberration flicker on the
-   "ACCESS DENIED" line. Purely a mobile flourish; hidden on desktop above.
+   Blacksite home-rail tile — matches the Wound-HUD vocabulary the /programs
+   BlackSite shell uses: chamfered clip-path (top-right + bottom-left corners
+   cut), cyan hairline riding the top edge, SYS.00 mono chip in the head, a
+   RESTRICTED status pill on the right with a pulsing arterial-red dot, big
+   BLACKSITE label centered, and a terminal prompt line with blinking cursor
+   in the footer. A faint cyan reticle grid sits behind the content + a subtle
+   scanline moves down, but the visual read is HUD-panel first, corrupted-
+   boot second (opposite of the old design).
    ---------------------------------------------------------------------------- */
 .home-featured-tile--blacksite {
-  background: #050807;
-  /* Container context for the terminal text inside — inner font-size uses
-     cqi (1% of this tile's width) so the copy scales with the tile whether
-     it's mobile (~30vw), tablet, or the ~300px desktop cell. */
+  background:
+    linear-gradient(135deg, rgba(var(--color-club-rgb), 0.06) 0%, transparent 45%),
+    linear-gradient(180deg, rgba(12, 16, 22, 1) 0%, rgba(6, 8, 12, 1) 100%);
+  border: 1px solid rgba(var(--color-club-rgb), 0.28);
+  box-shadow:
+    0 0 18px rgba(var(--color-club-rgb), 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  clip-path: polygon(
+    18px 0,
+    100% 0,
+    100% calc(100% - 18px),
+    calc(100% - 18px) 100%,
+    0 100%,
+    0 18px
+  );
+  /* Container context so the inner content scales with tile width. */
   container-type: inline-size;
+  transition: border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease;
+}
+
+.home-featured-tile--blacksite:hover {
+  border-color: rgba(var(--color-club-rgb), 0.6);
+  box-shadow:
+    0 8px 32px rgba(var(--color-club-rgb), 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Cyan hairline riding the top edge — starts past the top-left chamfer. */
+.home-featured-tile--blacksite::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 18px;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-club) 12%,
+    var(--color-club) 88%,
+    transparent 100%
+  );
+  box-shadow: 0 0 6px rgba(var(--color-club-rgb), 0.55);
+  pointer-events: none;
+  z-index: 3;
 }
 
 .home-featured-tile--blacksite .blacksite-tile-inner {
   position: absolute;
   inset: 0;
-  padding: 8px;
+  padding: clamp(10px, 4cqi, 20px);
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(6px, 2cqi, 12px);
   overflow: hidden;
-  color: rgba(var(--color-club-rgb), 1);
+  color: rgba(255, 255, 255, 0.94);
   font-family: var(--font-family-mono);
-  /* Scale terminal text to the tile — sits inside a small square on mobile
-     and a much larger one on desktop. cqi = 1% of the container's inline
-     size (falls back gracefully where container queries aren't supported). */
-  font-size: clamp(0.5rem, 3.8cqi, 0.95rem);
-  line-height: 1.5;
-  letter-spacing: 0.03em;
-  text-shadow: 0 0 8px rgba(var(--color-club-rgb), 0.55);
-}
-
-.home-featured-tile--blacksite .blacksite-tile-lines {
-  position: relative;
-  z-index: 2;
   text-align: left;
-  animation: blacksite-tile-jitter 4.2s steps(6, end) infinite;
+  z-index: 2;
 }
 
-@keyframes blacksite-tile-jitter {
-  0%, 92%, 100% { transform: translate(0, 0); }
-  93% { transform: translate(-1px, 0); }
-  95% { transform: translate(1px, -1px); }
-  97% { transform: translate(-1px, 1px); }
-}
-
-.home-featured-tile--blacksite .blacksite-tile-line {
-  display: block;
-  white-space: nowrap;
-}
-
-.home-featured-tile--blacksite .blacksite-tile-prompt {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.home-featured-tile--blacksite .blacksite-tile-cmd {
-  color: rgba(var(--color-club-rgb), 1);
-}
-
-.home-featured-tile--blacksite .blacksite-tile-line--warn {
-  color: #ffb648;
-  text-shadow: 0 0 6px rgba(255, 182, 72, 0.55);
-  margin-top: 4px;
-}
-
-.home-featured-tile--blacksite .blacksite-tile-line--denied {
-  position: relative;
-  color: #ff3a5e;
-  text-shadow: 0 0 8px rgba(255, 58, 94, 0.75);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  margin-top: 4px;
-}
-
-/* Chromatic-aberration halves: cyan pushed left, magenta right, both
-   flickering out of sync so the "ACCESS DENIED" text visually glitches. */
-.home-featured-tile--blacksite .blacksite-tile-line--denied::before,
-.home-featured-tile--blacksite .blacksite-tile-line--denied::after {
-  content: attr(data-text);
+/* Faint cyan reticle grid — same identity cue the BlackSite HUD carries. */
+.home-featured-tile--blacksite .blacksite-tile-grid {
   position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  overflow: hidden;
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
-}
-.home-featured-tile--blacksite .blacksite-tile-line--denied::before {
-  color: #33f6ff;
-  transform: translate(-1.5px, 0);
-  mix-blend-mode: screen;
-  animation: blacksite-tile-chroma-a 2.6s steps(8, end) infinite;
-  clip-path: inset(0 0 55% 0);
-}
-.home-featured-tile--blacksite .blacksite-tile-line--denied::after {
-  color: #ff33bd;
-  transform: translate(1.5px, 0);
-  mix-blend-mode: screen;
-  animation: blacksite-tile-chroma-b 3.1s steps(8, end) infinite;
-  clip-path: inset(55% 0 0 0);
+  opacity: 0.35;
+  background-image:
+    linear-gradient(to right, rgba(var(--color-club-rgb), 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--color-club-rgb), 0.08) 1px, transparent 1px);
+  background-size: 16px 16px;
 }
 
-@keyframes blacksite-tile-chroma-a {
-  0%, 100% { transform: translate(-1.5px, 0); opacity: 0.85; }
-  50% { transform: translate(-2.5px, 0); opacity: 1; }
-}
-@keyframes blacksite-tile-chroma-b {
-  0%, 100% { transform: translate(1.5px, 0); opacity: 0.85; }
-  50% { transform: translate(2.5px, 0); opacity: 1; }
-}
-
-.home-featured-tile--blacksite .blacksite-tile-line--dim {
-  color: rgba(var(--color-club-rgb), 0.55);
-  margin-top: 4px;
-}
-
-/* CRT scanlines + a slow-moving highlight band. */
+/* Slow horizontal scan band moving top-to-bottom. */
 .home-featured-tile--blacksite .blacksite-tile-scanline {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background:
-    linear-gradient(
-      to bottom,
-      transparent 0,
-      rgba(var(--color-club-rgb), 0.06) 50%,
-      transparent 100%
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0) 0,
-      rgba(0, 0, 0, 0) 2px,
-      rgba(0, 0, 0, 0.28) 3px,
-      rgba(0, 0, 0, 0) 4px
-    );
-  animation: blacksite-tile-scan 4s linear infinite;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 42%,
+    rgba(var(--color-club-rgb), 0.12) 50%,
+    transparent 58%,
+    transparent 100%
+  );
+  background-size: 100% 250%;
+  animation: blacksite-tile-scan 5.5s linear infinite;
 }
-
 @keyframes blacksite-tile-scan {
-  from { background-position: 0 -100%, 0 0; }
-  to { background-position: 0 100%, 0 0; }
+  from { background-position: 0 -100%; }
+  to { background-position: 0 200%; }
 }
 
-.home-featured-tile--blacksite:hover .blacksite-tile-line--denied {
-  animation: blacksite-tile-denied-flash 0.4s ease-out;
+/* Head row: RESTRICTED status pill pinned to the right (SYS chip removed --
+   the numbered "SET.NN" chip in the tile's top-left already occupies that
+   slot from the shared .home-featured-tile-index rule). */
+.home-featured-tile--blacksite .blacksite-tile-head {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
 }
 
-@keyframes blacksite-tile-denied-flash {
-  0% { opacity: 1; }
-  30% { opacity: 0.2; }
-  60% { opacity: 1; }
-  100% { opacity: 1; }
+.home-featured-tile--blacksite .blacksite-tile-chip {
+  font-family: var(--font-family-mono);
+  font-size: clamp(0.55rem, 2.4cqi, 0.72rem);
+  letter-spacing: 0.28em;
+  color: var(--color-club);
+  padding: 3px 10px;
+  border: 1px solid rgba(var(--color-club-rgb), 0.4);
+  background: rgba(var(--color-club-rgb), 0.06);
+  text-shadow: 0 0 6px rgba(var(--color-club-rgb), 0.45);
 }
 
-/* Reduced-motion honors the site setting: freeze the flicker, scanline, and
-   glitch halves. */
-[data-motion="reduced"] .home-featured-tile--blacksite .blacksite-tile-lines,
+.home-featured-tile--blacksite .blacksite-tile-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: clamp(0.5rem, 2.2cqi, 0.68rem);
+  letter-spacing: 0.16em;
+  color: rgba(255, 90, 90, 0.9);
+  text-transform: uppercase;
+}
+.home-featured-tile--blacksite .blacksite-tile-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #db2f2f;
+  box-shadow: 0 0 6px rgba(219, 47, 47, 0.85);
+  animation: blacksite-tile-status-pulse 1.6s ease-in-out infinite;
+}
+@keyframes blacksite-tile-status-pulse {
+  0%, 100% { opacity: 0.85; box-shadow: 0 0 5px rgba(219, 47, 47, 0.55); }
+  50% { opacity: 1; box-shadow: 0 0 10px rgba(219, 47, 47, 1); }
+}
+
+/* Body: BLACKSITE title in the display face + /programs subtitle. */
+.home-featured-tile--blacksite .blacksite-tile-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  z-index: 2;
+}
+
+.home-featured-tile--blacksite .blacksite-tile-label {
+  font-family: var(--font-family-display);
+  font-weight: 400;
+  font-size: clamp(1.1rem, 7cqi, 2rem);
+  letter-spacing: 0.14em;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.96);
+  text-shadow: 0 0 12px rgba(var(--color-club-rgb), 0.3);
+}
+
+.home-featured-tile--blacksite .blacksite-tile-sub {
+  font-family: var(--font-family-mono);
+  font-size: clamp(0.55rem, 2.4cqi, 0.75rem);
+  letter-spacing: 0.16em;
+  color: rgba(var(--color-club-rgb), 0.75);
+  color: var(--color-club);
+  opacity: 0.75;
+}
+
+/* Foot: root@mettaire.os ~ % prompt + blinking cursor. */
+.home-featured-tile--blacksite .blacksite-tile-foot {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  z-index: 2;
+  font-size: clamp(0.5rem, 2.2cqi, 0.7rem);
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.home-featured-tile--blacksite .blacksite-tile-prompt {
+  color: rgba(var(--color-club-rgb), 0.85);
+}
+
+.home-featured-tile--blacksite .blacksite-tile-cursor {
+  color: var(--color-club);
+  animation: blacksite-tile-cursor-blink 1.05s steps(1) infinite;
+}
+@keyframes blacksite-tile-cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* Hide the shared hover-caption on the blacksite tile — the tile owns its
+   own composition and the "/programs/blacksite" hover title would sit on top
+   of the head row. */
+.home-featured-tile--blacksite .home-featured-tile-title {
+  display: none;
+}
+
+/* Reduced-motion honors the site setting: freeze scan + status + cursor. */
 [data-motion="reduced"] .home-featured-tile--blacksite .blacksite-tile-scanline,
-[data-motion="reduced"] .home-featured-tile--blacksite .blacksite-tile-line--denied::before,
-[data-motion="reduced"] .home-featured-tile--blacksite .blacksite-tile-line--denied::after {
+[data-motion="reduced"] .home-featured-tile--blacksite .blacksite-tile-status-dot,
+[data-motion="reduced"] .home-featured-tile--blacksite .blacksite-tile-cursor {
   animation: none !important;
 }
 
@@ -3543,17 +3669,22 @@ html[data-theme="light"] .tattoo-text p {
   z-index: 1;
 }
 
-/* Dark mode: restore the original white-glass shimmer + hairline. */
+/* Dark mode: black-chrome recipe -- polished-top-to-deep-bottom obsidian
+   gradient mirroring the silver-chrome recipe in light mode. Cyan is reserved
+   for the focus ring below; the pill itself reads as a raised black-mirror
+   chip against the page bg. */
 [data-theme="dark"] .gallery-search-field {
   background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.09) 0%,
-    rgba(255, 255, 255, 0.04) 25%,
-    rgba(255, 255, 255, 0.10) 50%,
-    rgba(255, 255, 255, 0.04) 75%,
-    rgba(255, 255, 255, 0.09) 100%
+    180deg,
+    rgba(20, 20, 22, 0.98) 0%,
+    rgba(10, 10, 12, 0.98) 55%,
+    rgba(0, 0, 0, 1) 100%
   );
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6),
+    0 4px 12px rgba(0, 0, 0, 0.45);
 }
 
 [data-motion="reduced"] .gallery-search-field {
@@ -4469,18 +4600,16 @@ html[data-theme="light"] .gallery-sticky-inner .viewer-discretion-button:hover {
 
 [data-theme="dark"] .sticky-search {
   background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.95) 0%,
-    rgba(10, 10, 10, 0.9) 25%,
-    rgba(25, 25, 25, 0.85) 50%,
-    rgba(10, 10, 10, 0.9) 75%,
-    rgba(0, 0, 0, 0.95) 100%
+    180deg,
+    rgba(20, 20, 22, 0.98) 0%,
+    rgba(10, 10, 12, 0.98) 55%,
+    rgba(0, 0, 0, 1) 100%
   );
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6),
+    0 4px 12px rgba(0, 0, 0, 0.45);
 }
 
 /* Light-mode: pin the sticky-search pill to the SAME gradient + border +
@@ -5343,17 +5472,115 @@ html[data-theme="light"] .carousel-nav:hover {
   60%  { left: 100%; }
   100% { left: 100%; }
 }
+/* Fast one-shot "selection ping" that fires when the button is hovered/focused
+   — the loop is overridden by a shorter animation that restarts the sweep
+   from the left edge and rides it clean across. Feels like the chip acknow-
+   ledging the pointer. Runs once per hover; when the pointer leaves the loop
+   resumes from wherever it happens to be in its cycle. */
+@keyframes chrome-shimmer-ping {
+  0%   { left: -100%; }
+  100% { left: 100%; }
+}
 .gallery-search-field::before,
 .sticky-search::before,
 .console-toggle::before,
 .viewer-discretion-button::before,
 .back-button::before,
 .gallery-load-more::before,
-html[data-theme="light"] .home-about-button::before,
-html[data-theme="light"] .engineering-log-button::before,
-html[data-theme="light"] .explore-gallery-button::before,
-html[data-theme="light"] .carousel-nav::before {
+.home-about-button::before,
+.engineering-log-button::before,
+.explore-gallery-button::before,
+.carousel-nav::before {
   animation: chrome-shimmer-loop 3.2s ease-in-out infinite;
+}
+
+/* Hover / focus: brighten the sweep gradient + restart it as a one-shot ping.
+   Theme-swapped so light mode gets a bright white pulse across the silver
+   chrome, dark mode gets a softer white pulse across the black chrome (any
+   brighter reads too "flashbang" on the dark surface). Applies to both
+   themes for the four control chips; the CTA buttons already have theme-
+   specific gradients on their ::before rules so the ping just re-uses those
+   colors and only overrides `animation`. */
+.gallery-search-field:hover::before,
+.gallery-search-field:focus-within::before,
+.sticky-search:hover::before,
+.sticky-search:focus-within::before,
+.console-toggle:hover::before,
+.console-toggle:focus-visible::before,
+.viewer-discretion-button:hover::before,
+.viewer-discretion-button:focus-visible::before,
+.back-button:hover::before,
+.back-button:focus-visible::before,
+.gallery-load-more:hover::before,
+.gallery-load-more:focus-visible::before,
+.home-about-button:hover::before,
+.home-about-button:focus-visible::before,
+.engineering-log-button:hover::before,
+.engineering-log-button:focus-visible::before,
+.explore-gallery-button:hover::before,
+.explore-gallery-button:focus-visible::before,
+.carousel-nav:hover::before,
+.carousel-nav:focus-visible::before {
+  animation: chrome-shimmer-ping 0.75s ease-out;
+}
+
+/* Brighter selection-ping gradient per theme. Light mode already carries a
+   bright-white sweep, so hover just boosts opacity further; dark mode's
+   base sweep is 10% white -- lift it to a more visible 35% on ping so the
+   signal reads on the black chrome. */
+html[data-theme="light"] .gallery-search-field:hover::before,
+html[data-theme="light"] .gallery-search-field:focus-within::before,
+html[data-theme="light"] .sticky-search:hover::before,
+html[data-theme="light"] .sticky-search:focus-within::before,
+html[data-theme="light"] .console-toggle:hover::before,
+html[data-theme="light"] .console-toggle:focus-visible::before,
+html[data-theme="light"] .viewer-discretion-button:hover::before,
+html[data-theme="light"] .viewer-discretion-button:focus-visible::before,
+html[data-theme="light"] .back-button:hover::before,
+html[data-theme="light"] .back-button:focus-visible::before,
+html[data-theme="light"] .gallery-load-more:hover::before,
+html[data-theme="light"] .gallery-load-more:focus-visible::before,
+html[data-theme="light"] .home-about-button:hover::before,
+html[data-theme="light"] .home-about-button:focus-visible::before,
+html[data-theme="light"] .engineering-log-button:hover::before,
+html[data-theme="light"] .engineering-log-button:focus-visible::before,
+html[data-theme="light"] .explore-gallery-button:hover::before,
+html[data-theme="light"] .explore-gallery-button:focus-visible::before,
+html[data-theme="light"] .carousel-nav:hover::before,
+html[data-theme="light"] .carousel-nav:focus-visible::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 1),
+    transparent
+  );
+}
+[data-theme="dark"] .gallery-search-field:hover::before,
+[data-theme="dark"] .gallery-search-field:focus-within::before,
+[data-theme="dark"] .sticky-search:hover::before,
+[data-theme="dark"] .sticky-search:focus-within::before,
+[data-theme="dark"] .console-toggle:hover::before,
+[data-theme="dark"] .console-toggle:focus-visible::before,
+[data-theme="dark"] .viewer-discretion-button:hover::before,
+[data-theme="dark"] .viewer-discretion-button:focus-visible::before,
+[data-theme="dark"] .back-button:hover::before,
+[data-theme="dark"] .back-button:focus-visible::before,
+[data-theme="dark"] .gallery-load-more:hover::before,
+[data-theme="dark"] .gallery-load-more:focus-visible::before,
+[data-theme="dark"] .home-about-button:hover::before,
+[data-theme="dark"] .home-about-button:focus-visible::before,
+[data-theme="dark"] .engineering-log-button:hover::before,
+[data-theme="dark"] .engineering-log-button:focus-visible::before,
+[data-theme="dark"] .explore-gallery-button:hover::before,
+[data-theme="dark"] .explore-gallery-button:focus-visible::before,
+[data-theme="dark"] .carousel-nav:hover::before,
+[data-theme="dark"] .carousel-nav:focus-visible::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
 }
 [data-motion="reduced"] .gallery-search-field::before,
 [data-motion="reduced"] .sticky-search::before,
@@ -10622,7 +10849,14 @@ input:checked + .toggle-slider:before {
 /* Dark-glass "terminal card" in both themes, to anchor the log identity. Now
    rendered as a chamfered HUD panel — same clip-path vocabulary as the section
    labels, cyan hairline running across the top edge, and an arterial-red
-   hairline at the bottom that intensifies on hover. */
+   hairline at the bottom that intensifies on hover.
+
+   Black-chrome recipe (dark mode): 180deg polished-top-to-deep-bottom gradient
+   mirroring the silver-chrome recipe in light mode. Brighter inset highlight
+   on the top edge + deeper inset shadow on the bottom edge gives the surface
+   a beveled, obsidian-mirror read instead of a flat black rectangle. Cyan is
+   reserved for hairline / hover accents, not surface color. Light-mode
+   override below keeps the silver-chrome as-is. */
 .log-card-link {
   display: flex;
   flex-direction: column;
@@ -10634,17 +10868,18 @@ input:checked + .toggle-slider:before {
   position: relative;
   overflow: hidden;
   background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.95) 0%,
-    rgba(18, 18, 18, 0.9) 50%,
-    rgba(0, 0, 0, 0.95) 100%
+    180deg,
+    rgba(18, 18, 20, 0.98) 0%,
+    rgba(8, 8, 10, 0.98) 55%,
+    rgba(0, 0, 0, 1) 100%
   );
   background-size: 200% 200%;
   animation: liquid-shimmer 6s ease-in-out infinite;
   border: 1px solid rgba(var(--color-club-rgb), 0.18);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6),
+    0 10px 30px rgba(0, 0, 0, 0.55);
   clip-path: polygon(
     16px 0,
     100% 0,
@@ -10692,9 +10927,10 @@ input:checked + .toggle-slider:before {
   transform: translateY(-4px);
   border-color: rgba(var(--color-club-rgb), 0.45);
   box-shadow:
-    0 14px 40px rgba(0, 0, 0, 0.4),
-    0 0 18px rgba(var(--color-club-rgb), 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6),
+    0 16px 44px rgba(0, 0, 0, 0.55),
+    0 0 20px rgba(var(--color-club-rgb), 0.22);
 }
 
 .log-card-link:hover::before {

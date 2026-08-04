@@ -159,14 +159,21 @@ useEffect(() => {
 // higher would clamp to the same scroll position — the tile would appear
 // frozen for a tick before wrapping. maxIndex handles the ceiling.
 const maxIndex = Math.max(0, featuredSlots.length - perView);
-// activeTileIndex maps the current scroll POSITION (0..maxIndex) onto the
-// tile range (0..N-1) proportionally so the leftmost scroll highlights
-// tile 1 and the rightmost highlights tile N. Same mapping the 01/05
-// counter uses, so glow + counter stay in lockstep.
-const activeTileIndex =
-  maxIndex === 0
-    ? 0
-    : Math.round((displayIndex / maxIndex) * (featuredSlots.length - 1));
+// activeTileIndex is just the leftmost tile currently in view — its own tile
+// index, no proportional remap. The previous mapping compressed the visible
+// scroll range (0..maxIndex) onto the full tile range (0..N-1), which made
+// the counter increment by 2 at perView=3 (1 → 3 → 5) and skip a number at
+// perView=2 (1 → 2 → 4 → 5). Using the raw scroll position keeps the counter
+// stepping by 1 per snap point in every perView.
+const activeTileIndex = displayIndex;
+
+// Rightmost tile currently in view — used with displayIndex to display the
+// counter as a range "NN-MM/05" whenever perView > 1 so the total stays the
+// full tile count (05) and every visible tile is represented at each snap.
+const rightmostVisible = Math.min(
+  displayIndex + perView - 1,
+  featuredSlots.length - 1,
+);
 // If perView jumps (e.g. rotation, resize), clamp the active index so it
 // doesn't sit above the new maxIndex.
 useEffect(() => {
@@ -331,23 +338,34 @@ return (
         <div className="home-featured-rail-box">
           <h2 className="home-featured-rail-spine">FEATURED</h2>
           <span className="home-featured-rail-chip" aria-hidden="true">FEATURED</span>
-          {/* Counter always reads NN/05 (total = tile count) regardless of
-              perView, so both endpoints stay reachable. We map the current
-              scroll POSITION (0..maxIndex) proportionally onto the tile
-              range (1..N): leftmost scroll = 01, rightmost = N, middle
-              stops interpolate. On mobile (perView=1) maxIndex = N-1 so
-              this collapses to the natural 01, 02, 03, 04, 05. */}
-          <div className="home-featured-rail-counter" aria-hidden="true">
-            <span className="home-featured-rail-counter-current">
-              {String(
-                maxIndex === 0
-                  ? 1
-                  : 1 + Math.round((displayIndex / maxIndex) * (featuredSlots.length - 1))
-              ).padStart(2, '0')}
+          {/* Counter head: current visible tile number(s) sitting inline with
+              the 5-segment HUD track. Number-first (NN or NN-MM), a small gap,
+              then five chamfered bars, of which the ones matching the visible
+              tiles glow cyan. Wrapped in one absolute-positioned flex row so
+              the two atoms stay locked together on a single line in the
+              top-left of the rail box. */}
+          <div className="home-featured-rail-readout" aria-hidden="true">
+            <span className="home-featured-rail-counter">
+              <span className="home-featured-rail-counter-current">
+                {String(displayIndex + 1).padStart(2, '0')}
+                {perView > 1 && rightmostVisible > displayIndex && (
+                  <>
+                    <span className="home-featured-rail-counter-range">-</span>
+                    {String(rightmostVisible + 1).padStart(2, '0')}
+                  </>
+                )}
+              </span>
             </span>
-            <span className="home-featured-rail-counter-sep">/</span>
-            <span className="home-featured-rail-counter-total">
-              {String(featuredSlots.length).padStart(2, '0')}
+            <span className="home-featured-rail-segments">
+              {featuredSlots.map((_, i) => {
+                const on = i >= displayIndex && i <= rightmostVisible;
+                return (
+                  <span
+                    key={i}
+                    className={`home-featured-rail-segment${on ? ' is-on' : ''}`}
+                  />
+                );
+              })}
             </span>
           </div>
           <div
@@ -360,7 +378,7 @@ return (
             onTouchEnd={handleRailPointerLeave}
           >
             {featuredSlots.map((entry, i) => {
-              const isActive = i === activeTileIndex;
+              const isActive = i >= displayIndex && i <= rightmostVisible;
               const indexLabel = String(entry.slot).padStart(2, '0');
               if (entry.kind === 'blacksite') {
                 return (
@@ -375,24 +393,21 @@ return (
                     </span>
                     <span className="home-featured-tile-media">
                       <div className="blacksite-tile-inner" aria-hidden="true">
+                        <div className="blacksite-tile-grid" />
                         <div className="blacksite-tile-scanline" />
-                        <div className="blacksite-tile-lines">
-                          <div className="blacksite-tile-line">
-                            <span className="blacksite-tile-prompt">root@mettaire.os:~#</span>{' '}
-                            <span className="blacksite-tile-cmd">access /blacksite</span>
-                          </div>
-                          <div className="blacksite-tile-line blacksite-tile-line--warn">
-                            [!] AUTH REQUIRED
-                          </div>
-                          <div
-                            className="blacksite-tile-line blacksite-tile-line--denied"
-                            data-text="ACCESS DENIED"
-                          >
-                            ACCESS DENIED
-                          </div>
-                          <div className="blacksite-tile-line blacksite-tile-line--dim">
-                            &gt; retry with credentials_
-                          </div>
+                        <div className="blacksite-tile-head">
+                          <span className="blacksite-tile-status">
+                            <span className="blacksite-tile-status-dot" />
+                            RESTRICTED
+                          </span>
+                        </div>
+                        <div className="blacksite-tile-body">
+                          <span className="blacksite-tile-label">BLACKSITE</span>
+                          <span className="blacksite-tile-sub">/programs</span>
+                        </div>
+                        <div className="blacksite-tile-foot">
+                          <span className="blacksite-tile-prompt">root@mettaire.os ~ %</span>
+                          <span className="blacksite-tile-cursor" aria-hidden="true">▮</span>
                         </div>
                       </div>
                       <span className="home-featured-tile-title">/programs/blacksite</span>
