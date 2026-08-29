@@ -132,6 +132,23 @@ html[data-theme="light"] {
   --color-club-rgb: var(--aqua-ice-rgb);
 }
 
+/* ----------------------------------------------------------------------------
+   Dark-mode MONOCHROME experiment. Mirrors the light-mode cyan-collapse: the
+   branded HUD cyan (--color-club) is remapped to a cool silver on the neutral
+   axis so every hover, hairline, glow, chip border, scan animation, and
+   `rgba(var(--color-club-rgb), X)` reference across the site loses its
+   cyan tint and reads as brushed metal on black — while animations, shimmer,
+   scan bands, and pulse rhythms remain untouched because the vars they
+   consume are the only thing changing. Light mode is unaffected.
+   ---------------------------------------------------------------------------- */
+html[data-theme="dark"] {
+  /* Cool silver on the neutral axis — reads as light on black, not color.
+     Same family as --aqua-ice (light-mode's cyan-collapse) but a touch
+     darker so glow accents remain visible against black surfaces. */
+  --color-club: #c8ccd0;
+  --color-club-rgb: 200, 204, 208;
+}
+
 /* ========================================
    RESET & BASE STYLES
    ======================================== */
