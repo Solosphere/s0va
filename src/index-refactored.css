@@ -12539,6 +12539,369 @@ html[data-theme="light"] .log-section-nav a.is-active {
 }
 
 /* ============================================================
+   ENGINEERING LOG — EDITORIAL HIGH-CONTRAST SKIN
+   ------------------------------------------------------------
+   Every rule below is scoped under [data-contrast="high"] and the
+   .log-page / .log-detail containers, so nothing here can affect
+   the standard HUD styling when the toggle is off. The intent is
+   a monograph read: flat white surface, black rules, no clip-path
+   chamfers, no cyan hairlines, no shimmer, no scan animations,
+   no backdrop blur. Typography carries the hierarchy instead of
+   chrome. Works in both light and dark themes — dark just flips
+   the page bg to black and inks white. */
+
+/* Kill perception-window brackets — decorative HUD chrome that
+   editorial doesn't want. */
+[data-contrast="high"] .log-page .log-frame,
+[data-contrast="high"] .log-detail .log-frame {
+  display: none;
+}
+
+/* Kill the SEC.NN chip glow / cyan tag — replace with a plain
+   uppercase mono label sitting inline above the section. */
+[data-contrast="high"] .log-section-label {
+  padding: 0 var(--spacing-lg);
+  margin: var(--spacing-2xl) auto var(--spacing-md);
+}
+[data-contrast="high"] .log-section-label::before {
+  position: static;
+  display: block;
+  content: 'SEC.' counter(logsec, decimal-leading-zero);
+  padding: 0 0 var(--spacing-xs);
+  margin-left: 0;
+  background: transparent;
+  color: inherit;
+  text-shadow: none;
+  letter-spacing: 0.24em;
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+html[data-theme="light"][data-contrast="high"] .log-section-label::before {
+  content: 'SEC.' counter(logsec, decimal-leading-zero);
+  color: #000000;
+  background: transparent;
+}
+
+/* Section H2: heavy editorial display type, black or white ink,
+   underscored by a thick rule instead of a chamfered panel. */
+[data-contrast="high"] .log-section-panel {
+  padding: 0 0 var(--spacing-md);
+  border: 0;
+  background: transparent;
+  clip-path: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 3px solid currentColor;
+}
+[data-contrast="high"] .log-section-panel::after {
+  display: none;
+}
+[data-contrast="high"] .log-section-label h2 {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* Cards: flat white paper with a hard 2px black rule; no gradient,
+   no clip-path, no shimmer, no cyan halo. Hover = the rule thickens
+   and the paper lifts on a solid shadow. */
+[data-contrast="high"] .log-card-link,
+html[data-theme="light"][data-contrast="high"] .log-card-link {
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+  box-shadow: 4px 4px 0 #000000;
+  clip-path: none;
+  animation: none;
+}
+html[data-theme="dark"][data-contrast="high"] .log-card-link {
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  box-shadow: 4px 4px 0 #ffffff;
+}
+[data-contrast="high"] .log-card-link::before,
+[data-contrast="high"] .log-card-link::after {
+  display: none;
+}
+[data-contrast="high"] .log-card-link:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 currentColor;
+  border-color: currentColor;
+}
+[data-contrast="high"] .log-card-link:hover::before {
+  left: -100%;
+}
+
+/* Card text: single ink color throughout, no cyan accents. Hierarchy
+   comes from type size + weight, not color. */
+[data-contrast="high"] .log-card-index,
+[data-contrast="high"] .log-card-org,
+[data-contrast="high"] .log-card-period,
+[data-contrast="high"] .log-card-summary,
+[data-contrast="high"] .log-card-title,
+[data-contrast="high"] .log-card-cta,
+html[data-theme="light"][data-contrast="high"] .log-card-index,
+html[data-theme="light"][data-contrast="high"] .log-card-org,
+html[data-theme="light"][data-contrast="high"] .log-card-period,
+html[data-theme="light"][data-contrast="high"] .log-card-summary,
+html[data-theme="light"][data-contrast="high"] .log-card-title,
+html[data-theme="light"][data-contrast="high"] .log-card-cta {
+  color: inherit;
+  opacity: 1;
+}
+[data-contrast="high"] .log-card-org,
+[data-contrast="high"] .log-card-period {
+  opacity: 0.7;
+}
+[data-contrast="high"] .log-card-title {
+  font-weight: 700;
+  letter-spacing: 0;
+}
+[data-contrast="high"] .log-card-cta {
+  border-top: 1px solid currentColor;
+  padding-top: var(--spacing-sm);
+  opacity: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+[data-contrast="high"] .log-card-link:hover .log-card-cta {
+  letter-spacing: 0.1em;
+}
+
+/* Chips: flat outlined pills, no cyan tint. */
+[data-contrast="high"] .log-chip,
+html[data-theme="light"][data-contrast="high"] .log-chip {
+  color: inherit;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 0;
+  opacity: 0.85;
+}
+[data-contrast="high"] .log-chip--more,
+html[data-theme="light"][data-contrast="high"] .log-chip--more {
+  color: inherit;
+  border-color: currentColor;
+  opacity: 0.55;
+}
+
+/* Ledger cells: flat outlined blocks, no clip-path chamfers, no
+   cyan/red accents — one ink color reads as inline stat headers. */
+[data-contrast="high"] .log-ledger-cell {
+  background: transparent;
+  border: 1.5px solid currentColor;
+  clip-path: none;
+}
+[data-contrast="high"] .log-ledger-cell-k {
+  color: inherit;
+  opacity: 0.7;
+}
+[data-contrast="high"] .log-ledger-cell-v,
+[data-contrast="high"] .log-ledger-cell--hot .log-ledger-cell-v {
+  color: inherit;
+  text-shadow: none;
+  font-weight: 700;
+}
+
+/* Sticky section nav: flat outlined pills, no gradient, no glow. */
+[data-contrast="high"] .log-section-nav,
+html[data-theme="light"][data-contrast="high"] .log-section-nav {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid currentColor;
+}
+[data-contrast="high"] .log-section-nav a,
+html[data-theme="light"][data-contrast="high"] .log-section-nav a {
+  color: inherit;
+  background: transparent;
+  border: 1.5px solid currentColor;
+  border-radius: 0;
+  box-shadow: none;
+  opacity: 0.7;
+}
+[data-contrast="high"] .log-section-nav a:hover,
+[data-contrast="high"] .log-section-nav a:focus-visible,
+html[data-theme="light"][data-contrast="high"] .log-section-nav a:hover,
+html[data-theme="light"][data-contrast="high"] .log-section-nav a:focus-visible {
+  color: inherit;
+  background: transparent;
+  border-color: currentColor;
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  box-shadow: none;
+}
+[data-contrast="high"] .log-section-nav a.is-active,
+html[data-theme="light"][data-contrast="high"] .log-section-nav a.is-active {
+  color: var(--color-background);
+  background: currentColor;
+  border-color: currentColor;
+  box-shadow: none;
+  opacity: 1;
+}
+[data-contrast="high"] .log-section-nav a.is-active {
+  /* is-active swaps fg/bg — restore text color to the *page* background
+     so the pill reads as a solid inverse block. */
+}
+
+/* Metro timeline: solid rail + dots, no cyan glow, no flowing energy. */
+[data-contrast="high"] .metro-tag,
+[data-contrast="high"] .metro-tag-cursor,
+html[data-theme="light"][data-contrast="high"] .metro-tag,
+html[data-theme="light"][data-contrast="high"] .metro-tag-cursor {
+  color: inherit;
+  animation: none;
+}
+[data-contrast="high"] .metro-tag-dot,
+html[data-theme="light"][data-contrast="high"] .metro-tag-dot {
+  background: currentColor;
+  box-shadow: none;
+  animation: none;
+}
+[data-contrast="high"] .metro-btn {
+  color: inherit;
+}
+[data-contrast="high"] .metro-node::before,
+[data-contrast="high"] .metro-btn::before {
+  background-color: currentColor;
+  background-image: none;
+  box-shadow: none;
+  animation: none;
+}
+[data-contrast="high"] .metro-dot {
+  background: currentColor;
+  border: 2px solid currentColor;
+  box-shadow: none;
+}
+[data-contrast="high"] .metro-stop.is-current .metro-dot {
+  animation: none;
+  box-shadow: 0 0 0 3px var(--color-background), 0 0 0 5px currentColor;
+}
+[data-contrast="high"] .metro-stop.is-current .metro-year {
+  color: inherit;
+  font-weight: 700;
+}
+[data-contrast="high"] .metro-year,
+[data-contrast="high"] .metro-label,
+[data-contrast="high"] .metro-sub {
+  color: inherit;
+}
+
+/* Skill-group labels: same ink, weightier. */
+[data-contrast="high"] .log-skill-group-name {
+  color: inherit;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+/* School headers */
+[data-contrast="high"] .log-school-head h3,
+[data-contrast="high"] .log-school-head span {
+  color: inherit;
+  opacity: 0.85;
+}
+
+/* Detail page: strip the HUD panels entirely. Each STAR section becomes
+   a plain block separated by a thick rule, with the "$ cat problem"
+   command header as the visible section anchor. */
+[data-contrast="high"] .log-back,
+html[data-theme="light"][data-contrast="high"] .log-back {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+[data-contrast="high"] .log-detail-hud .log-detail-head-inner,
+[data-contrast="high"] .log-detail-hud .log-detail-section-inner,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-head-inner,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-section-inner {
+  background: transparent;
+  border: 0;
+  border-top: 2px solid currentColor;
+  clip-path: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  padding: var(--spacing-xl) 0;
+}
+[data-contrast="high"] .log-detail-hud .log-detail-head-inner {
+  border-top: 0;
+  border-bottom: 3px solid currentColor;
+}
+[data-contrast="high"] .log-detail-hud .log-detail-head-inner::before,
+[data-contrast="high"] .log-detail-hud .log-detail-section-inner::after {
+  display: none;
+}
+[data-contrast="high"] .log-detail-hud .log-detail-head-tag,
+[data-contrast="high"] .log-detail-hud .log-detail-section-tag,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-head-tag,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-section-tag {
+  position: static;
+  display: inline-block;
+  padding: 0;
+  margin: 0 0 var(--spacing-xs);
+  background: transparent;
+  color: inherit;
+  text-shadow: none;
+  letter-spacing: 0.24em;
+  opacity: 0.7;
+}
+[data-contrast="high"] .log-detail-hud .log-detail-head h1,
+[data-contrast="high"] .log-detail-hud .log-detail-org,
+[data-contrast="high"] .log-detail-hud .log-detail-summary,
+[data-contrast="high"] .log-detail-hud .log-detail-section .log-section-head,
+[data-contrast="high"] .log-detail-hud .log-detail-section .log-section-head .log-cmd,
+[data-contrast="high"] .log-detail-hud .log-detail-section > p,
+[data-contrast="high"] .log-detail-hud .log-detail-section .log-approach li,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-head h1,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-org,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-summary,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-section .log-section-head,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-section .log-section-head .log-cmd,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-section > p,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-section .log-approach li {
+  color: inherit;
+  text-shadow: none;
+}
+[data-contrast="high"] .log-detail-hud .log-detail-head h1 {
+  font-weight: 700;
+}
+[data-contrast="high"] .log-detail-hud .log-detail-org {
+  opacity: 0.75;
+}
+[data-contrast="high"] .log-detail-hud .log-detail-summary {
+  opacity: 0.9;
+}
+[data-contrast="high"] .log-detail-hud .log-detail-section .log-approach li::before,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-section .log-approach li::before {
+  color: inherit;
+}
+[data-contrast="high"] .log-detail-hud .log-detail-section .log-section--reflection blockquote,
+[data-contrast="high"] .log-detail-hud .log-detail-section > blockquote,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-section .log-section--reflection blockquote,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-section > blockquote {
+  color: inherit;
+  background: transparent;
+  border-left: 4px solid currentColor;
+  padding-left: var(--spacing-lg);
+  opacity: 0.85;
+}
+[data-contrast="high"] .log-detail-hud .log-detail-section .log-arch,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-section .log-arch {
+  color: inherit;
+  background: transparent;
+  border: 1.5px solid currentColor;
+  border-radius: 0;
+}
+[data-contrast="high"] .log-detail-hud .log-detail-section .log-chip,
+html[data-theme="light"][data-contrast="high"] .log-detail-hud .log-detail-section .log-chip {
+  color: inherit;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-color: currentColor;
+}
+
+/* ============================================================
    TERMS & CONDITIONS — terminal / system-log treatment
    Matches the Engineering Log vocabulary (prompt line + hairlines).
    ============================================================ */
@@ -12923,4 +13286,554 @@ html[data-theme="light"] .settings-overlay .shortcut-item kbd {
   color: #1a1a1a;
 }
 
+/* ============================================================
+   EDITORIAL HIGH-CONTRAST SKIN — SITE-WIDE
+   ------------------------------------------------------------
+   Every rule below is scoped under [data-contrast="high"] and
+   the specific surface selector, so the default HUD chrome is
+   untouched when the toggle is off. Editorial recipe applied:
+   flat surface (bg = page bg, ink = page fg), no gradients,
+   no clip-path chamfers, no glow / shimmer / scan / backdrop
+   blur, hard 1.5-3px rules from currentColor for structure,
+   typography carries hierarchy. Works in both themes — light
+   mode paints paper/black, dark mode paints black/white.
+
+   Ordering: nav & footer → home → gallery grid → gallery
+   detail → about → blacksite/programs. Each surface uses
+   currentColor for structural strokes so a single ink swap
+   at the container level cascades correctly.
+   ============================================================ */
+
+/* Base container ink — ensure page-level bg/fg are the extreme
+   pair before any child selector inherits. */
+html[data-theme="light"][data-contrast="high"] body {
+  background: #ffffff;
+  color: #000000;
+}
+html[data-theme="dark"][data-contrast="high"] body {
+  background: #000000;
+  color: #ffffff;
+}
+
+/* ---- Nav header --------------------------------------- */
+[data-contrast="high"] .nav-header {
+  background-color: var(--color-background);
+  border-bottom: 2px solid currentColor;
+  color: inherit;
+}
+[data-contrast="high"] .nav-header a,
+[data-contrast="high"] .nav-header button {
+  color: inherit;
+}
+[data-contrast="high"] .nav-programs-link,
+[data-contrast="high"] .nav-programs-link::before,
+[data-contrast="high"] .nav-programs-link::after {
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+}
+
+/* ---- Footer ------------------------------------------- */
+[data-contrast="high"] .footer {
+  background-color: var(--color-background);
+  color: inherit;
+  border-top: 2px solid currentColor;
+}
+[data-contrast="high"] .footer-row:first-child {
+  border-bottom-color: currentColor;
+}
+[data-contrast="high"] .footer .logo-information a,
+[data-contrast="high"] .footer .copyright-information p,
+[data-contrast="high"] .footer a {
+  color: inherit;
+  text-shadow: none;
+}
+
+/* ---- Home page: hero, wordmark, CTAs -------------------- */
+[data-contrast="high"] .home-page .landingpage-title,
+[data-contrast="high"] .home-page .tagline-command,
+[data-contrast="high"] .home-page .whoami-block {
+  color: inherit;
+  text-shadow: none;
+}
+
+[data-contrast="high"] .home-about-button,
+[data-contrast="high"] .home-cta,
+[data-contrast="high"] .explore-gallery-button,
+[data-contrast="high"] .engineering-log-button,
+[data-contrast="high"] .viewer-discretion-button,
+html[data-theme="light"][data-contrast="high"] .home-about-button,
+html[data-theme="light"][data-contrast="high"] .home-cta,
+html[data-theme="light"][data-contrast="high"] .explore-gallery-button,
+html[data-theme="light"][data-contrast="high"] .engineering-log-button,
+html[data-theme="light"][data-contrast="high"] .viewer-discretion-button {
+  background: var(--color-background);
+  color: inherit;
+  border: 2px solid currentColor;
+  box-shadow: 3px 3px 0 currentColor;
+  clip-path: none;
+  animation: none;
+  text-shadow: none;
+}
+[data-contrast="high"] .home-about-button::before,
+[data-contrast="high"] .home-cta::before,
+[data-contrast="high"] .explore-gallery-button::before,
+[data-contrast="high"] .engineering-log-button::before,
+[data-contrast="high"] .viewer-discretion-button::before {
+  display: none;
+}
+[data-contrast="high"] .home-about-button:hover,
+[data-contrast="high"] .home-cta:hover,
+[data-contrast="high"] .explore-gallery-button:hover,
+[data-contrast="high"] .engineering-log-button:hover,
+[data-contrast="high"] .viewer-discretion-button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 currentColor;
+}
+
+/* Featured rail box: kill shimmering-metal panel, flat outlined
+   surface with a solid section rule at the top and bottom. */
+[data-contrast="high"] .home-featured-rail-box,
+html[data-theme="light"][data-contrast="high"] .home-featured-rail-box {
+  background: transparent;
+  border: 2px solid currentColor;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  animation: none;
+  border-radius: 0;
+}
+[data-contrast="high"] .home-featured-rail-spine,
+[data-contrast="high"] .home-featured-rail-chip,
+html[data-theme="light"][data-contrast="high"] .home-featured-rail-spine,
+html[data-theme="light"][data-contrast="high"] .home-featured-rail-chip {
+  color: inherit;
+}
+[data-contrast="high"] .home-featured-rail-counter-current,
+[data-contrast="high"] .home-featured-rail-counter-range,
+html[data-theme="light"][data-contrast="high"] .home-featured-rail-counter-current,
+html[data-theme="light"][data-contrast="high"] .home-featured-rail-counter-range {
+  color: inherit;
+  text-shadow: none;
+  font-weight: 700;
+}
+[data-contrast="high"] .home-featured-rail-counter-sep,
+[data-contrast="high"] .home-featured-rail-counter-total {
+  color: inherit;
+  opacity: 0.6;
+}
+[data-contrast="high"] .home-featured-rail-segment,
+html[data-theme="light"][data-contrast="high"] .home-featured-rail-segment {
+  background: transparent;
+  border: 1.5px solid currentColor;
+  clip-path: none;
+  box-shadow: none;
+}
+[data-contrast="high"] .home-featured-rail-segment.is-on,
+html[data-theme="light"][data-contrast="high"] .home-featured-rail-segment.is-on {
+  background: currentColor;
+  border-color: currentColor;
+  box-shadow: none;
+}
+
+/* Featured tiles: flat framed cards. */
+[data-contrast="high"] .home-featured-tile {
+  background: var(--color-background);
+  color: inherit;
+  border: 2px solid currentColor;
+  box-shadow: none;
+}
+[data-contrast="high"] .home-featured-tile--active {
+  box-shadow: 4px 4px 0 currentColor;
+}
+[data-contrast="high"] .home-featured-tile-index,
+[data-contrast="high"] .home-featured-tile-title,
+[data-contrast="high"] .home-featured-tile--active .home-featured-tile-title,
+[data-contrast="high"] .home-featured-tile--active .home-featured-tile-index {
+  color: inherit;
+  text-shadow: none;
+}
+[data-contrast="high"] .home-featured-tile-index::before {
+  background: currentColor;
+}
+[data-contrast="high"] .home-featured-tile-media {
+  border: 1px solid currentColor;
+}
+[data-contrast="high"] .home-featured-viewall {
+  color: inherit;
+  border: 2px solid currentColor;
+  background: var(--color-background);
+  box-shadow: none;
+}
+
+/* BlackSite tile: strip HUD entirely — becomes a bold outlined
+   card with block-caps label and a plain "RESTRICTED" marker. */
+[data-contrast="high"] .home-featured-tile--blacksite {
+  background: var(--color-background);
+  border: 2px solid currentColor;
+  color: inherit;
+}
+[data-contrast="high"] .home-featured-tile--blacksite:hover {
+  box-shadow: 4px 4px 0 currentColor;
+}
+[data-contrast="high"] .home-featured-tile--blacksite::after,
+[data-contrast="high"] .home-featured-tile--blacksite .blacksite-tile-grid,
+[data-contrast="high"] .home-featured-tile--blacksite .blacksite-tile-scanline {
+  display: none;
+}
+[data-contrast="high"] .home-featured-tile--blacksite .blacksite-tile-inner {
+  background: transparent;
+}
+[data-contrast="high"] .home-featured-tile--blacksite .blacksite-tile-status,
+[data-contrast="high"] .home-featured-tile--blacksite .blacksite-tile-label,
+[data-contrast="high"] .home-featured-tile--blacksite .blacksite-tile-sub,
+[data-contrast="high"] .home-featured-tile--blacksite .blacksite-tile-prompt,
+[data-contrast="high"] .home-featured-tile--blacksite .blacksite-tile-cursor {
+  color: inherit;
+  text-shadow: none;
+}
+[data-contrast="high"] .home-featured-tile--blacksite .blacksite-tile-status {
+  border: 1px solid currentColor;
+  padding: 2px 8px;
+}
+[data-contrast="high"] .home-featured-tile--blacksite .blacksite-tile-status-dot {
+  background: currentColor;
+  box-shadow: none;
+  animation: none;
+}
+
+/* ---- Gallery grid ------------------------------------- */
+[data-contrast="high"] .gallery-search-field,
+[data-contrast="high"] .gallery-search-field:focus-within,
+html[data-theme="light"][data-contrast="high"] .gallery-search-field,
+html[data-theme="light"][data-contrast="high"] .gallery-search-field:focus-within {
+  background: var(--color-background);
+  border: 1.5px solid currentColor;
+  clip-path: none;
+  box-shadow: none;
+}
+[data-contrast="high"] .gallery-search-field::before {
+  display: none;
+}
+[data-contrast="high"] .search-bar-input,
+[data-contrast="high"] .gallery-search-field .search-bar-input,
+html[data-theme="light"][data-contrast="high"] .search-bar-input,
+html[data-theme="light"][data-contrast="high"] .gallery-search-field .search-bar-input {
+  background: transparent;
+  color: inherit;
+  border: 0;
+  box-shadow: none;
+}
+[data-contrast="high"] .gallery-search-field .search-bar-input::placeholder,
+[data-contrast="high"] .search-bar-input::placeholder {
+  color: inherit;
+  opacity: 0.55;
+}
+[data-contrast="high"] .search-bar-input:focus,
+[data-contrast="high"] .gallery-search-field .search-bar-input:focus {
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Filter buttons: flat outlined pills, active = inverse block. */
+[data-contrast="high"] .filter-btn,
+html[data-theme="light"][data-contrast="high"] .filter-btn {
+  background: var(--color-background);
+  color: inherit;
+  border: 1.5px solid currentColor;
+  border-radius: 0;
+  box-shadow: none;
+  animation: none;
+  clip-path: none;
+}
+[data-contrast="high"] .filter-btn:hover,
+[data-contrast="high"] .filter-btn:focus-visible {
+  background: transparent;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+[data-contrast="high"] .filter-btn.active,
+html[data-theme="light"][data-contrast="high"] .filter-btn.active {
+  background: currentColor;
+  color: var(--color-background);
+  border-color: currentColor;
+  box-shadow: none;
+}
+
+/* Pagination */
+[data-contrast="high"] .pagination button,
+html[data-theme="light"][data-contrast="high"] .pagination button {
+  background: var(--color-background);
+  color: inherit;
+  border: 1.5px solid currentColor;
+  box-shadow: none;
+  animation: none;
+}
+[data-contrast="high"] .pagination button::before {
+  display: none;
+}
+[data-contrast="high"] .pagination button.active,
+html[data-theme="light"][data-contrast="high"] .pagination button.active {
+  background: currentColor;
+  color: var(--color-background);
+  border-color: currentColor;
+  box-shadow: none;
+}
+
+/* Gallery cards: flat framed thumbnails. */
+[data-contrast="high"] .gallery-card {
+  background: var(--color-background);
+  color: inherit;
+  border: 1.5px solid currentColor;
+  box-shadow: none;
+  animation: none;
+  clip-path: none;
+}
+[data-contrast="high"] .gallery-card:hover {
+  box-shadow: 4px 4px 0 currentColor;
+  transform: translate(-1px, -1px);
+}
+
+/* Sticky search: same flat outlined pill. */
+[data-contrast="high"] .sticky-search,
+html[data-theme="light"][data-contrast="high"] .sticky-search {
+  background: var(--color-background);
+  border: 1.5px solid currentColor;
+  box-shadow: none;
+  animation: none;
+  clip-path: none;
+}
+[data-contrast="high"] .sticky-search::before {
+  display: none;
+}
+[data-contrast="high"] .sticky-search-icon,
+[data-contrast="high"] .sticky-search-clear {
+  color: inherit;
+}
+
+/* Gallery sticky bar */
+[data-contrast="high"] .gallery-sticky-bar,
+html[data-theme="light"][data-contrast="high"] .gallery-sticky-bar {
+  background: var(--color-background);
+  border-bottom: 1px solid currentColor;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* ---- Gallery item detail ------------------------------ */
+[data-contrast="high"] .strip-back-button,
+[data-contrast="high"] .back-button,
+[data-contrast="high"] .dynamic-back-button,
+html[data-theme="light"][data-contrast="high"] .strip-back-button,
+html[data-theme="light"][data-contrast="high"] .back-button,
+html[data-theme="light"][data-contrast="high"] .dynamic-back-button {
+  background: var(--color-background);
+  color: inherit;
+  border: 1.5px solid currentColor;
+  box-shadow: none;
+  animation: none;
+  clip-path: none;
+}
+[data-contrast="high"] .strip-rail {
+  background: transparent;
+  border: 1.5px solid currentColor;
+  box-shadow: none;
+  animation: none;
+  clip-path: none;
+}
+[data-contrast="high"] .strip-rail-thumb {
+  background: transparent;
+  border: 1px solid currentColor;
+  color: inherit;
+}
+[data-contrast="high"] .strip-rail-thumb.active {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+[data-contrast="high"] .strip-rail-counter,
+[data-contrast="high"] .strip-rail-counter-current,
+[data-contrast="high"] .strip-rail-counter-sep,
+[data-contrast="high"] .strip-rail-counter-total,
+[data-contrast="high"] .strip-rail-thumb-index {
+  color: inherit;
+  text-shadow: none;
+}
+[data-contrast="high"] .strip-hero-nav-btn {
+  background: var(--color-background);
+  color: inherit;
+  border: 1.5px solid currentColor;
+  box-shadow: none;
+}
+[data-contrast="high"] .strip-meta-title,
+[data-contrast="high"] .strip-meta-title-name,
+[data-contrast="high"] .strip-meta-title-year,
+[data-contrast="high"] .strip-meta-title-year-bracket,
+[data-contrast="high"] .strip-meta-desc,
+[data-contrast="high"] .strip-meta-tag {
+  color: inherit;
+  text-shadow: none;
+}
+[data-contrast="high"] .strip-meta-tag {
+  border: 1px solid currentColor;
+  background: transparent;
+}
+[data-contrast="high"] .related-heading {
+  border-top: 2px solid currentColor;
+  padding-top: var(--spacing-md);
+  color: inherit;
+}
+[data-contrast="high"] .related-card {
+  background: var(--color-background);
+  border: 1.5px solid currentColor;
+  box-shadow: none;
+  animation: none;
+  clip-path: none;
+}
+[data-contrast="high"] .related-card:hover {
+  box-shadow: 3px 3px 0 currentColor;
+}
+[data-contrast="high"] .related-card-title {
+  color: inherit;
+}
+[data-contrast="high"] .artwork-pager-btn,
+html[data-theme="light"][data-contrast="high"] .artwork-pager-btn {
+  background: var(--color-background);
+  color: inherit;
+  border: 1.5px solid currentColor;
+  box-shadow: none;
+  animation: none;
+  clip-path: none;
+}
+[data-contrast="high"] .artwork-pager-btn:hover {
+  box-shadow: 3px 3px 0 currentColor;
+}
+[data-contrast="high"] .artwork-pager-label {
+  opacity: 0.7;
+}
+
+/* ---- About page --------------------------------------- */
+[data-contrast="high"] .introduction h2,
+[data-contrast="high"] .introduction p,
+[data-contrast="high"] .trajectory h2,
+[data-contrast="high"] .trajectory p,
+[data-contrast="high"] .philosophy-inspiration-container h2,
+[data-contrast="high"] .philosophy-inspiration-container p,
+[data-contrast="high"] .skills-header h2,
+[data-contrast="high"] .skills-header p,
+[data-contrast="high"] .beyond-column p,
+[data-contrast="high"] .upcoming-projects p {
+  color: inherit;
+  text-shadow: none;
+}
+[data-contrast="high"] .introduction h2,
+[data-contrast="high"] .trajectory h2,
+[data-contrast="high"] .philosophy-inspiration-container h2,
+[data-contrast="high"] .skills-header h2 {
+  border-bottom: 2px solid currentColor;
+  padding-bottom: var(--spacing-xs);
+  font-weight: 700;
+}
+
+/* ---- BlackSite / /programs (programs.css classes) ----- */
+[data-contrast="high"] .blacksite-container,
+[data-contrast="high"] .blacksite-container::before {
+  background: var(--color-background);
+  color: inherit;
+}
+[data-contrast="high"] .blacksite-frame,
+[data-contrast="high"] .blacksite-frame-corner {
+  display: none;
+}
+[data-contrast="high"] .blacksite-header,
+[data-contrast="high"] .blacksite-footer {
+  color: inherit;
+  border-color: currentColor;
+}
+[data-contrast="high"] .blacksite-container h1,
+[data-contrast="high"] .blacksite-container h2,
+[data-contrast="high"] .blacksite-container h3 {
+  color: inherit;
+  text-shadow: none;
+}
+[data-contrast="high"] .blacksite-container h1::before,
+[data-contrast="high"] .blacksite-container h1::after,
+[data-contrast="high"] .blacksite-container h2::before,
+[data-contrast="high"] .blacksite-container h2::after,
+[data-contrast="high"] .blacksite-container h3::before,
+[data-contrast="high"] .blacksite-container h3::after {
+  display: none;
+}
+[data-contrast="high"] .program-card {
+  background: var(--color-background);
+  color: inherit;
+  border: 2px solid currentColor;
+  box-shadow: none;
+  clip-path: none;
+  animation: none;
+}
+[data-contrast="high"] .program-card::before {
+  display: none;
+}
+[data-contrast="high"] .program-card:hover {
+  box-shadow: 4px 4px 0 currentColor;
+  transform: translate(-1px, -1px);
+}
+[data-contrast="high"] .program-card.active,
+[data-contrast="high"] .program-card.standby,
+[data-contrast="high"] .program-card.locked {
+  border: 2px solid currentColor;
+}
+[data-contrast="high"] .program-card.standby {
+  opacity: 0.7;
+}
+[data-contrast="high"] .program-card.locked {
+  opacity: 0.55;
+}
+[data-contrast="high"] .program-icon,
+[data-contrast="high"] .program-icon::before,
+[data-contrast="high"] .program-icon::after,
+[data-contrast="high"] .program-name,
+[data-contrast="high"] .program-description,
+[data-contrast="high"] .program-description::before,
+[data-contrast="high"] .program-description::after,
+[data-contrast="high"] .program-meta,
+[data-contrast="high"] .program-meta-left {
+  color: inherit;
+  text-shadow: none;
+  background: transparent;
+}
+[data-contrast="high"] .program-icon {
+  border: 1.5px solid currentColor;
+}
+[data-contrast="high"] .program-overlay {
+  background: var(--color-background);
+  color: inherit;
+}
+[data-contrast="high"] .program-modal,
+[data-contrast="high"] .program-modal .modal-content,
+[data-contrast="high"] .program-modal .modal-content::before {
+  background: var(--color-background);
+  color: inherit;
+  border: 2px solid currentColor;
+}
+[data-contrast="high"] .program-details,
+[data-contrast="high"] .program-details p {
+  color: inherit;
+}
+
+/* ---- Global: cancel remaining shimmer / scan animations
+   on any surface not caught above. Scoped narrowly to atoms
+   we know exist on the surfaces we editorial-ized. */
+[data-contrast="high"] .home-about-button,
+[data-contrast="high"] .home-cta,
+[data-contrast="high"] .explore-gallery-button,
+[data-contrast="high"] .engineering-log-button,
+[data-contrast="high"] .viewer-discretion-button,
+[data-contrast="high"] .filter-btn,
+[data-contrast="high"] .pagination button,
+[data-contrast="high"] .home-featured-rail-box,
+[data-contrast="high"] .gallery-search-field,
+[data-contrast="high"] .sticky-search {
+  animation: none !important;
+}
 
