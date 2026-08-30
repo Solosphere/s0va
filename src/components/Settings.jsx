@@ -162,6 +162,7 @@ export default function Settings() {
           on repaint/hover. Always rendered so it can wipe open and closed. */}
       {createPortal(
         <div className={`settings-overlay ${isOpen ? 'open' : ''}`} role="dialog" aria-modal="true">
+          <span className="settings-brand" aria-hidden="true">METTAIRE</span>
           <button
             className="settings-close"
             onClick={closeSettings}
@@ -261,8 +262,9 @@ export default function Settings() {
                 </div>
               </div>
 
-              {/* Keyboard Shortcuts */}
-              <div className="setting-group">
+              {/* Keyboard Shortcuts — hidden on mobile + tablet via CSS
+                  since those devices don't reach the physical-key bindings. */}
+              <div className="setting-group setting-group--shortcuts">
                 <h3>Keyboard Shortcuts</h3>
                 <div className="shortcuts-list">
                   <div className="shortcut-item">

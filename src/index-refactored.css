@@ -8260,6 +8260,31 @@ html[data-theme="light"] .settings-toggle {
   color: #ffffff;
 }
 
+/* METTAIRE wordmark, pinned to the viewport's top-left on the same row as
+   the ✕ close — direct child of the overlay so it holds its slot across
+   every viewport. Height matches the ✕'s total box (font-size 2.2rem +
+   vertical padding 0.4rem = 2.6rem) so both start at the same `top` and
+   share a visual center via flex-align. */
+.settings-brand {
+  position: absolute;
+  top: clamp(1rem, 3vh, 1.6rem);
+  left: clamp(1.2rem, 5vw, 2rem);
+  z-index: 3;
+  height: 2.6rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  font-family: var(--font-family-display);
+  font-size: clamp(0.95rem, 3.4vw, 1.25rem);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  color: #ffffff;
+  opacity: 0.9;
+  pointer-events: none;
+  user-select: none;
+}
+
 /* Close ✕, pinned to the viewport's top-right (direct child of the overlay) */
 .settings-close {
   position: absolute;
@@ -8281,6 +8306,14 @@ html[data-theme="light"] .settings-toggle {
   opacity: 1;
   transform: rotate(90deg);
   background: none; /* override the global button:hover grey box */
+}
+
+/* Keyboard shortcuts group: hidden on mobile + tablet since those devices
+   don't reach the physical-key bindings. Shown from small-laptop widths up. */
+@media (max-width: 1024px) {
+  .setting-group--shortcuts {
+    display: none;
+  }
 }
 
 .settings-content {
