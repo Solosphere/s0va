@@ -382,61 +382,69 @@ return (
               const indexLabel = String(entry.slot).padStart(2, '0');
               if (entry.kind === 'blacksite') {
                 return (
-                  <Link
+                  <div
                     key="blacksite"
-                    to="/programs"
-                    className={`home-featured-tile home-featured-tile--blacksite${isActive ? ' home-featured-tile--active' : ''}`}
-                    aria-label="Restricted terminal — enter root@mettaire.os"
+                    className={`home-featured-tile-wrap${isActive ? ' home-featured-tile-wrap--active' : ''}`}
                   >
                     <span className="home-featured-tile-index" aria-hidden="true">
                       {indexLabel}
                     </span>
-                    <span className="home-featured-tile-media">
-                      <div className="blacksite-tile-inner" aria-hidden="true">
-                        <div className="blacksite-tile-grid" />
-                        <div className="blacksite-tile-scanline" />
-                        <div className="blacksite-tile-head">
-                          <span className="blacksite-tile-status">
-                            <span className="blacksite-tile-status-dot" />
-                            RESTRICTED
-                          </span>
+                    <Link
+                      to="/programs"
+                      className={`home-featured-tile home-featured-tile--blacksite${isActive ? ' home-featured-tile--active' : ''}`}
+                      aria-label="Restricted terminal — enter root@mettaire.os"
+                    >
+                      <span className="home-featured-tile-media">
+                        <div className="blacksite-tile-inner" aria-hidden="true">
+                          <div className="blacksite-tile-grid" />
+                          <div className="blacksite-tile-scanline" />
+                          <div className="blacksite-tile-head">
+                            <span className="blacksite-tile-status">
+                              <span className="blacksite-tile-status-dot" />
+                              RESTRICTED
+                            </span>
+                          </div>
+                          <div className="blacksite-tile-body">
+                            <span className="blacksite-tile-label">BLACKSITE</span>
+                            <span className="blacksite-tile-sub">/programs</span>
+                          </div>
+                          <div className="blacksite-tile-foot">
+                            <span className="blacksite-tile-prompt">root@mettaire.os ~ %</span>
+                            <span className="blacksite-tile-cursor" aria-hidden="true">▮</span>
+                          </div>
                         </div>
-                        <div className="blacksite-tile-body">
-                          <span className="blacksite-tile-label">BLACKSITE</span>
-                          <span className="blacksite-tile-sub">/programs</span>
-                        </div>
-                        <div className="blacksite-tile-foot">
-                          <span className="blacksite-tile-prompt">root@mettaire.os ~ %</span>
-                          <span className="blacksite-tile-cursor" aria-hidden="true">▮</span>
-                        </div>
-                      </div>
-                      <span className="home-featured-tile-title">/programs/blacksite</span>
-                    </span>
-                  </Link>
+                        <span className="home-featured-tile-title">/programs/blacksite</span>
+                      </span>
+                    </Link>
+                  </div>
                 );
               }
               const item = entry.data;
               return (
-                <Link
+                <div
                   key={item.key}
-                  to={item.to || '/gallery'}
-                  className={`home-featured-tile${isActive ? ' home-featured-tile--active' : ''}`}
-                  aria-label={item.title ? `Open ${item.title}` : 'Open featured work'}
+                  className={`home-featured-tile-wrap${isActive ? ' home-featured-tile-wrap--active' : ''}`}
                 >
                   <span className="home-featured-tile-index" aria-hidden="true">
                     {indexLabel}
                   </span>
-                  <span className="home-featured-tile-media">
-                    <img
-                      src={getProtectedImageUrl(item.image)}
-                      alt={item.title || ''}
-                      loading="lazy"
-                    />
-                    {item.title && (
-                      <span className="home-featured-tile-title">{item.title}</span>
-                    )}
-                  </span>
-                </Link>
+                  <Link
+                    to={item.to || '/gallery'}
+                    className={`home-featured-tile${isActive ? ' home-featured-tile--active' : ''}`}
+                    aria-label={item.title ? `Open ${item.title}` : 'Open featured work'}
+                  >
+                    <span className="home-featured-tile-media">
+                      <img
+                        src={getProtectedImageUrl(item.image)}
+                        alt={item.title || ''}
+                        loading="lazy"
+                      />
+                      {item.title && (
+                        <span className="home-featured-tile-title">{item.title}</span>
+                      )}
+                    </span>
+                  </Link>
+                </div>
               );
             })}
           </div>

@@ -93,50 +93,60 @@ const Coverflow = ({ items = [], getImageUrl, showCaption = false, onNavigate })
       <div className="coverflow-stage">
         {items.map((item, index) => {
           const isActive = index === currentSlide;
+          const idxLabel = String(index + 1).padStart(2, '0');
           return (
             <div
               key={item.key ?? index}
-              className={`coverflow-card ${isActive ? 'active' : ''}`}
+              className={`coverflow-card-wrap ${isActive ? 'active' : ''}`}
               style={cardStyle(index)}
-              data-card-idx={String(index + 1).padStart(2, '0')}
-              onClick={() => {
-                if (!isActive) return goToSlide(index);
-                if (item.to) {
-                  onNavigate?.(item);
-                  navigate(item.to);
-                }
-              }}
-              role="button"
-              aria-label={
-                isActive
-                  ? `Open ${item.title ?? 'item'}`
-                  : `Go to ${item.title ?? `item ${index + 1}`}`
-              }
             >
-              {item.kind === 'log' ? (
-                <div className="coverflow-log-face">
-                  <span className="cf-log-prompt">root@mettaire.os</span>
-                  <h3>{item.title}</h3>
-                  {item.org && <span className="cf-log-org">{item.org}</span>}
-                  {item.summary && <p>{item.summary}</p>}
-                  {item.stack && (
-                    <div className="cf-log-chips">
-                      {item.stack.slice(0, 4).map((t) => (
-                        <span key={t} className="cf-log-chip">{t}</span>
-                      ))}
-                    </div>
-                  )}
-                  <span className="cf-log-cta">read log →</span>
-                </div>
-              ) : (
-                <img src={withImageWidth(getImageUrl(item.image), WIDTHS.GALLERY_CARD)} loading="lazy" alt={item.title ?? ''} />
+              {item.kind !== 'log' && (
+                <span className="coverflow-card-chip" aria-hidden="true">
+                  SEC.{idxLabel}
+                </span>
               )}
-              {item.kind !== 'log' && item.title && (
-                <div className={`coverflow-card-text${item.compactTitle ? ' coverflow-card-text--compact' : ''}`}>
-                  <h3>{item.title}</h3>
-                  {item.meta && <p className="coverflow-card-meta">{item.meta}</p>}
-                </div>
-              )}
+              <div
+                className={`coverflow-card ${isActive ? 'active' : ''}`}
+                data-card-idx={idxLabel}
+                onClick={() => {
+                  if (!isActive) return goToSlide(index);
+                  if (item.to) {
+                    onNavigate?.(item);
+                    navigate(item.to);
+                  }
+                }}
+                role="button"
+                aria-label={
+                  isActive
+                    ? `Open ${item.title ?? 'item'}`
+                    : `Go to ${item.title ?? `item ${index + 1}`}`
+                }
+              >
+                {item.kind === 'log' ? (
+                  <div className="coverflow-log-face">
+                    <span className="cf-log-prompt">root@mettaire.os</span>
+                    <h3>{item.title}</h3>
+                    {item.org && <span className="cf-log-org">{item.org}</span>}
+                    {item.summary && <p>{item.summary}</p>}
+                    {item.stack && (
+                      <div className="cf-log-chips">
+                        {item.stack.slice(0, 4).map((t) => (
+                          <span key={t} className="cf-log-chip">{t}</span>
+                        ))}
+                      </div>
+                    )}
+                    <span className="cf-log-cta">read log →</span>
+                  </div>
+                ) : (
+                  <img src={withImageWidth(getImageUrl(item.image), WIDTHS.GALLERY_CARD)} loading="lazy" alt={item.title ?? ''} />
+                )}
+                {item.kind !== 'log' && item.title && (
+                  <div className={`coverflow-card-text${item.compactTitle ? ' coverflow-card-text--compact' : ''}`}>
+                    <h3>{item.title}</h3>
+                    {item.meta && <p className="coverflow-card-meta">{item.meta}</p>}
+                  </div>
+                )}
+              </div>
             </div>
           );
         })}
