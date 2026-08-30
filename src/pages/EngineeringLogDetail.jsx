@@ -48,7 +48,6 @@ const EngineeringLogDetail = () => {
   const originLabel = PAGE_LABELS[origin];
   const backTo = originLabel ? origin : '/engineering';
   const backWhere = originLabel || 'engineering';
-  const backCmd = backTo === '/' ? 'cd ~' : backTo === '/engineering' ? 'cd ..' : `cd ~${backTo}`;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -58,10 +57,7 @@ const EngineeringLogDetail = () => {
     return (
       <div className="log-detail log-detail--missing">
         <div className="log-detail-inner">
-          <p className="log-prompt-line">
-            <span className="log-prompt-sign" aria-hidden="true">root@mettaire.os ~ %</span>{' '}
-            cat {id}: no such entry
-          </p>
+          <p className="log-prompt-line">No entry found for "{id}".</p>
           <Link to={backTo} className="log-back">← back to {backWhere}</Link>
         </div>
       </div>
@@ -109,9 +105,7 @@ const EngineeringLogDetail = () => {
       </div>
 
       <div className="log-detail-inner">
-        <Link to={backTo} className="log-back">
-          <span className="log-prompt-sign" aria-hidden="true">root@mettaire.os ~ %</span> {backCmd}
-        </Link>
+        <Link to={backTo} className="log-back">← back to {backWhere}</Link>
 
         <header className="log-detail-head">
           <span className="log-detail-head-tag" aria-hidden="true">ENTRY</span>

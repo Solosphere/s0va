@@ -52,10 +52,6 @@ const TermsAndConditions = () => {
     <div className="terms-page">
       <header className="terms-header">
         <h1 className="terms-title">TERMS &amp; CONDITIONS</h1>
-        <p className="terms-prompt">
-          <span className="terms-prompt-sign" aria-hidden="true">root@mettaire.os ~ %</span>{' '}
-          cat /var/legal/terms.txt
-        </p>
         <p className="terms-stamp">
           <span className="terms-stamp-key">&gt; STAMP</span>
           <span className="terms-stamp-value">2025-08-15</span>
